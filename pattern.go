@@ -5,7 +5,7 @@ import (
 	"image/color"
 )
 
-// satisfying the Signal interface means a type represents an analogue signal, where a y property varies with an x parameter.
+// satisfying the Pattern interface means a type represents a 2D pattern, where a color property varies with two x parameters.
 type Pattern interface {
 	property(x,x) color.Color
 }
