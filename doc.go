@@ -9,7 +9,7 @@ The controlling parameters are generally unbounded.
 
 Fundamental Types
 
-x,y :- the 'parameters' designed to be used as if unbounded (+ve and -ve), with unitX near the centre of its precision range.
+x :- 'parameters' designed to be used as if unbounded (+ve and -ve), with unitX near the centre of its precision range.
 
 
 */

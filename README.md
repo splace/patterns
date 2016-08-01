@@ -7,5 +7,5 @@ Overview/docs: [![GoDoc](https://godoc.org/github.com/splace/patterns?status.svg
 
 Installation:
 
-     go get github.com/splace/signals   
+     go get github.com/splace/patterns   
 
