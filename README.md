@@ -1,4 +1,6 @@
-# Patterns (compare with Signals)
+# Patterns 
+
+(attempt at a 2d version of https:github.com/splace/Signals)
 
 Status: (Beta :- stabilising API)
 
