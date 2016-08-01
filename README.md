@@ -1,4 +1,11 @@
-# patterns
-Go language generation and manipulation of continuous colour patterns.
+# Patterns (compare with Signals)
 
-compare with signals
+Status: (Beta :- stabilising API)
+
+
+Overview/docs: [![GoDoc](https://godoc.org/github.com/splace/signals?status.svg)](https://godoc.org/github.com/splace/signals) 
+
+Installation:
+
+     go get github.com/splace/signals   
+
