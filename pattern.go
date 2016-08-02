@@ -44,5 +44,5 @@ func (v y) transparency() (t y) {
 
 type LimitedPattern interface {
 	Pattern
-	MaxX() x
+	maxX() x
 }

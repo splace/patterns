@@ -15,9 +15,9 @@ y :- 'property' can have a value interpolated between limits of +-unitY.
 
 Interfaces
 
-Pattern :- as method at(x,x)y which returns a 'y' value from two 'x' value parameters.
+Pattern :- as method at(x,x) y, which returns a 'y' value from two 'x' value parameters.
 
-LimitedPattern :- a Pattern with a MaxX() method returning the 'x' value range outside which the Pattern can be assumed to return a value interpreted by the Transparency() Method as completely see-through, it effectively has an size.
+LimitedPattern :- a Pattern with a maxX() method returning the 'x' value range outside which the Pattern can be assumed to return a value interpreted by the Transparency() Method as completely see-through, it effectively has an size.
 
 */
 package patterns

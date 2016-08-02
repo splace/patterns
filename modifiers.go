@@ -19,6 +19,34 @@ func (p Shifted) at(px, py x) y {
 	return p.p.at(px-p.dx, py-p.dy)
 }
 
+// a LimitedPattern translated
+type Translated struct {
+	p      LimitedPattern
+	dx, dy x
+}
+
+func (p Translated) at(px, py x) y {
+	return p.p.at(px-p.dx, py-p.dy)
+}
+
+func (p Translated) maxX() x {
+	return p.p.maxX()+max4(p.dx,-p.dx,p.dy,-p.dy)
+} 
+
+func max4(a,b,c,d x) x{
+	switch {
+	case a>=b && a>=c && a>=d:
+		return a
+	case b>=c && b>=d:
+		return b
+	case c>=d:
+		return c
+	default:
+		return d
+	}
+}
+
+
 // a Pattern Scaled
 type Scaled struct {
 	p      Pattern
