@@ -1,18 +1,20 @@
 package patterns
+
 import (
-	//"math"
+	"math"
 	//"fmt"
 )
 
-// brush holds state, style/position , for line based, possibly region outlinng
+// brush holds state, style/position , for line based patterns
 type Brush struct {
-	Width                float32
-	in               	y
+	Width                x
+	In               	 y
+	Relative             bool
 	x, y                 x
 	sx, sy               x
-	Relative             bool
 }
 
 func (p Brush) Line(px1, py1, px2, py2 x) LimitedPattern {
-	return Translated{Square{px2-px1,true},px2-px1, py2-py1}
+	length := x(math.Sqrt(float64((px2-px1)*(px2-px1) + (py2-py1)*(py2-py1))))
+	return Translated{Square{px2-px1,p.In},length, p.Width}
 }
