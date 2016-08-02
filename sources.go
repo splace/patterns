@@ -29,6 +29,10 @@ func (p Disc) property(px,py x) (v y) {
 	return
 }
 
+func (p Disc) maxX() x{
+	return p.Radius
+}
+
 type Ring struct {
 	Radius,Width x
 	Value y
@@ -44,14 +48,19 @@ func (p Ring) property(px,py x) (v y) {
 
 
 type Square struct {
-	Height,Breadth x
+	Extent x
 	Value y
 }
 
 func (p Square) property(px,py x) (v y) {
-	if py <= p.Height && py>= -p.Height && px >= -p.Breadth && px <= p.Breadth {
+	if py <= p.Extent && py>= -p.Extent && px >= -p.Extent && px <= p.Extent {
 		return p.Value
 	}
 	return
 }
+
+func (p Square) maxX() x{
+	return p.Extent
+}
+
 

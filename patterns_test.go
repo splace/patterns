@@ -36,6 +36,15 @@ func ExamplePatternsDisc() {
 }
 
 
+func ExamplePatternsSquare() {
+	PrintGraph(Square{3,true}, -5,5, -5,5, 1)
+	/* Output:
+   0.00%                                  X
+   0.00%                                  X
+   0.00%                                  X
+	*/
+}
+
 
 func BenchmarkPatternsSine(b *testing.B) {
 	b.StopTimer()
@@ -43,11 +52,10 @@ func BenchmarkPatternsSine(b *testing.B) {
 
 }
 
-func BenchmarkPattersSineSegmented(b *testing.B) {
+func BenchmarkPatternsSineSegmented(b *testing.B) {
 	b.StopTimer()
 	b.StartTimer()
 
 }
-
 
 

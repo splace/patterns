@@ -9,6 +9,7 @@ type Pattern interface {
 	property(x,x) y
 }
 
+
 // the x represents a value from -infinity to +infinity, but is actually limited by its current underlying representation.
 type x int64 // current underlying representation
 const xBits=64
@@ -26,10 +27,21 @@ const unitY y = true
 const yBits = 64
 const halfyBits = yBits / 2
 
-
 // string representation of a y, scaled to unitY%
 func (v y) String() string {
 	if v {return "X"}
 	return "-"
 }
+
+// transparency
+func (v y) Transparency() (t y) {
+	if v {return}
+	return unitY
+}
+
+type LimitedPattern interface{
+	Pattern
+	MaxX() x
+}
+
 
