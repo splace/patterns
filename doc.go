@@ -13,7 +13,7 @@ x :- 'parameters' designed to be used as if unbounded (+ve and -ve), with unitX 
 
 y :- 'property' can have a value interpolated between limits of +-unitY.
 
-Interfaces 
+Interfaces
 
 Pattern :- as method at(x,x)y which returns a 'y' value from two 'x' value parameters.
 

@@ -1,6 +1,7 @@
 package patterns
+
 import (
-//	"math"
+	//	"math"
 	"encoding/gob"
 )
 
@@ -13,40 +14,38 @@ type Constant struct {
 	Value y
 }
 
-func (p Constant) property(px,py x) y {
+func (p Constant) at(px, py x) y {
 	return p.Value
 }
 
 type Disc struct {
 	Radius x
-	Value y
+	Value  y
 }
 
-func (p Disc) property(px,py x) (v y) {
+func (p Disc) at(px, py x) (v y) {
 	if px*px+py*py <= p.Radius*p.Radius {
 		return p.Value
 	}
 	return
 }
 
-func (p Disc) maxX() x{
+func (p Disc) maxX() x {
 	return p.Radius
 }
 
 type Square struct {
 	Extent x
-	Value y
+	Value  y
 }
 
-func (p Square) property(px,py x) (v y) {
-	if py <= p.Extent && py>= -p.Extent && px >= -p.Extent && px <= p.Extent {
+func (p Square) at(px, py x) (v y) {
+	if py <= p.Extent && py >= -p.Extent && px >= -p.Extent && px <= p.Extent {
 		return p.Value
 	}
 	return
 }
 
-func (p Square) maxX() x{
+func (p Square) maxX() x {
 	return p.Extent
 }
-
-
