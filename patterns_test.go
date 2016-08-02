@@ -46,6 +46,7 @@ func ExamplePatternsSquare() {
 }
 
 
+
 func BenchmarkPatternsSine(b *testing.B) {
 	b.StopTimer()
 	b.StartTimer()
