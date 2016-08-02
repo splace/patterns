@@ -25,3 +25,11 @@ func ExamplePatternsScaled() {
    0.00%                                  X
 	*/
 }
+func ExamplePatternsRotated() {
+	PrintGraph(Rotated{Square{2,true},.707,.707}, -5, 5, -5,5, 1)
+	/* Output:
+   0.00%                                  X
+   0.00%                                  X
+   0.00%                                  X
+	*/
+}
