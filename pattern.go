@@ -10,7 +10,7 @@ type Pattern interface {
 }
 
 // the x represents a value from -infinity to +infinity, but is actually limited by its current underlying representation.
-type x int64 // current underlying representation
+type x int64 
 const xBits = 64
 const unitX = 1
 
