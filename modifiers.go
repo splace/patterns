@@ -1,8 +1,8 @@
 package patterns
 
 import (
-	//	"math"
 	"encoding/gob"
+	"math"
 )
 
 func init() {
@@ -38,3 +38,9 @@ type Rotated struct {
 func (p Rotated) at(px, py x) y {
 	return p.p.at(x(float64(px)*p.cosA-float64(py)*p.sinA), x(float64(px)*p.sinA+float64(py)*p.cosA))
 }
+
+func NewRotated(p Pattern, a float64) Pattern {
+	return Rotated{p, math.Sin(a), math.Cos(a)}
+}
+
+
