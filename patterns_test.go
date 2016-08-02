@@ -8,8 +8,8 @@ import (
 )
 
 func PrintGraph(p Pattern, startx, endx,starty, endy, step x) {
+	row := make([]byte,int((endx-startx)/step))
 	for py := starty; py < endy; py += step {
-		row := make([]byte,int((endx-startx)/step))
 		for px := startx; px < endx; px += step {
 			row[int((px-startx)/step)]= p.property(px,py).String()[0]
 		}

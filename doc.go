@@ -13,6 +13,12 @@ x :- 'parameters' designed to be used as if unbounded (+ve and -ve), with unitX 
 
 y :- 'property' can have a value between limits, +unitY and -unitY.
 
+Interfaces 
+
+Pattern :- as method at(x,x)y which returns a 'y' value from two 'x' value parameters.
+
+LimitedPattern :- a Pattern with a MaxX() method returning the the 'x' value outside which the Pattern can be assumed to return zero, it effectively has an size.
+
 */
 package patterns
 
