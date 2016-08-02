@@ -20,15 +20,16 @@ func (p x) String() string {
 }
 
 // the y type represents a value between +unitY and -unitY.
-type y int64
+type y bool
 
-const unitY y = 1
+const unitY y = true
 const yBits = 64
 const halfyBits = yBits / 2
 
 
 // string representation of a y, scaled to unitY%
 func (v y) String() string {
-	return fmt.Sprintf("%7.2f%%", 100*float32(v)/float32(unitY))
+	if v {return "X"}
+	return "-"
 }
 

@@ -23,7 +23,7 @@ type Disc struct {
 }
 
 func (p Disc) property(px,py x) (v y) {
-	if px*px+py*py < p.Radius*p.Radius {
+	if px*px+py*py <= p.Radius*p.Radius {
 		return p.Value
 	}
 	return
@@ -36,7 +36,7 @@ type Ring struct {
 
 func (p Ring) property(px,py x) (v y) {
 	r:= px*px+py*py
-	if r < (p.Radius+p.Width)*(p.Radius+p.Width) && r > (p.Radius-p.Width)*(p.Radius-p.Width) {
+	if r <= (p.Radius+p.Width)*(p.Radius+p.Width) && r>= (p.Radius-p.Width)*(p.Radius-p.Width) {
 		return p.Value
 	}
 	return
@@ -49,7 +49,7 @@ type Square struct {
 }
 
 func (p Square) property(px,py x) (v y) {
-	if py < p.Height && py> -p.Height && px > -p.Breadth && px < p.Breadth {
+	if py <= p.Height && py>= -p.Height && px >= -p.Breadth && px <= p.Breadth {
 		return p.Value
 	}
 	return

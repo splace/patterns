@@ -9,19 +9,16 @@ import (
 
 func PrintGraph(p Pattern, startx, endx,starty, endy, step x) {
 	for py := starty; py < endy; py += step {
-		row := make([]byte,int(4*(endx-startx)/step))
+		row := make([]byte,int((endx-startx)/step))
 		for px := startx; px < endx; px += step {
-			row[int(4*(px-startx)/step)]= byte(p.property(px,py))
-			row[int(4*(px-startx)/step)+1]= byte(p.property(px,py)>>8)
-			row[int(4*(px-startx)/step)+2]= byte(p.property(px,py)>>16)
-			row[int(4*(px-startx)/step)+3]= byte(p.property(px,py)>>24)
+			row[int((px-startx)/step)]= p.property(px,py).String()[0]
 		}
-		fmt.Println(py,row)
+		fmt.Println(py,string(row))
 	}
 }
 
 func ExamplePatternsConstant() {
-	PrintGraph(Constant{1}, -3, 3, -3,3, 1)
+	PrintGraph(Constant{true}, -3, 3, -3,3, 1)
 	/* Output:
    0.00%                                  X
    0.00%                                  X
@@ -30,7 +27,7 @@ func ExamplePatternsConstant() {
 }
 
 func ExamplePatternsDisc() {
-	PrintGraph(Disc{4,0xff}, -5,5, -5,5, 1)
+	PrintGraph(Disc{3,true}, -5,5, -5,5, 1)
 	/* Output:
    0.00%                                  X
    0.00%                                  X
@@ -51,4 +48,6 @@ func BenchmarkPattersSineSegmented(b *testing.B) {
 	b.StartTimer()
 
 }
+
+
 
