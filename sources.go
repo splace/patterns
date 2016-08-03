@@ -9,23 +9,34 @@ func init() {
 	gob.Register(Constant{})
 }
 
+type source interface {
+	fill() y
+}
+
+type Filling struct {
+	Fill y
+}
+
+func (s Filling) fill() y{
+	return s.Fill
+}
 // a Pattern with constant value
 type Constant struct {
-	Value y
+	Filling
 }
 
 func (p Constant) at(px, py x) y {
-	return p.Value
+	return p.Fill
 }
 
 type Disc struct {
 	Radius x
-	Value  y
+	Filling
 }
 
 func (p Disc) at(px, py x) (v y) {
 	if px*px+py*py <= p.Radius*p.Radius {
-		return p.Value
+		return p.Fill
 	}
 	return
 }
@@ -36,12 +47,12 @@ func (p Disc) maxX() x {
 
 type Square struct {
 	Extent x
-	Value  y
+	Filling
 }
 
 func (p Square) at(px, py x) (v y) {
 	if py <= p.Extent && py >= -p.Extent && px >= -p.Extent && px <= p.Extent {
-		return p.Value
+		return p.Fill
 	}
 	return
 }
@@ -49,3 +60,9 @@ func (p Square) at(px, py x) (v y) {
 func (p Square) maxX() x {
 	return p.Extent
 }
+
+func NewBox(Extent,Width x,f Filling) LimitedPattern {
+	return Limiter{Composite{Square{Extent-Width, f},Inverted{Square{Extent+Width, f}}},Extent+Width}
+}
+
+

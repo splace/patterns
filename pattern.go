@@ -10,8 +10,9 @@ type Pattern interface {
 }
 
 // the x represents a value from -infinity to +infinity, but is actually limited by its current underlying representation.
-type x int64 
-const xBits = 64
+type x int64
+
+//const xBits = 64
 const unitX = 1
 
 // string representation of an x scaled to unitX
@@ -23,8 +24,6 @@ func (p x) String() string {
 type y bool
 
 const unitY y = true
-const yBits = 64
-const halfyBits = yBits / 2
 
 // string representation of a y
 func (v y) String() string {
@@ -34,17 +33,13 @@ func (v y) String() string {
 	return "-"
 }
 
-// transparency
-func (v y) transparency() (t y) {
-	if v {
-		return
-	}
-	return unitY
+func (v y) isOpaque() bool {
+	return bool(v)
 }
 
-func composit(y1,y2 y) y {
+func composit(y1, y2 y) y {
 	return y1 || y2
-} 
+}
 
 type LimitedPattern interface {
 	Pattern

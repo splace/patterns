@@ -8,7 +8,7 @@ import (
 )
 
 func ExampleComposite() {
-	p:=NewComposite(Disc{5,unitY},Square{4,unitY})
+	p := NewComposite(Disc{5, Filling{unitY}}, Square{4, Filling{unitY}})
 	PrintGraph(p, -10, 10, -10, 10, 1)
 	/* Output:
 	   0.00%                                  X
@@ -16,8 +16,3 @@ func ExampleComposite() {
 	   0.00%                                  X
 	*/
 }
-
-
-
-
-

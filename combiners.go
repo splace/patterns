@@ -14,12 +14,16 @@ type Composite []Pattern
 
 func (c Composite) at(px, py x) (total y) {
 	for _, p := range c {
-		if lp,ok:=p.(LimitedPattern);ok{
-			m:=lp.maxX()
-			if px>m || py>m || px< -m || py< -m {continue}
+		if lp, ok := p.(LimitedPattern); ok {
+			m := lp.maxX()
+			if px > m || py > m || px < -m || py < -m {
+				continue
 			}
-		total = composit(total,p.at(px, py))
-		if total==unitY {break}
+		}
+		total = composit(total, p.at(px, py))
+		if total.isOpaque() {
+			return
+		}
 	}
 	return
 }
@@ -28,5 +32,3 @@ func (c Composite) at(px, py x) (total y) {
 func NewComposite(ps ...Pattern) Composite {
 	return Composite(ps)
 }
-
-
