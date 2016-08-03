@@ -7,7 +7,7 @@ import (
 //"testing"
 )
 
-func ExampleBrushLine() {
+func ExampleBrush() {
 	b := Brush{Width: 2, In: unitY, Relative: true}
 	PrintGraph(b.Line(0, 0, 3, 3), -10, 10, -10, 10, 1)
 	/* Output:

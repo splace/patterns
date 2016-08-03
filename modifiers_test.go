@@ -7,7 +7,7 @@ import (
 //"testing"
 )
 
-func ExamplePatternsShifted() {
+func ExampleShifted() {
 	PrintGraph(Shifted{Square{3, Filling{unitY}}, 2, 1}, -5, 5, -5, 5, 1)
 	/* Output:
 	   0.00%                                  X
@@ -16,7 +16,7 @@ func ExamplePatternsShifted() {
 	*/
 }
 
-func ExamplePatternsScaled() {
+func ExampleScaled() {
 	PrintGraph(Scaled{Square{3, Filling{unitY}}, .5, 1}, -5, 5, -5, 5, 1)
 	/* Output:
 	   0.00%                                  X
@@ -25,7 +25,7 @@ func ExamplePatternsScaled() {
 	*/
 }
 
-func ExamplePatternsRotated() {
+func ExampleRotated() {
 	PrintGraph(Rotated{Square{2, Filling{unitY}}, .707, .707}, -5, 5, -5, 5, 1)
 	/* Output:
 	   0.00%                                  X
@@ -34,7 +34,7 @@ func ExamplePatternsRotated() {
 	*/
 }
 
-func ExamplePatternsTranslated() {
+func ExampleTranslated() {
 	p := Translated{Square{2, Filling{unitY}}, 2, 0}
 	PrintGraph(p, -p.maxX(), p.maxX(), -p.maxX(), p.maxX(), 1)
 	/* Output:
@@ -45,7 +45,7 @@ func ExamplePatternsTranslated() {
 }
 
 
-func ExamplePatternsInverted() {
+func ExampleInverted() {
 	p := LimitedInverted{Square{2, Filling{unitY}}}
 	PrintGraph(p, -p.maxX()-2, p.maxX()+2, -p.maxX()-2, p.maxX()+2, 1)
 	/* Output:
