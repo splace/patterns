@@ -18,7 +18,7 @@ func PrintGraph(p Pattern, startx, endx, starty, endy, step x) {
 }
 
 func ExamplePatternsConstant() {
-	PrintGraph(Constant{true}, -3, 3, -3, 3, 1)
+	PrintGraph(Constant{unitY}, -3, 3, -3, 3, 1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
@@ -27,7 +27,7 @@ func ExamplePatternsConstant() {
 }
 
 func ExamplePatternsDisc() {
-	PrintGraph(Disc{3, true}, -5, 5, -5, 5, 1)
+	PrintGraph(Disc{3, unitY}, -5, 5, -5, 5, 1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
@@ -36,7 +36,7 @@ func ExamplePatternsDisc() {
 }
 
 func ExamplePatternsSquare() {
-	PrintGraph(Square{3, true}, -5, 5, -5, 5, 1)
+	PrintGraph(Square{3, unitY}, -5, 5, -5, 5, 1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
