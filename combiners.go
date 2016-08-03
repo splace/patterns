@@ -14,7 +14,11 @@ type Composite []Pattern
 
 func (c Composite) at(px, py x) (total y) {
 	for _, p := range c {
-		total = p.at(px, py)
+		if lp,ok:=p.(LimitedPattern);ok{
+			m:=lp.maxX()
+			if px>m || py>m || px< -m || py< -m {continue}
+			}
+		total = composit(total,p.at(px, py))
 		if total==unitY {break}
 	}
 	return

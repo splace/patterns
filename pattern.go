@@ -42,6 +42,10 @@ func (v y) transparency() (t y) {
 	return unitY
 }
 
+func composit(y1,y2 y) y {
+	return y1 || y2
+} 
+
 type LimitedPattern interface {
 	Pattern
 	maxX() x
