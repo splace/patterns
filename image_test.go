@@ -11,13 +11,24 @@ import (
 	"testing"
 )
 
+func TestImageSquare(t *testing.T) {
+	file, err := os.Create("./test output/Square.png")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	png.Encode(file, Plan9PalettedImage{Depiction{Square{10,Filling{unitY}}, image.Rect(-40,-40, 40,40),2, color.Opaque, color.Transparent}})
+}
+
+
 func TestImageBox(t *testing.T) {
 	file, err := os.Create("./test output/Box.png")
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
-	png.Encode(file, Plan9PalettedImage{Depiction{Square{40,Filling{unitY}}, image.Rect(-40,-40, 40,40),1, color.RGBA{255, 255, 255, 255}, color.RGBA{0, 0, 0, 0}}})
+	//png.Encode(file, Plan9PalettedImage{Depiction{Square{10,Filling{unitY}}, image.Rect(-40,-40, 40,40),2, color.Opaque, color.Transparent}})
+	png.Encode(file, Plan9PalettedImage{NewDepiction(NewBox(30,10,Filling{unitY}), 400, 400, color.Opaque, color.Transparent)})
 }
 
 
@@ -49,6 +60,7 @@ func (i *composable) drawOverAt(isrc image.Image, pt image.Point) {
 func (i *composable) drawOverOffset(isrc image.Image, pt image.Point) {
 	draw.Draw(i, i.Bounds(), isrc, isrc.Bounds().Min.Add(pt), draw.Over)
 }
+
 
 
 

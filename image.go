@@ -24,7 +24,7 @@ func (i Depiction) Bounds() image.Rectangle {
 }
 
 func (i Depiction) At(xp, yp int) color.Color {
-	if i.at(x(xp)*unitX/x(i.pixelsPerUnitX)-x(i.size.Min.X),x(yp)*unitX/x(i.pixelsPerUnitX)-x(i.size.Min.Y)) == unitY {
+	if i.at(x(xp)*unitX/x(i.pixelsPerUnitX),x(yp)*unitX/x(i.pixelsPerUnitX)) == unitY {
 		return i.in
 	}
 	return i.out
