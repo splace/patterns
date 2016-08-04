@@ -43,5 +43,5 @@ func composit(y1, y2 y) y {
 
 type LimitedPattern interface {
 	Pattern
-	maxX() x
+	MaxX() x
 }

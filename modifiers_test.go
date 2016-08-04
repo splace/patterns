@@ -36,25 +36,20 @@ func ExampleRotated() {
 
 func ExampleTranslated() {
 	p := Translated{Square{2, Filling{unitY}}, 2, 0}
-	PrintGraph(p, -p.maxX(), p.maxX(), -p.maxX(), p.maxX(), 1)
+	PrintGraph(p, -p.MaxX(), p.MaxX(), -p.MaxX(), p.MaxX(), 1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
 	   0.00%                                  X
 	*/
 }
-
 
 func ExampleInverted() {
 	p := LimitedInverted{Square{2, Filling{unitY}}}
-	PrintGraph(p, -p.maxX()-2, p.maxX()+2, -p.maxX()-2, p.maxX()+2, 1)
+	PrintGraph(p, -p.MaxX()-2, p.MaxX()+2, -p.MaxX()-2, p.MaxX()+2, 1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
 	   0.00%                                  X
 	*/
 }
-
-
-
-

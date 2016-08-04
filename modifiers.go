@@ -29,8 +29,8 @@ func (p Translated) at(px, py x) y {
 	return p.p.at(px-p.dx, py-p.dy)
 }
 
-func (p Translated) maxX() x {
-	return p.p.maxX() + max4(p.dx, -p.dx, p.dy, -p.dy)
+func (p Translated) MaxX() x {
+	return p.p.MaxX() + max4(p.dx, -p.dx, p.dy, -p.dy)
 }
 
 func max4(a, b, c, d x) x {
@@ -69,14 +69,17 @@ func (p Rotated) at(px, py x) y {
 func NewRotated(p Pattern, a float64) Pattern {
 	return Rotated{p, math.Sin(a), math.Cos(a)}
 }
+
 // a Pattern reversed
 type Inverted struct {
 	Pattern
 }
 
-func (p Inverted) at(px,py x) (v y){
-	if p.Pattern.at(px,py)==unitY {return}
-	return unitY	
+func (p Inverted) at(px, py x) (v y) {
+	if p.Pattern.at(px, py) == unitY {
+		return
+	}
+	return unitY
 }
 
 // a Pattern reversed
@@ -84,9 +87,11 @@ type LimitedInverted struct {
 	LimitedPattern
 }
 
-func (p LimitedInverted) at(px,py x) (v y){
-	if p.LimitedPattern.at(px,py)==unitY {return}
-	return unitY	
+func (p LimitedInverted) at(px, py x) (v y) {
+	if p.LimitedPattern.at(px, py) == unitY {
+		return
+	}
+	return unitY
 }
 
 type Limiter struct {
@@ -94,12 +99,13 @@ type Limiter struct {
 	Extent x
 }
 
-func (p Limiter) at(px,py x) (v y){
-	if p.Pattern.at(px,py)==unitY {return}
-	return unitY	
+func (p Limiter) at(px, py x) (v y) {
+	if p.Pattern.at(px, py) == unitY {
+		return
+	}
+	return unitY
 }
 
-func (p Limiter) maxX() x {
+func (p Limiter) MaxX() x {
 	return p.Extent
 }
-

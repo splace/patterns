@@ -17,9 +17,10 @@ type Filling struct {
 	Fill y
 }
 
-func (s Filling) fill() y{
+func (s Filling) fill() y {
 	return s.Fill
 }
+
 // a Pattern with constant value
 type Constant struct {
 	Filling
@@ -41,7 +42,7 @@ func (p Disc) at(px, py x) (v y) {
 	return
 }
 
-func (p Disc) maxX() x {
+func (p Disc) MaxX() x {
 	return p.Radius
 }
 
@@ -57,12 +58,10 @@ func (p Square) at(px, py x) (v y) {
 	return
 }
 
-func (p Square) maxX() x {
+func (p Square) MaxX() x {
 	return p.Extent
 }
 
-func NewBox(Extent,Width x,f Filling) LimitedPattern {
-	return Limiter{Composite{Square{Extent-Width, f},Inverted{Square{Extent+Width, f}}},Extent+Width}
+func NewBox(Extent, Width x, f Filling) LimitedPattern {
+	return Limiter{Composite{Square{Extent - Width, f}, Inverted{Square{Extent + Width, f}}}, Extent + Width}
 }
-
-

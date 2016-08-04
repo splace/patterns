@@ -44,10 +44,9 @@ func ExampleSquare() {
 	*/
 }
 
-
 func ExampleBox() {
-	p := NewBox(5,2,Filling{unitY})
-	PrintGraph(p, -p.maxX()-2, p.maxX()+2, -p.maxX()-2, p.maxX()+2, 1)
+	p := NewBox(5, 2, Filling{unitY})
+	PrintGraph(p, -p.MaxX()-2, p.MaxX()+2, -p.MaxX()-2, p.MaxX()+2, 1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
