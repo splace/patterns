@@ -33,17 +33,19 @@ func (p Translated) MaxX() x {
 	return p.p.MaxX() + max4(p.dx, -p.dx, p.dy, -p.dy)
 }
 
-func max4(a, b, c, d x) x {
+func max4(a, b, c, d x) (max x) {
+	max=a
 	switch {
-	case a >= b && a >= c && a >= d:
-		return a
-	case b >= c && b >= d:
-		return b
-	case c >= d:
-		return c
-	default:
+	case b>max:
+		max=b
+		fallthrough
+	case c>max:
+		max=c
+		fallthrough
+	case d>max:
 		return d
 	}
+	return max
 }
 
 // a Pattern Scaled

@@ -9,7 +9,7 @@ import (
 	"image/png"  // register de/encoding
 	"os"
 	"testing"
-	"fmt"
+	//"fmt"
 )
 
 func TestImageSquare(t *testing.T) {
@@ -28,15 +28,15 @@ func TestImageBox(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
+
+	png.Encode(file, Plan9PalettedImage{NewDepiction(NewBox(199,1,Filling{unitY}), 400, 400, color.Opaque, color.Transparent)})
+}
+
 	//ds := NewDepiction(NewBox(38,2,Filling{unitY}), 400, 400, color.Opaque, color.Transparent)
 
 	//m := &composable{image.NewPaletted(image.Rect(0, -150, 800, 150), palette.WebSafe)}
 	//m.draw(WebSafePalettedImage{ds})
 	//jpeg.Encode(file, m, nil)
-	pd:=NewDepiction(NewBox(199,1,Filling{unitY}), 400, 400, color.Opaque, color.Transparent)
-	fmt.Println(pd)
-	png.Encode(file, Plan9PalettedImage{pd})
-}
 
 
 // composable is a draw.Image that comes with helper functions to simplify Draw function.

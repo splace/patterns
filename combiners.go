@@ -16,7 +16,7 @@ func (c Composite) at(px, py x) (total y) {
 	for _, p := range c {
 		if lp, ok := p.(LimitedPattern); ok {
 			m := lp.MaxX()
-			if px > m || py > m || px < -m || py < -m {
+			if px >= m || py >= m || px < -m || py < -m {
 				continue
 			}
 		}
