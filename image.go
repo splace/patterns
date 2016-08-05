@@ -16,7 +16,7 @@ type Depiction struct {
 
 // makes a Depiction of a LimitedPattern, scaled to pxMaxx by pxMaxy pixels and sets the colours for above and below the value.
 func NewDepiction(s LimitedPattern, pxMaxX, pxMaxY int, in,out color.Color) Depiction {
-	return Depiction{s, image.Rect(0, -pxMaxY/2, pxMaxX, pxMaxY/2), int(int64(pxMaxX) * int64(unitX) / int64(s.MaxX())), in,out}
+	return Depiction{s, image.Rect(-pxMaxX/2, -pxMaxY/2, pxMaxX/2, pxMaxY/2), int(int64(pxMaxX) * int64(unitX) / int64(s.MaxX())/4+1), in,out}
 }
 
 func (i Depiction) Bounds() image.Rectangle {
@@ -65,3 +65,5 @@ type WebSafePalettedImage struct {
 }
 
 func (i WebSafePalettedImage) ColorModel() color.Model { return color.Palette(palette.WebSafe) }
+
+

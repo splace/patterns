@@ -52,7 +52,7 @@ type Square struct {
 }
 
 func (p Square) at(px, py x) (v y) {
-	if py <= p.Extent && py >= -p.Extent && px >= -p.Extent && px <= p.Extent {
+	if py < p.Extent && py >= -p.Extent && px >= -p.Extent && px < p.Extent {
 		return p.Fill
 	}
 	return
