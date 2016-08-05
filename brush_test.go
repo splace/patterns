@@ -7,9 +7,10 @@ import (
 //"testing"
 )
 
-func ExampleBrush() {
+func ExampleBrushLine() {
 	b := Brush{Width: 2, In: unitY, Relative: true}
-	PrintGraph(b.Line(0, 0, 3, 3), -10, 10, -10, 10, 1)
+	p:=b.Line(0, 0, 10, 10)
+	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X

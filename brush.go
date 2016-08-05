@@ -16,5 +16,5 @@ type Brush struct {
 
 func (p Brush) Line(px1, py1, px2, py2 x) LimitedPattern {
 	length := x(math.Sqrt(float64((px2-px1)*(px2-px1) + (py2-py1)*(py2-py1))))
-	return Translated{Square{px2 - px1, Filling{p.In}}, length, p.Width}
+	return Translated{Shrunk{Square{Filling{p.In}}, 1/float32(px2 - px1)}, length, p.Width}
 }

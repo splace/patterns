@@ -7,8 +7,20 @@ import (
 //"testing"
 )
 
+
 func ExampleShifted() {
-	PrintGraph(Shifted{Square{3, Filling{unitY}}, 2, 1}, -5, 5, -5, 5, 1)
+	p:=Translated{Shrunk{Square{Filling{unitY}}, .25}, 2, 1}
+	PrintGraph(p,-p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin,1)
+	/* Output:
+	   0.00%                                  X
+	   0.00%                                  X
+	   0.00%                                  X
+	*/
+}
+
+func ExampleZoomed() {
+	p:=Shrunk{Square{Filling{unitY}}, .25}
+	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
@@ -17,7 +29,8 @@ func ExampleShifted() {
 }
 
 func ExampleScaled() {
-	PrintGraph(Scaled{Square{3, Filling{unitY}}, .5, 1}, -5, 5, -5, 5, 1)
+	p:=Limiter{Reduced{Shrunk{Square{Filling{unitY}}, .25}, 2, 1},8}
+	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
@@ -26,7 +39,8 @@ func ExampleScaled() {
 }
 
 func ExampleRotated() {
-	PrintGraph(Rotated{Square{2, Filling{unitY}}, .707, .707}, -5, 5, -5, 5, 1)
+	p:=Limiter{Rotated{Shrunk{Square{Filling{unitY}}, .5}, .707, .707},3}
+	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin,1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
@@ -35,8 +49,8 @@ func ExampleRotated() {
 }
 
 func ExampleTranslated() {
-	p := Translated{Square{2, Filling{unitY}}, 2, 0}
-	PrintGraph(p, -p.MaxX(), p.MaxX(), -p.MaxX(), p.MaxX(), 1)
+	p := Translated{Shrunk{Square{Filling{unitY}}, .5}, 2, 0}
+	PrintGraph(p,-p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin,1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
@@ -45,7 +59,7 @@ func ExampleTranslated() {
 }
 
 func ExampleInverted() {
-	p := LimitedInverted{Square{2, Filling{unitY}}}
+	p := LimitedInverted{Shrunk{Square{Filling{unitY}}, .5}}
 	PrintGraph(p, -p.MaxX()-2, p.MaxX()+2, -p.MaxX()-2, p.MaxX()+2, 1)
 	/* Output:
 	   0.00%                                  X

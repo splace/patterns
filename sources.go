@@ -31,37 +31,35 @@ func (p Constant) at(px, py x) y {
 }
 
 type Disc struct {
-	Radius x
 	Filling
 }
 
 func (p Disc) at(px, py x) (v y) {
-	if px*px+py*py <= p.Radius*p.Radius {
+	if px*px+py*py <= 1 {
 		return p.Fill
 	}
 	return
 }
 
 func (p Disc) MaxX() x {
-	return p.Radius
+	return 1
 }
 
 type Square struct {
-	Extent x
 	Filling
 }
 
 func (p Square) at(px, py x) (v y) {
-	if py < p.Extent && py >= -p.Extent && px >= -p.Extent && px < p.Extent {
+	if py < 1 && py >= -1 && px >= -1 && px < 1 {
 		return p.Fill
 	}
 	return
 }
 
 func (p Square) MaxX() x {
-	return p.Extent
+	return 1
 }
 
 func NewBox(Extent, Width x, f Filling) LimitedPattern {
-	return Limiter{Composite{Square{Extent - Width, f}, Inverted{Square{Extent + Width, f}}}, Extent + Width}
+	return Limiter{Inverted{Composite{Shrunk{Square{f}, 1/float32(Extent - Width)}, Inverted{Shrunk{Square{f}, 1/float32(Extent + Width)}}}}, Extent + Width}
 }

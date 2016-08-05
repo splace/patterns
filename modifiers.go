@@ -34,28 +34,42 @@ func (p Translated) MaxX() x {
 }
 
 func max4(a, b, c, d x) (max x) {
-	max=a
+	max = a
 	switch {
-	case b>max:
-		max=b
+	case b > max:
+		max = b
 		fallthrough
-	case c>max:
-		max=c
+	case c > max:
+		max = c
 		fallthrough
-	case d>max:
+	case d > max:
 		return d
 	}
 	return max
 }
 
 // a Pattern Scaled
-type Scaled struct {
+type Reduced struct {
 	p      Pattern
 	sx, sy float32
 }
 
-func (p Scaled) at(px, py x) y {
+func (p Reduced) at(px, py x) y {
 	return p.p.at(x(float32(px)*p.sx), x(float32(py)*p.sy))
+}
+
+// a Pattern Zoomed
+type Shrunk struct {
+	p  LimitedPattern
+	zx float32
+}
+
+func (p Shrunk) at(px, py x) y {
+	return p.p.at(x(float32(px)*p.zx), x(float32(py)*p.zx))
+}
+
+func (p Shrunk) MaxX() x {
+	return x(float32(p.p.MaxX()) / p.zx)
 }
 
 // a Pattern Rotated
@@ -99,13 +113,6 @@ func (p LimitedInverted) at(px, py x) (v y) {
 type Limiter struct {
 	Pattern
 	Extent x
-}
-
-func (p Limiter) at(px, py x) (v y) {
-	if p.Pattern.at(px, py) == unitY {
-		return
-	}
-	return unitY
 }
 
 func (p Limiter) MaxX() x {

@@ -7,18 +7,23 @@ import (
 	"testing"
 )
 
+const margin=4
+
 func PrintGraph(p Pattern, startx, endx, starty, endy, step x) {
-	row := make([]byte, int((endx-startx)/step))
-	for py := starty; py < endy; py += step {
-		for px := startx; px < endx; px += step {
+	//fmt.Printf("%#v\n",p)
+	fmt.Println("Graph")
+	row := make([]byte, int((endx-startx)/step)+1)
+	for py := starty; py <= endy; py += step {
+		for px := startx; px <= endx; px += step {
 			row[int((px-startx)/step)] = p.at(px, py).String()[0]
 		}
-		fmt.Println(py, string(row))
+		fmt.Printf("% 9d\t%s\n",py, string(row))
 	}
 }
 
 func ExampleConstant() {
-	PrintGraph(Constant{Filling{unitY}}, -3, 3, -3, 3, 1)
+	p:=Limiter{Constant{Filling{unitY}},5}
+	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
@@ -27,7 +32,8 @@ func ExampleConstant() {
 }
 
 func ExampleDisc() {
-	PrintGraph(Disc{3, Filling{unitY}}, -5, 5, -5, 5, 1)
+	p:=Disc{Filling{unitY}}
+	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
@@ -36,7 +42,8 @@ func ExampleDisc() {
 }
 
 func ExampleSquare() {
-	PrintGraph(Square{3, Filling{unitY}}, -5, 5, -5, 5, 1)
+	p:=Square{Filling{unitY}}
+	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
@@ -45,8 +52,8 @@ func ExampleSquare() {
 }
 
 func ExampleBox() {
-	p := NewBox(5, 2, Filling{unitY})
-	PrintGraph(p, -p.MaxX()-2, p.MaxX()+2, -p.MaxX()-2, p.MaxX()+2, 1)
+	p := NewBox(5, 1, Filling{unitY})
+	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
 	/* Output:
 	   0.00%                                  X
 	   0.00%                                  X
@@ -65,3 +72,7 @@ func BenchmarkPatternsSineSegmented(b *testing.B) {
 	b.StartTimer()
 
 }
+
+
+
+
