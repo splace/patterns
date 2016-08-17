@@ -8,11 +8,19 @@ import (
 )
 
 func ExampleComposite() {
-	p := Limiter{NewComposite(Shrunk{Disc{Filling{unitY}}, .2}, Shrunk{Square{Filling{unitY}}, .25}),5}
-	PrintGraph(p,-p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
+	Output(Limiter{NewComposite(Shrunk{Disc{Filling{unitY}}, .25}),unitX*4})
 	/* Output:
-	   0.00%                                  X
-	   0.00%                                  X
-	   0.00%                                  X
+Graph
+       -5	-----------
+       -4	-----X-----
+       -3	---XXXXX---
+       -2	--XXXXXXX--
+       -1	--XXXXXXX--
+        0	-XXXXXXXX--
+        1	--XXXXXXX--
+        2	--XXXXXXX--
+        3	---XXXXX---
+        4	-----------
+        5	-----------
 	*/
 }

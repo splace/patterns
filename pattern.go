@@ -9,11 +9,11 @@ type Pattern interface {
 	at(x, x) y
 }
 
-// the x represents a value from -infinity to +infinity, but is actually limited by its current underlying representation.
+// the x represents a value from -infinity to +infinity, but is actually limited by its type.
 type x int64
 
 //const xBits = 64
-const unitX = 1
+const unitX = 1000
 
 // string representation of an x scaled to unitX
 func (p x) String() string {

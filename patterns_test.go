@@ -7,7 +7,11 @@ import (
 	"testing"
 )
 
-const margin=4
+const margin=unitX
+
+func Output(p LimitedPattern){
+	PrintGraph(p,-p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, unitX)
+}
 
 func PrintGraph(p Pattern, startx, endx, starty, endy, step x) {
 	//fmt.Printf("%#v\n",p)
@@ -17,47 +21,73 @@ func PrintGraph(p Pattern, startx, endx, starty, endy, step x) {
 		for px := startx; px <= endx; px += step {
 			row[int((px-startx)/step)] = p.at(px, py).String()[0]
 		}
-		fmt.Printf("% 9d\t%s\n",py, string(row))
+		fmt.Printf("% 9d\t%s\n",py/unitX, string(row))
 	}
 }
 
 func ExampleConstant() {
-	p:=Limiter{Constant{Filling{unitY}},5}
-	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
+	Output(Limiter{Constant{Filling{unitY}},5*unitX})
 	/* Output:
-	   0.00%                                  X
-	   0.00%                                  X
-	   0.00%                                  X
+Graph
+       -6	XXXXXXXXXXXXX
+       -5	XXXXXXXXXXXXX
+       -4	XXXXXXXXXXXXX
+       -3	XXXXXXXXXXXXX
+       -2	XXXXXXXXXXXXX
+       -1	XXXXXXXXXXXXX
+        0	XXXXXXXXXXXXX
+        1	XXXXXXXXXXXXX
+        2	XXXXXXXXXXXXX
+        3	XXXXXXXXXXXXX
+        4	XXXXXXXXXXXXX
+        5	XXXXXXXXXXXXX
+        6	XXXXXXXXXXXXX
 	*/
 }
 
 func ExampleDisc() {
-	p:=Disc{Filling{unitY}}
-	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
+	Output(Disc{Filling{unitY}})
 	/* Output:
-	   0.00%                                  X
-	   0.00%                                  X
-	   0.00%                                  X
+Graph
+       -2	-----
+       -1	--X--
+        0	-XXX-
+        1	--X--
+        2	-----
 	*/
 }
 
 func ExampleSquare() {
-	p:=Square{Filling{unitY}}
-	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
+	Output(Square{Filling{unitY}})
 	/* Output:
-	   0.00%                                  X
-	   0.00%                                  X
-	   0.00%                                  X
+Graph
+       -2	-----
+       -1	-XX--
+        0	-XX--
+        1	-----
+        2	-----
 	*/
 }
 
 func ExampleBox() {
-	p := NewBox(5, 1, Filling{unitY})
-	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
+	Output(NewBox(5, 2, Filling{unitY}))
 	/* Output:
-	   0.00%                                  X
-	   0.00%                                  X
-	   0.00%                                  X
+Graph
+       -7	---------------
+       -6	-XXXXXXXXXXXX--
+       -5	-XXXXXXXXXXXX--
+       -4	-XX--------XX--
+       -3	-XX--------XX--
+       -2	-XX--------XX--
+       -1	-XX--------XX--
+        0	-XX--------XX--
+        1	-XX--------XX--
+        2	-XX--------XX--
+        3	-XX--------XX--
+        4	-XXXXXXXXXXXX--
+        5	-XXXXXXXXXXXX--
+        6	---------------
+        7	---------------
 	*/
 }
 
@@ -72,7 +102,5 @@ func BenchmarkPatternsSineSegmented(b *testing.B) {
 	b.StartTimer()
 
 }
-
-
 
 

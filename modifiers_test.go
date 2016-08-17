@@ -9,61 +9,111 @@ import (
 
 
 func ExampleShifted() {
-	p:=Translated{Shrunk{Square{Filling{unitY}}, .25}, 2, 1}
-	PrintGraph(p,-p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin,1)
+	Output(Translated{Shrunk{Square{Filling{unitY}}, .5}, 2*unitX, 2*unitX})
 	/* Output:
-	   0.00%                                  X
-	   0.00%                                  X
-	   0.00%                                  X
-	*/
-}
-
-func ExampleZoomed() {
-	p:=Shrunk{Square{Filling{unitY}}, .25}
-	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
-	/* Output:
-	   0.00%                                  X
-	   0.00%                                  X
-	   0.00%                                  X
-	*/
-}
-
-func ExampleScaled() {
-	p:=Limiter{Reduced{Shrunk{Square{Filling{unitY}}, .25}, 2, 1},8}
-	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, 1)
-	/* Output:
-	   0.00%                                  X
-	   0.00%                                  X
-	   0.00%                                  X
-	*/
-}
-
-func ExampleRotated() {
-	p:=Limiter{Rotated{Shrunk{Square{Filling{unitY}}, .5}, .707, .707},3}
-	PrintGraph(p, -p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin,1)
-	/* Output:
-	   0.00%                                  X
-	   0.00%                                  X
-	   0.00%                                  X
+Graph
+       -5	-----------
+       -4	-----------
+       -3	-----------
+       -2	-----------
+       -1	-----------
+        0	-----XXXX--
+        1	-----XXXX--
+        2	-----XXXX--
+        3	-----XXXX--
+        4	-----------
+        5	-----------
 	*/
 }
 
 func ExampleTranslated() {
-	p := Translated{Shrunk{Square{Filling{unitY}}, .5}, 2, 0}
-	PrintGraph(p,-p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin,1)
+	Output(Translated{Shrunk{Square{Filling{unitY}}, .5}, 2*unitX, 0})
 	/* Output:
-	   0.00%                                  X
-	   0.00%                                  X
-	   0.00%                                  X
+Graph
+       -5	-----------
+       -4	-----------
+       -3	-----------
+       -2	-----XXXX--
+       -1	-----XXXX--
+        0	-----XXXX--
+        1	-----XXXX--
+        2	-----------
+        3	-----------
+        4	-----------
+        5	-----------
+	*/
+}
+
+func ExampleZoomed() {
+	Output(Shrunk{Square{Filling{unitY}}, .25})
+	/* Output:
+Graph
+       -5	-----------
+       -4	-XXXXXXXX--
+       -3	-XXXXXXXX--
+       -2	-XXXXXXXX--
+       -1	-XXXXXXXX--
+        0	-XXXXXXXX--
+        1	-XXXXXXXX--
+        2	-XXXXXXXX--
+        3	-XXXXXXXX--
+        4	-----------
+        5	-----------
+	*/
+}
+
+func ExampleScaled() {
+	Output(Limiter{Reduced{Square{Filling{unitY}}, .125, 1},8*unitX})
+	/* Output:
+Graph
+       -9	-------------------
+       -8	-------------------
+       -7	-------------------
+       -6	-------------------
+       -5	-------------------
+       -4	-------------------
+       -3	-------------------
+       -2	-------------------
+       -1	-XXXXXXXXXXXXXXXX--
+        0	-XXXXXXXXXXXXXXXX--
+        1	-------------------
+        2	-------------------
+        3	-------------------
+        4	-------------------
+        5	-------------------
+        6	-------------------
+        7	-------------------
+        8	-------------------
+        9	-------------------
+	*/
+}
+
+func ExampleRotated() {
+	Output(Limiter{Rotated{Shrunk{Square{Filling{unitY}}, .5}, .707, .707},3*unitX})
+	/* Output:
+Graph
+       -4	---------
+       -3	---------
+       -2	----X----
+       -1	---XXX---
+        0	--XXXXX--
+        1	---XXX---
+        2	----X----
+        3	---------
+        4	---------
 	*/
 }
 
 func ExampleInverted() {
-	p := LimitedInverted{Shrunk{Square{Filling{unitY}}, .5}}
-	PrintGraph(p, -p.MaxX()-2, p.MaxX()+2, -p.MaxX()-2, p.MaxX()+2, 1)
+	Output(LimitedInverted{Shrunk{Square{Filling{unitY}}, .5}})
 	/* Output:
-	   0.00%                                  X
-	   0.00%                                  X
-	   0.00%                                  X
+Graph
+       -3	XXXXXXX
+       -2	X----XX
+       -1	X----XX
+        0	X----XX
+        1	X----XX
+        2	XXXXXXX
+        3	XXXXXXX
 	*/
 }

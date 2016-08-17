@@ -9,7 +9,7 @@ func init() {
 	gob.Register(Constant{})
 }
 
-type source interface {
+type filler interface {
 	fill() y
 }
 
@@ -34,32 +34,38 @@ type Disc struct {
 	Filling
 }
 
+const unitX2 = int64(unitX)*int64(unitX)
+
 func (p Disc) at(px, py x) (v y) {
-	if px*px+py*py <= 1 {
+	x2:=int64(px)
+	y2:=int64(py)
+	if x2*x2+y2*y2 <= unitX2 {
 		return p.Fill
 	}
 	return
 }
 
 func (p Disc) MaxX() x {
-	return 1
+	return unitX
 }
 
 type Square struct {
 	Filling
 }
 
+const unitXm = -unitX
+
 func (p Square) at(px, py x) (v y) {
-	if py < 1 && py >= -1 && px >= -1 && px < 1 {
+	if py < unitX && py >= unitXm && px >= unitXm && px < unitX {
 		return p.Fill
 	}
 	return
 }
 
 func (p Square) MaxX() x {
-	return 1
+	return unitX
 }
 
-func NewBox(Extent, Width x, f Filling) LimitedPattern {
-	return Limiter{Inverted{Composite{Shrunk{Square{f}, 1/float32(Extent - Width)}, Inverted{Shrunk{Square{f}, 1/float32(Extent + Width)}}}}, Extent + Width}
+func NewBox(Extent, Width float32, f Filling) LimitedPattern {
+	return Limiter{Inverted{Composite{Shrunk{Square{f}, 1/(Extent - Width/2)}, Inverted{Shrunk{Square{f}, 1/(Extent + Width/2)}}}}, X(Extent + Width/2)}
 }
