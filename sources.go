@@ -67,5 +67,7 @@ func (p Square) MaxX() x {
 }
 
 func NewBox(Extent, Width float32, f Filling) LimitedPattern {
-	return Limiter{Inverted{Composite{Shrunk{Square{f}, 1/(Extent - Width/2)}, Inverted{Shrunk{Square{f}, 1/(Extent + Width/2)}}}}, X(Extent + Width/2)}
+	return Limiter{UnlimitedInverted{Composite{Shrunk{Square{f}, 1/(Extent - Width/2)}, UnlimitedInverted{Shrunk{Square{f}, 1/(Extent + Width/2)}}}}, X(Extent + Width)}
 }
+
+

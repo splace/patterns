@@ -105,7 +105,7 @@ Graph
 }
 
 func ExampleInverted() {
-	Output(LimitedInverted{Shrunk{Square{Filling{unitY}}, .5}})
+	Output(Inverted{Shrunk{Square{Filling{unitY}}, .5}})
 	/* Output:
 Graph
        -3	XXXXXXX
