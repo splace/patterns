@@ -8,19 +8,24 @@ import (
 )
 
 func ExampleComposite() {
-	Output(Limiter{NewComposite(Shrunk{Disc{Filling{unitY}}, .25}),unitX*4})
+	Output(NewBox(5, 2, Filling{unitY}))
 	/* Output:
 Graph
-       -5	-----------
-       -4	-----X-----
-       -3	---XXXXX---
-       -2	--XXXXXXX--
-       -1	--XXXXXXX--
-        0	-XXXXXXXX--
-        1	--XXXXXXX--
-        2	--XXXXXXX--
-        3	---XXXXX---
-        4	-----------
-        5	-----------
+       -7	---------------
+       -6	-XXXXXXXXXXXX--
+       -5	-XXXXXXXXXXXX--
+       -4	-XX--------XX--
+       -3	-XX--------XX--
+       -2	-XX--------XX--
+       -1	-XX--------XX--
+        0	-XX--------XX--
+        1	-XX--------XX--
+        2	-XX--------XX--
+        3	-XX--------XX--
+        4	-XXXXXXXXXXXX--
+        5	-XXXXXXXXXXXX--
+        6	---------------
+        7	---------------
 	*/
 }
+

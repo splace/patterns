@@ -9,7 +9,6 @@ func init() {
 }
 
 // Pattern thats composed from layered Patterns
-// without transparency this is that same as Stack,
 type Composite []Pattern
 
 func (c Composite) at(px, py x) (total y) {
@@ -32,3 +31,5 @@ func (c Composite) at(px, py x) (total y) {
 func NewComposite(ps ...Pattern) Composite {
 	return Composite(ps)
 }
+
+
