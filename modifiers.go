@@ -9,15 +9,6 @@ func init() {
 	gob.Register(Translated{})
 }
 
-// a Pattern shifted
-type UnlimitedTranslated struct {
-	Pattern
-	dx, dy x
-}
-
-func (p UnlimitedTranslated) at(px, py x) y {
-	return p.Pattern.at(px-p.dx, py-p.dy)
-}
 
 // a LimitedPattern translated
 type Translated struct {
@@ -33,6 +24,16 @@ func (p Translated) MaxX() x {
 	return p.LimitedPattern.MaxX() + max4(p.dx, -p.dx, p.dy, -p.dy)
 }
 
+// a Pattern shifted
+type UnlimitedTranslated struct {
+	Pattern
+	dx, dy x
+}
+
+func (p UnlimitedTranslated) at(px, py x) y {
+	return p.Pattern.at(px-p.dx, py-p.dy)
+}
+
 func max4(a, b, c, d x) (max x) {
 	max = a
 	switch {
@@ -45,7 +46,7 @@ func max4(a, b, c, d x) (max x) {
 	case d > max:
 		return d
 	}
-	return max
+	return
 }
 
 // a LimitedPattern Scaled
@@ -76,16 +77,6 @@ func (p UnlimitedReduced) at(px, py x) y {
 	return p.Pattern.at(x(float32(px)*p.sx), x(float32(py)*p.sy))
 }
 
-// a Pattern Zoomed
-type UnlimitedShrunk struct {
-	Pattern
-	zx float32
-}
-
-func (p UnlimitedShrunk) at(px, py x) y {
-	return p.Pattern.at(x(float32(px)*p.zx), x(float32(py)*p.zx))
-}
-
 // a LimitedPattern Zoomed
 type Shrunk struct {
 	LimitedPattern
@@ -100,14 +91,14 @@ func (p Shrunk) MaxX() x {
 	return x(float32(p.LimitedPattern.MaxX()) / p.zx)
 }
 
-// a Pattern Rotated
-type UnlimitedRotated struct {
+// a Pattern Zoomed
+type UnlimitedShrunk struct {
 	Pattern
-	sinA, cosA float64
+	zx float32
 }
 
-func (p UnlimitedRotated) at(px, py x) y {
-	return p.Pattern.at(x(float64(px)*p.cosA-float64(py)*p.sinA), x(float64(px)*p.sinA+float64(py)*p.cosA))
+func (p UnlimitedShrunk) at(px, py x) y {
+	return p.Pattern.at(x(float32(px)*p.zx), x(float32(py)*p.zx))
 }
 
 // a LimitedPattern Rotated
@@ -120,12 +111,33 @@ func (p Rotated) at(px, py x) y {
 	return p.LimitedPattern.at(x(float64(px)*p.cosA-float64(py)*p.sinA), x(float64(px)*p.sinA+float64(py)*p.cosA))
 }
 
+func max4float64(a, b, c, d float64) (max float64) {
+	max = a
+	switch {
+	case b > max:
+		max = b
+		fallthrough
+	case c > max:
+		max = c
+		fallthrough
+	case d > max:
+		return d
+	}
+	return
+}
 
 func (p Rotated) MaxX() x {
-	if p.sinA>p.cosA{
-		return x(float64(p.LimitedPattern.MaxX())/p.cosA)
-	}
-	return x(float64(p.LimitedPattern.MaxX())/p.sinA)
+	return x(float64(p.LimitedPattern.MaxX())/max4float64(p.sinA,p.cosA,-p.sinA,-p.cosA))
+}
+
+// a Pattern Rotated
+type UnlimitedRotated struct {
+	Pattern
+	sinA, cosA float64
+}
+
+func (p UnlimitedRotated) at(px, py x) y {
+	return p.Pattern.at(x(float64(px)*p.cosA-float64(py)*p.sinA), x(float64(px)*p.sinA+float64(py)*p.cosA))
 }
 
 
@@ -137,18 +149,6 @@ func NewRotated(p Pattern, a float64) Pattern {
 }
 
 
-// a Pattern reversed
-type UnlimitedInverted struct {
-	Pattern
-}
-
-func (p UnlimitedInverted) at(px, py x) (v y) {
-	if p.Pattern.at(px, py) == unitY {
-		return
-	}
-	return unitY
-}
-
 // a LimitedPattern reversed
 type Inverted struct {
 	LimitedPattern
@@ -156,6 +156,18 @@ type Inverted struct {
 
 func (p Inverted) at(px, py x) (v y) {
 	if p.LimitedPattern.at(px, py) == unitY {
+		return
+	}
+	return unitY
+}
+
+// a Pattern reversed
+type UnlimitedInverted struct {
+	Pattern
+}
+
+func (p UnlimitedInverted) at(px, py x) (v y) {
+	if p.Pattern.at(px, py) == unitY {
 		return
 	}
 	return unitY

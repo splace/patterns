@@ -14,7 +14,6 @@ func Output(p LimitedPattern){
 }
 
 func PrintGraph(p Pattern, startx, endx, starty, endy, step x) {
-	//fmt.Printf("%#v\n",p)
 	fmt.Println("Graph")
 	row := make([]byte, int((endx-startx)/step)+1)
 	for py := starty; py <= endy; py += step {
