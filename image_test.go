@@ -109,4 +109,14 @@ func (i *composable) drawOverOffset(isrc image.Image, pt image.Point) {
 PASS
 ok  	_/home/simon/Dropbox/github/working/patterns	0.219s
 Thu 18 Aug 01:29:46 BST 2016 */
+/*  Hal3 Thu 18 Aug 01:32:01 BST 2016 go version go1.6.2 linux/amd64
+=== RUN   TestImageSquare
+--- PASS: TestImageSquare (0.00s)
+=== RUN   TestImageBox
+--- PASS: TestImageBox (0.08s)
+=== RUN   TestImageLines
+--- PASS: TestImageLines (0.13s)
+PASS
+ok  	_/home/simon/Dropbox/github/working/patterns	0.231s
+Thu 18 Aug 01:32:03 BST 2016 */
 
