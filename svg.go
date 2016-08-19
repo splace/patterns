@@ -25,7 +25,7 @@ func Polygon(p Brush, cs string) (Pattern, error) {
 	coordsBuf := make([]float32, 10)
 	c, err := fReader.ReadFloat32s(coordsBuf)
 	if err != io.EOF {
-		return nil,errParsingReader{err,fReader}
+		return nil,errParsingReader{err,reader}
 	}
 	if c%2 != 0 {
 		return nil,errParsingReader{errors.New("Coordinate count."),reader}
@@ -176,6 +176,9 @@ func (this *float32ListReader) ReadFloat32s(fs []float32) (c int, err error) {
 				this.fractionFound = true
 				this.charFound = false
 			case ',': // separators
+				if this.inSeparator {
+					return c, errParsingReader{errors.New("Separator without value."),this.Reader}
+				}
 				this.inSeparator = true
 				if this.wholeFound || this.charFound {
 					setVal()
@@ -189,10 +192,6 @@ func (this *float32ListReader) ReadFloat32s(fs []float32) (c int, err error) {
 					this.negExponent = false
 					if c >= len(fs) {
 						return c, err
-					}
-				} else {
-					if !this.inSeparator {
-						return c, errParsingReader{errors.New("Separator without value."),this.Reader}
 					}
 				}
 				this.charFound = false
