@@ -9,7 +9,8 @@ import (
 
 func ExampleSVGPolygon() {
 	b := Brush{Width: 2*unitX, In: unitY, Relative: true}
-	p,_:=Polygon(b,"0,0 10,10")
+	p,err:=Polygon(b,"0,0 10,-10")
+	if err!=nil{panic(err)}
 	Output(Limiter{p,10})
 	/* Output:
 Graph

@@ -8,23 +8,34 @@ import "errors"
 
 const bufLen = 1
 
+
+type errParse struct {
+	error
+	Source      io.Reader
+}
+
+func (e errParse) Parsing() io.Reader {
+	return e.Source
+}
+
 var ErrPolyFormat = errors.New("polygon format, odd coordinate count.")
 
 func Polygon(p Brush, cs string) (Pattern, error) {
 	sReader := strings.NewReader(cs)
-	fReader := float32ListReader{reader: sReader, buf: make([]byte, bufLen)}
+	fReader := float32ListReader{Reader: sReader, buf: make([]byte, bufLen)}
 	coordsBuf := make([]float32, 10)
-	c, err := fReader.Read(coordsBuf)
-	if c%2 == 0 { // even
-		coords := make([][2]x, c/2)
-		for n := 0; n < c; n += 2 {
-			coords[n/2]=[2]x{X(coordsBuf[n]),X(coordsBuf[n+1])}
-		}
-		return p.Polygon(coords), nil
-	} else {
-		err = ErrPolyFormat
+	c, err := fReader.ReadFloat32s(coordsBuf)
+	if err != nil {
+		return nil,errParse{err,fReader}
 	}
-	return nil, err
+	if c%2 != 0 {
+		return nil,errParse{errors.New("Coordinate count."),fReader}
+	}
+	coords := make([][2]x, c/2)
+	for n := 0; n < c; n += 2 {
+		coords[n/2]=[2]x{X(coordsBuf[n]),X(coordsBuf[n+1])}
+	}
+	return p.Polygon(coords), nil
 }
 
 var ErrNumParse = errors.New("Can't parse as number.")
@@ -32,7 +43,7 @@ var ErrMissingItem = errors.New("Separator without value.")
 var ErrUnknownChar = errors.New("Uninterpretable character found.")
 
 type float32ListReader struct {
-	reader                io.Reader
+	io.Reader
 	charFound             bool  // something found in current section
 	inSeparator           bool  // currently parsing separator
 	neg                   bool  // nagative number
@@ -48,7 +59,7 @@ type float32ListReader struct {
 }
 
 // reads text into a float array
-func (this *float32ListReader) Read(fs []float32) (c int, err error) {
+func (this *float32ListReader) ReadFloat32s(fs []float32) (c int, err error) {
 	var power10 func(uint) float32
 	power10 = func(n uint) float32 {
 		switch n {
@@ -108,7 +119,7 @@ func (this *float32ListReader) Read(fs []float32) (c int, err error) {
 	var b []byte
 	for err == nil {
 		if this.unBuf == nil || len(this.unBuf) == 0 { // use any unread first
-			n, err = this.reader.Read(this.buf)
+			n, err = this.Reader.Read(this.buf)
 			b = this.buf
 		} else {
 			n = len(this.unBuf)
@@ -253,5 +264,6 @@ func (this *float32ListReader) Read(fs []float32) (c int, err error) {
 	}
 	return c, err
 }
+
 
 
