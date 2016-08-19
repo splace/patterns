@@ -18,7 +18,6 @@ func (e errParse) Parsing() io.Reader {
 	return e.Source
 }
 
-var ErrPolyFormat = errors.New("polygon format, odd coordinate count.")
 
 func Polygon(p Brush, cs string) (Pattern, error) {
 	sReader := strings.NewReader(cs)
@@ -38,13 +37,9 @@ func Polygon(p Brush, cs string) (Pattern, error) {
 	return p.Polygon(coords), nil
 }
 
-var ErrNumParse = errors.New("Can't parse as number.")
-var ErrMissingItem = errors.New("Separator without value.")
-var ErrUnknownChar = errors.New("Uninterpretable character found.")
-
 type float32ListReader struct {
 	io.Reader
-	charFound             bool  // something found in current section
+	charFound             bool  // something has been found in current section
 	inSeparator           bool  // currently parsing separator
 	neg                   bool  // nagative number
 	partial               uint  // whole number section, read so far
@@ -55,7 +50,7 @@ type float32ListReader struct {
 	partialExponent       uint  // exponent section so far read
 	negExponent           bool
 	buf                   []byte
-	unBuf                 []byte // slice into buf, pointeing to the unconsumed bytes remaining after last read stopped
+	unBuf                 []byte // slice into buf, pointing to the unconsumed bytes remaining after last read stopped
 }
 
 // reads text into a float array
@@ -169,7 +164,7 @@ func (this *float32ListReader) ReadFloat32s(fs []float32) (c int, err error) {
 				this.charFound = false
 			case 'e', 'E':
 				if !this.charFound {
-					return c, ErrNumParse
+					return c, errParse{errors.New("Can't parse as number."),this.Reader}
 				} // cant have e wihout something before
 				this.wholeFound = true
 				this.fractionFound = true
@@ -191,7 +186,7 @@ func (this *float32ListReader) ReadFloat32s(fs []float32) (c int, err error) {
 					}
 				} else {
 					if !this.inSeparator {
-						return c, ErrMissingItem
+						return c, errParse{errors.New("Separator without value."),this.Reader}
 					}
 				}
 				this.charFound = false
@@ -225,15 +220,18 @@ func (this *float32ListReader) ReadFloat32s(fs []float32) (c int, err error) {
 						}
 					}
 				} else {
-					return c, ErrNumParse
+					return c, errParse{errors.New("Can't parse as number."),this.Reader}
+
 				}
 				if this.wholeFound && !this.fractionFound {
-					return c, ErrNumParse
+					return c, errParse{errors.New("Can't parse as number."),this.Reader}
+
 				}
 			case '+':
 				this.inSeparator = false
 				if this.charFound || this.wholeFound && !this.fractionFound {
-					return c, ErrNumParse
+					return c, errParse{errors.New("Can't parse as number."),this.Reader}
+
 				}
 
 			default:
@@ -254,7 +252,7 @@ func (this *float32ListReader) ReadFloat32s(fs []float32) (c int, err error) {
 						return c, err
 					}
 				}
-				return c, ErrUnknownChar
+				return c, errParse{errors.New("Uninterpretable character found."),this.Reader}
 			}
 		}
 		this.unBuf = this.unBuf[0:0]
@@ -264,6 +262,7 @@ func (this *float32ListReader) ReadFloat32s(fs []float32) (c int, err error) {
 	}
 	return c, err
 }
+
 
 
 
