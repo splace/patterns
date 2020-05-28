@@ -60,7 +60,7 @@ func quadroupleDivision(s,c1,c2,c3,e x) (func (bezierResolution) x ){
 		c2c3fn:= linearDivision(c2,c3)
 		c3efn:= linearDivision(c3,e)
 		return func(t bezierResolution)x{
-			return tripleDivision(sc1fn(t),c1c2fn(t),c2c3fn(t),c2efn(t))(t)
+			return tripleDivision(sc1fn(t),c1c2fn(t),c2c3fn(t),c3efn(t))(t)
 		}
 	}
 

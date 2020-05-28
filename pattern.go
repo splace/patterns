@@ -15,9 +15,30 @@ type x int64
 //const xBits = 64
 const unitX = 1000
 
-// string representation of an x scaled to unitX
+//  x scaled to unitX
+//func (p x) String() string {
+//	return fmt.Sprintf("%9.2f", float32(p)/float32(unitX))
+//}
+
 func (p x) String() string {
-	return fmt.Sprintf("%9.2f", float32(p)/float32(unitX))
+	return fmt.Sprint(float32(p)/float32(unitX))
+}
+
+var xscan float32
+
+func (p *x) Scan(state fmt.ScanState, v rune) (err error) {
+	state.SkipSpace()
+	r,_,err:=state.ReadRune()
+	if err!=nil{return}
+	if r==','{
+		state.SkipSpace()
+		}else{
+		state.UnreadRune()
+		}
+	_,err=fmt.Fscan(state,&xscan)
+	if err!=nil{return}
+	*p=x(xscan*unitX)	
+	return
 }
 
 // the y type represents a value between +unitY and -unitY.

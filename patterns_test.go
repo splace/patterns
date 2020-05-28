@@ -7,6 +7,30 @@ import (
 	"testing"
 )
 
+func ExampleXscan(){
+	var v x
+	_,err:=fmt.Sscan("  ,  13.45.  ",&v)
+	if err!=nil{
+		fmt.Println(err)
+	}
+	fmt.Println(v)
+	// Output:
+	// 13.45
+}
+
+
+func ExampleXscanMuilti(){
+	var v1,v2,v3,v4 x
+	_,err:=fmt.Sscan("  ,  13.45.5, -0.3-.091  ",&v1,&v2,&v3,&v4)
+	if err!=nil{
+		fmt.Println(err)
+	}
+	fmt.Println(&v1,&v2,&v3,&v4)
+	// Output:
+	// 13.45 0.5 -0.3 -0.091
+}
+
+
 const margin=unitX
 
 func Output(p LimitedPattern){
