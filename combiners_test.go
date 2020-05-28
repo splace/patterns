@@ -8,7 +8,7 @@ import (
 )
 
 func ExampleComposite() {
-	Output(NewBox(5, 2, Filling{unitY}))
+	Output(NewFrame(5, 2, Filling{unitY}))
 	/* Output:
 Graph
        -8	-----------------

@@ -34,19 +34,11 @@ func (p UnlimitedTranslated) at(px, py x) y {
 	return p.Pattern.at(px-p.dx, py-p.dy)
 }
 
-func max4(a, b, c, d x) (max x) {
-	max = a
-	switch {
-	case b > max:
-		max = b
-		fallthrough
-	case c > max:
-		max = c
-		fallthrough
-	case d > max:
-		return d
-	}
-	return
+func max4(a, b, c, d x) x {
+	if b > a {a = b}
+	if c > a {a = c}
+	if d > a {a=d}
+	return a
 }
 
 // a LimitedPattern Scaled
@@ -111,19 +103,11 @@ func (p Rotated) at(px, py x) y {
 	return p.LimitedPattern.at(x(float64(px)*p.cosA-float64(py)*p.sinA), x(float64(px)*p.sinA+float64(py)*p.cosA))
 }
 
-func max4float64(a, b, c, d float64) (max float64) {
-	max = a
-	switch {
-	case b > max:
-		max = b
-		fallthrough
-	case c > max:
-		max = c
-		fallthrough
-	case d > max:
-		return d
-	}
-	return
+func max4float64(a, b, c, d float64) float64 {
+	if b > a {a = b}
+	if c > a {a = c}
+	if d > a {a=d}
+	return a
 }
 
 func (p Rotated) MaxX() x {

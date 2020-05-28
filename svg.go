@@ -1,272 +1,223 @@
 package patterns
 
+import "fmt"
 import "io"
-import "strings"
-import "errors"
 
-//import "fmt"
-
-const bufLen = 100
-
-
-type errParsingReader struct {
-	error
-	Source      io.Reader
+type Drawer interface{
+	Draw(*Brush)Pattern
 }
 
-func (e errParsingReader) Parsing() io.Reader {
-	return e.Source
-}
+type Path []Drawer
 
-
-func Polygon(p Brush, cs string) (Pattern, error) {
-	reader := strings.NewReader(cs)
-	fReader := float32ListReader{Reader: reader, buf: make([]byte, bufLen)}
-	coordsBuf := make([]float32, 10)
-	c, err := fReader.ReadFloat32s(coordsBuf)
-	if err != io.EOF {
-		return nil,errParsingReader{err,reader}
+// draw a path using the provided brush
+func (p Path) Draw(b *Brush)(c Composite) {
+	for _,s:=range(p){
+		d:=s.Draw(b)
+		// draw can modify the brush without producing a pattern, no need to add these to the pattern
+		if d==nil{continue}
+		c=append(c,d)
 	}
-	if c%2 != 0 {
-		return nil,errParsingReader{errors.New("Coordinate count."),reader}
-	}
-	coords := make([][2]x, c/2)
-	for n := 0; n < c; n += 2 {
-		coords[n/2]=[2]x{X(coordsBuf[n]),X(coordsBuf[n+1])}
-	}
-	return p.Polygon(coords), nil
+	return
 }
 
-type StageCompleted uint8
+type MoveTo []x
 
-const (
-	None StageCompleted = iota
-	wholeSign
-	whole
-	Fraction
-	ExponentSign
-	Exponent
-)
-
-type float32ListReader struct {
-	io.Reader
-	charFound             bool  // something has been found in current section
-	inSeparator           bool  // currently parsing separator
-	neg                   bool  // nagative number
-	partial               uint  // whole number section, read so far
-	wholeFound            bool  // whole number section complete
-	partialFraction       uint  // fraction section read so far
-	partialFractionDigits uint8 // count of fractional section digits, used to turn partialFraction in required real number by power of ten division
-	fractionFound         bool  // fractional section complete
-	partialExponent       uint  // exponent section so far read
-	negExponent           bool
-	buf                   []byte
-	unBuf                 []byte // slice into buf, pointing to the unconsumed bytes remaining after last read stopped
+func (s MoveTo) Draw(b *Brush)Pattern{
+	b.Relative=false
+	b.MoveTo(s[0]*unitX,s[1]*unitX)
+	return nil
 }
 
-// reads text into a float array
-func (this *float32ListReader) ReadFloat32s(fs []float32) (c int, err error) {
-	var power10 func(uint) float32
-	power10 = func(n uint) float32 {
-		switch n {
-		case 0:
-			return 1
-		case 1:
-			return 1e1
-		case 2:
-			return 1e2
-		case 3:
-			return 1e3
-		case 4:
-			return 1e4
-		case 5:
-			return 1e5
-		case 6:
-			return 1e6
-		case 7:
-			return 1e7
-		case 8:
-			return 1e8
-		case 9:
-			return 1e9
-		default:
-			return 1e10 * power10(n-10)
+type MoveToRelative []x
+
+func (s MoveToRelative) Draw(b *Brush)Pattern{
+	b.Relative=true
+	b.MoveTo(s[0]*unitX,s[1]*unitX)
+	return nil
+}
+
+type LineTo []x
+
+func (s LineTo) Draw(b *Brush)Pattern{
+	b.Relative=false
+	return b.LineTo(s[0]*unitX,s[1]*unitX)
+}
+
+type LineToRelative []x
+
+func (s LineToRelative) Draw(b *Brush)Pattern{
+	b.Relative=true
+	return b.LineTo(s[0]*unitX,s[1]*unitX)
+}
+
+type VeticalLineTo []x
+
+func (s VeticalLineTo) Draw(b *Brush)Pattern{
+	b.Relative=false
+	return b.LineToVertical(s[0]*unitX)
+}
+
+type VeticalLineToRelative []x
+
+func (s VeticalLineToRelative) Draw(b *Brush)Pattern{
+	b.Relative=true
+	return b.LineToVertical(s[0]*unitX)
+}
+
+type HorizontalLineTo []x
+
+func (s HorizontalLineTo) Draw(b *Brush)Pattern{
+	b.Relative=false
+	return b.LineToHorizontal(s[0]*unitX)
+}
+
+type HorizontalLineToRelative []x
+
+func (s HorizontalLineToRelative) Draw(b *Brush)Pattern{
+	b.Relative=true
+	return b.LineToHorizontal(s[0]*unitX)
+}
+
+
+type Close struct{}
+
+func (s Close) Draw(b *Brush)Pattern{
+	if b.x==b.sx && b.y==b.sy {return nil}
+	return b.LineClose()
+}
+
+type QuadraticBezierTo []x
+
+func (s QuadraticBezierTo) Draw(b *Brush)Pattern{
+	b.Relative=false
+	return b.QuadraticBezierTo(s[0]*unitX,s[1]*unitX,s[2]*unitX,s[3]*unitX)
+}
+
+type QuadraticBezierToRelative []x
+
+func (s QuadraticBezierToRelative) Draw(b *Brush)Pattern{
+	b.Relative=true
+	return b.QuadraticBezierTo(s[0]*unitX,s[1]*unitX,s[2]*unitX,s[3]*unitX)
+}
+
+type CubicBezierTo []x
+
+func (s CubicBezierTo) Draw(b *Brush)Pattern{
+	b.Relative=false
+	return b.CubicBezierTo(s[0]*unitX,s[1]*unitX,s[2]*unitX,s[3]*unitX,s[4]*unitX,s[5]*unitX)
+}
+
+type CubicBezierToRelative []x
+
+func (s CubicBezierToRelative) Draw(b *Brush)Pattern{
+	b.Relative=true
+	return b.CubicBezierTo(s[0]*unitX,s[1]*unitX,s[2]*unitX,s[3]*unitX,s[4]*unitX,s[5]*unitX)
+}
+
+func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
+	var xs []x
+	var lc,c rune
+	for {
+		state.SkipSpace()
+		c,_,err=state.ReadRune()
+		if err!=nil{
+			if err==io.EOF {return nil}
+			return err
 		}
-	}
-	var value func() float32
-	value = func() float32 {
-		return (float32(this.partial) + float32(this.partialFraction)/power10(uint(this.partialFractionDigits))) 
-	}
-	// put value into array
-	var setVal func()
-	setVal = func() {
-		if this.neg {
-			if this.negExponent {
-				fs[c] = -value()/ power10(this.partialExponent)
-			} else {
-				fs[c] = -value()* power10(this.partialExponent)
+		for {
+			switch c{
+			//case '?'
+			//Segment-completing close path operations
+			// close sub-path (so not lineend marker) 
+			// if curve followed by close AND coords textually identical to start coords, then close path without line
+			
+			case 'M':
+				// if lc=='z' or'Z' then new subpath for lineend style (non supported)
+				xs=append(xs,0,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-2],&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,MoveTo(xs[len(xs)-2:]))
+			case 'm':
+				// if lc=='z' or'Z' then new subpath for lineend style (non supported)
+				xs=append(xs,0,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-2],&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,MoveToRelative(xs[len(xs)-2:]))
+			case 'L':
+				xs=append(xs,0,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-2],&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,LineTo(xs[len(xs)-2:]))
+			case 'l':
+				xs=append(xs,0,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-2],&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,LineToRelative(xs[len(xs)-2:]))
+			case 'z','Z':
+				*p=append(*p,Close{})
+			case 'H':
+				xs=append(xs,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,HorizontalLineTo(xs[len(xs)-1:]))
+			case 'h':
+				xs=append(xs,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,HorizontalLineToRelative(xs[len(xs)-1:]))
+			case 'V':
+				xs=append(xs,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,VeticalLineTo(xs[len(xs)-1:]))
+			case 'v':
+				xs=append(xs,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,VeticalLineToRelative(xs[len(xs)-1:]))
+			
+			// TODO create paths? for curves below. 	
+			// or use transform to get quadratic, and create cubic from a series f these?
+			// or both ways using rune selection?
+			case 'Q': // quadratic Bézier curve
+				xs=append(xs,0,0,0,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-4],&xs[len(xs)-3],&xs[len(xs)-2],&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,QuadraticBezierTo(xs[len(xs)-4:]))
+			case 'q': // quadratic Bézier curve relative
+				xs=append(xs,0,0,0,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-4],&xs[len(xs)-3],&xs[len(xs)-2],&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,QuadraticBezierToRelative(xs[len(xs)-4:]))
+
+			case 'T': // smooth quadratic Bézier curveto
+			case 't': // smooth quadratic Bézier curveto relative
+			case 'A': // elliptical Arc
+			case 'a': // elliptical Arc relative
+			case 'C': // cubic Bézier curve 
+				xs=append(xs,0,0,0,0,0,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-6],&xs[len(xs)-5],&xs[len(xs)-4],&xs[len(xs)-3],&xs[len(xs)-2],&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,CubicBezierTo(xs[len(xs)-6:]))
+			case 'c': // cubic Bézier curve relatice
+				xs=append(xs,0,0,0,0,0,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-6],&xs[len(xs)-5],&xs[len(xs)-4],&xs[len(xs)-3],&xs[len(xs)-2],&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,CubicBezierToRelative(xs[len(xs)-6:]))
+			case 'S': // smooth cubic Bézier curve
+			case 's': // smooth cubic Bézier curve relatice
+		
+			case '0','1','2','3','4','5','6','7','8','9','.','-','+':
+				// numeric parameter so repeat switch using previous command
+				state.UnreadRune()
+				c=lc
+				continue
+			default:
+				return fmt.Errorf("Unknown command:%v",c)
 			}
-		} else {
-			if this.negExponent {
-				fs[c] = value()/ power10(this.partialExponent)
-			} else {
-				fs[c] = value()* power10(this.partialExponent)
-			}
-		}
-		//fmt.Println(c,":",fs[c])
-		c++
-	}
-	var n int
-	var b []byte
-	for err == nil {
-		if len(this.unBuf) != 0 { // use any unread first
-			n = len(this.unBuf)
-			b = this.unBuf
-		} else {
-			n, err = this.Reader.Read(this.buf)
-			b = this.buf
-		}
-		if n == 0 {
 			break
 		}
-		for i := 0; i < n; i++ {
-			switch b[i] {
-			case '0':
-				this.inSeparator = false
-				if this.wholeFound {
-					if this.fractionFound {
-						if this.charFound {
-							this.partialExponent *= 10
-						}
-					} else {
-						this.partialFraction *= 10
-						this.partialFractionDigits++
-					}
-				} else {
-					if this.charFound {
-						this.partial *= 10
-					}
-				}
-				this.charFound = true
-			case '1', '2', '3', '4', '5', '6', '7', '8', '9':
-				this.inSeparator = false
-				if this.wholeFound {
-					if this.fractionFound {
-						this.partialExponent *= 10
-						this.partialExponent += uint(b[i]) - 48
-					} else {
-						this.partialFraction *= 10
-						this.partialFractionDigits++
-						this.partialFraction += uint(b[i]) - 48
-					}
-				} else {
-					this.partial *= 10
-					this.partial += uint(b[i]) - 48
-				}
-				this.charFound = true
-			case '.':
-				this.inSeparator = false
-				this.wholeFound = true
-				this.charFound = false
-			case 'e', 'E':
-				if !this.charFound {
-					return c, errParsingReader{errors.New("Can't parse as number."),this.Reader}
-				} // cant have e wihout something before
-				this.wholeFound = true
-				this.fractionFound = true
-				this.charFound = false
-			case ',': // separators
-				if this.inSeparator {
-					return c, errParsingReader{errors.New("Separator without value."),this.Reader}
-				}
-				this.inSeparator = true
-				if this.wholeFound || this.charFound {
-					setVal()
-					this.partial = 0
-					this.partialFraction = 0
-					this.partialFractionDigits = 0
-					this.wholeFound = false
-					this.partialExponent = 0
-					this.fractionFound = false
-					this.neg = false
-					this.negExponent = false
-					if c >= len(fs) {
-						return c, err
-					}
-				}
-				this.charFound = false
-			case ' ', '\n', '\r', '\t': // accept these as separators, but multiple occurances only count once. // two tabs only one separator in an svg path
-				if !this.inSeparator {
-					this.inSeparator = true
-					if this.wholeFound || this.charFound {
-						setVal()
-						this.partial = 0
-						this.partialFraction = 0
-						this.partialFractionDigits = 0
-						this.charFound = false
-						this.wholeFound = false
-						this.partialExponent = 0
-						this.fractionFound = false
-						this.neg = false
-						this.negExponent = false
-						if c >= len(fs) {
-							return c, err
-						}
-					}
-				}
-			case '-':
-				this.inSeparator = false
-				if !this.charFound {
-					if !this.wholeFound {
-						this.neg = true
-					} else {
-						if this.fractionFound {
-							this.negExponent = true
-						}
-					}
-				} else {
-					return c, errParsingReader{errors.New("Can't parse as numbers."),this.Reader}
-
-				}
-				if this.wholeFound && !this.fractionFound {
-					return c, errParsingReader{errors.New("Can't parse as numbers."),this.Reader}
-
-				}
-			case '+':
-				this.inSeparator = false
-				if this.charFound || this.wholeFound && !this.fractionFound {
-					return c, errParsingReader{errors.New("Can't parse as numbers."),this.Reader}
-
-				}
-
-			default:
-				this.unBuf = b[i:n]
-				if this.wholeFound || this.charFound {
-					setVal()
-					this.partial = 0
-					this.partialFraction = 0
-					this.partialFractionDigits = 0
-					this.charFound = false
-					this.wholeFound = false
-					this.partialExponent = 0
-					this.fractionFound = false
-					this.inSeparator = false
-					this.neg = false
-					this.negExponent = false
-					if c == len(fs) {
-						return c, err
-					}
-				}
-				return c, errParsingReader{errors.New("Uninterpretable character found."),this.Reader}
-			}
-		}
-		this.unBuf = this.unBuf[0:0]
+		lc=c
 	}
-	if this.wholeFound || this.charFound {
-		setVal()
-	}
-	return c, err
+	return nil
 }
-
-
-

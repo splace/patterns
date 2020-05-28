@@ -28,7 +28,7 @@ func TestImageBox(t *testing.T) {
 	}
 	defer file.Close()
 
-	png.Encode(file, Plan9PalettedImage{NewDepiction(NewBox(199, 1, Filling{unitY}), 400, 400, color.Opaque, color.Transparent)})
+	png.Encode(file, Plan9PalettedImage{NewDepiction(NewFrame(199, 1, Filling{unitY}), 400, 400, color.Opaque, color.Transparent)})
 }
 
 func TestImageLines(t *testing.T) {
@@ -37,7 +37,7 @@ func TestImageLines(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	b := Brush{Width: 2*unitX, In: unitY, Relative: true}
+	b := Brush{LineBrush:LineBrush{2*unitX, unitY}, Relative: true}
 	png.Encode(file, Plan9PalettedImage{NewDepiction(b.Line(-100*unitX, 100*unitX, 100*unitX, -100*unitX), 400, 400, color.Opaque, color.Transparent)})
 }
 
