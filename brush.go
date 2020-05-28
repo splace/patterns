@@ -1,8 +1,8 @@
 package patterns
 
-import (
-	"math"
-)
+import "math"
+//import "fmt"
+
 
 type LineBrush struct{
 	Width    x
@@ -22,36 +22,81 @@ func (p LineBrush) Box(x,y x) LimitedPattern {
 func (p LineBrush) Polygon(coords ...[2]x) Pattern {
 	// TODO calc limits
 	s := make([]Pattern, len(coords)) 
-	for i := 1; i < len(coords); i++ {
+	for i := 1; i < len(s); i++ {
 		s[i-1] = p.Line(coords[i-1][0], coords[i-1][1],coords[i][0], coords[i][1])
 	}
 	s[len(coords)-1] = p.Line(coords[len(coords)-1][0], coords[len(coords)-1][1],coords[0][0], coords[0][1])
 	return NewComposite(s...)
 }
 
+type bezierResolution uint8
+const bezierDivision bezierResolution= 1<<6   // divides into 4
+const bezierMax = math.MaxUint8
+
+func linearDivision(s,e x) (func (bezierResolution) x ){
+		return func(t bezierResolution)x{return s+(e-s)*x(t)/bezierMax} 
+	}
+	
+func doubleDivision(s,c,e x) (func (bezierResolution) x ){
+		scfn:= linearDivision(s,c)
+		cefn:= linearDivision(c,e)
+		return func(t bezierResolution)x{
+			return linearDivision(scfn(t),cefn(t))(t)
+		}
+	}
+
+func tripleDivision(s,c1,c2,e x) (func (bezierResolution) x ){
+		sc1fn:= linearDivision(s,c1)
+		c1c2fn:= linearDivision(c1,c2)
+		c2efn:= linearDivision(c2,e)
+		return func(t bezierResolution)x{
+			return doubleDivision(sc1fn(t),c1c2fn(t),c2efn(t))(t)
+		}
+	}
+
+func quadroupleDivision(s,c1,c2,c3,e x) (func (bezierResolution) x ){
+		sc1fn:= linearDivision(s,c1)
+		c1c2fn:= linearDivision(c1,c2)
+		c2c3fn:= linearDivision(c2,c3)
+		c3efn:= linearDivision(c3,e)
+		return func(t bezierResolution)x{
+			return tripleDivision(sc1fn(t),c1c2fn(t),c2c3fn(t),c2efn(t))(t)
+		}
+	}
 
 func (p LineBrush) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
-	ComponentQuadBezier:= func(s,c,e x) (func (uint16) x ){
-		f:=s+(e-s)
-		return func(t uint16)x{return f*x(t/math.MaxUint16)}   // FIXME linear
+	xfn:=doubleDivision(sx, cx, ex)
+	yfn:=doubleDivision(sy, cy, ey)
+	var s []Pattern
+	var li bezierResolution
+	for i := bezierDivision-1; li<i ; li,i=i,i+bezierDivision {
+		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
 	}
-	xfn:=ComponentQuadBezier(sx, cx, ex)
-	yfn:=ComponentQuadBezier(sy, cy, ey)
-	l:= p.Line(xfn(0),yfn(0),xfn(math.MaxUint16),yfn(uint16(math.MaxUint16)))
-	return Limiter{Composite{l},l.MaxX()}
+	return Limiter{NewComposite(s...),10*unitX}
 }
 
 
-
 func (p LineBrush) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
-	ComponentCubicBezier:= func(s,c1,c2,e x) (func (uint16) x ){
-		f:=s+(e-s)
-		return func(t uint16)x{return f*x(t/math.MaxUint16)}   // FIXME linear
+	xfn:=tripleDivision(sx, c1x, c2x, ex)
+	yfn:=tripleDivision(sy, c1y, c2y, ey)
+	var s []Pattern
+	var li bezierResolution
+	for i := bezierDivision-1; li<i ; li,i=i,i+bezierDivision {
+		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
 	}
-	xfn:=ComponentCubicBezier(sx, c1x, c2x, ex)
-	yfn:=ComponentCubicBezier(sy, c1y, c2y, ey)
-	l:= p.Line(xfn(0),yfn(0),xfn(math.MaxUint16),yfn(uint16(math.MaxUint16)))
-	return Limiter{Composite{l},l.MaxX()}
+	return Limiter{NewComposite(s...),10*unitX}
+}
+
+
+func (p LineBrush) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) LimitedPattern {
+	xfn:=quadroupleDivision(sx, c1x, c2x, c3x, ex)
+	yfn:=quadroupleDivision(sy, c1y, c2y, c3y, ey)
+	var s []Pattern
+	var li bezierResolution
+	for i := bezierDivision-1; li<i ; li,i=i,i+bezierDivision {
+		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
+	}
+	return Limiter{NewComposite(s...),10*unitX}
 }
 
 
