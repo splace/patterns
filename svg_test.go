@@ -72,12 +72,12 @@ Graph
 }
 
 func ExampleSVGpathScanMissingCommands() {
-	b := Brush{LineBrush:LineBrush{Width: 2*unitX, In: unitY}}
 	p:=Path{}
 	_,err:=fmt.Sscan("m -5 -5 l 10 10 0 -10 z",&p)
 	if err!=nil{
 		fmt.Println(err)
 	}
+	b := Brush{LineBrush:LineBrush{Width: 2*unitX, In: unitY}}
 	Output(Limiter{p.Draw(&b),10*unitX})
 	/* Output:
 Graph
@@ -108,6 +108,7 @@ func ExampleSVGpathScanComplex() {
 	if err!=nil{
 		fmt.Println(err)
 	}
+	fmt.Printf("%#v\n",p)
 	Output(Limiter{p.Draw(&b),50*unitX})
 	/* Output:
 Graph
