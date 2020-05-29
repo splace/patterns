@@ -72,7 +72,7 @@ func (p LineBrush) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
 	for i := bezierDivision-1; li<i ; li,i=i,i+bezierDivision {
 		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
 	}
-	return Limiter{NewComposite(s...),1000*unitX}
+	return Limiter{NewComposite(s...),max(max(max(sx,ex),cx),max(max(sy,ey),cy))}
 }
 
 
@@ -84,7 +84,7 @@ func (p LineBrush) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPatte
 	for i := bezierDivision-1; li<i ; li,i=i,i+bezierDivision {
 		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
 	}
-	return Limiter{NewComposite(s...),1000*unitX}  
+	return Limiter{NewComposite(s...),max(max(max(sx,ex),max(c1x,c2x)),max(max(sy,ey),max(c1y,c2y)))}  
 }
 
 
@@ -96,7 +96,7 @@ func (p LineBrush) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) L
 	for i := bezierDivision-1; li<i ; li,i=i,i+bezierDivision {
 		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
 	}
-	return Limiter{NewComposite(s...),1000*unitX}
+	return Limiter{NewComposite(s...),max(max(max(max(sx,ex),max(c1x,c2x)),c3x),max(max(max(sy,ey),max(c1y,c2y)),c3y)) }
 }
 
 

@@ -34,11 +34,15 @@ func (p UnlimitedTranslated) at(px, py x) y {
 	return p.Pattern.at(px-p.dx, py-p.dy)
 }
 
-func max4(a, b, c, d x) x {
+
+func max(a, b x) x {
 	if b > a {a = b}
-	if c > a {a = c}
-	if d > a {a=d}
 	return a
+}
+
+
+func max4(a, b, c, d x) x {
+	return max(max(a,b),max(c,d))
 }
 
 // a LimitedPattern Scaled
