@@ -228,8 +228,9 @@ Graph
 	*/
 }
 
+
 func ExampleBrushCubicBezier() {
-	b := Brush{LineBrush:LineBrush{2.1*unitX, unitY}, Relative: true}
+	b := Brush{LineBrush:LineBrush{8.1*unitX, unitY}, Relative: true}
 	p := b.CubicBezier(0,50*unitX,40*unitX,-40*unitX,-40*unitX,-20*unitX,-50*unitX,0)
 	Output(Limiter{p,50*unitX})
 	/* Output:

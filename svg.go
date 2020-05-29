@@ -230,6 +230,7 @@ func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 				*p=append(*p,CubicBezierToRelative(xs[len(xs)-6:]))
 			// smooth curves need back-referenced control point.
 			case 'T': // smooth quadratic Bézier curveto
+				return fmt.Errorf("Not supported")
 				xs=append(xs,0,0)
 				_,err=fmt.Fscan(state,&xs[len(xs)-2],&xs[len(xs)-1])
 				if err!=nil{return err}
@@ -266,7 +267,6 @@ func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 				default:
 				}
 			case 'S': // smooth cubic Bézier curve
-				return fmt.Errorf("Not supported")
 				xs=append(xs,0,0,0,0)
 				_,err=fmt.Fscan(state,&xs[len(xs)-4],&xs[len(xs)-3],&xs[len(xs)-2],&xs[len(xs)-1])
 				if err!=nil{return err}
@@ -287,7 +287,6 @@ func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 					*p=append(*p,CubicBezierTo(xs[len(xs)-8:]))
 				}
 			case 's': // smooth cubic Bézier curve relative
-				return fmt.Errorf("Not supported")
 				xs=append(xs,0,0)
 				_,err=fmt.Fscan(state,&xs[len(xs)-2],&xs[len(xs)-1])
 				if err!=nil{return err}
