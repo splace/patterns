@@ -3,8 +3,11 @@ package patterns
 import "math"
 //import "fmt"
 
-// TODO another brush for alternate ways to draw stuff
+// TODO another brush for alternative ways to draw stuff
 
+// brush that produces patterns with curves sub-divided into straight lines.
+// CurveDivision:  power of 2 number of divisions.
+// * 0 - no division, curves are a stright line
 type LineBrush struct{
 	Width    x
 	In       y
@@ -16,7 +19,25 @@ func (p LineBrush) Line(x1, y1, x2, y2 x) LimitedPattern {
 }
 
 
-func (p LineBrush) Arc(x1,y1,rx,ry x, a float64, l,s bool, x2,y2 x) LimitedPattern {
+
+func (p LineBrush) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) LimitedPattern {
+	if rx==ry{
+		// much simpler, just a circle, a redundent
+		return nil
+	}
+	// by using 3d conic projection, rather than squashing a circle, equal angle separation gives more points at tighesr curvature. 
+	// except for far end, so simple use near-end reflected to also get there curvature dependent point spacing.
+	// CurveDivision parameter divides each half, in proportion to angle needed. 
+	// in order for ends to align, cone needs to be translated.
+	// and sectioning plane needs to pass throuh start and end points and be angled to give radius ratio
+	
+	//  centre of cone is equi-distance from ends
+	
+	
+	// point of cone is projection from foci
+	//foci2=rx*rx-ry*ry
+	
+	
 	return nil
 }
 
