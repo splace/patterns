@@ -3,17 +3,22 @@ package patterns
 import "math"
 //import "fmt"
 
+// TODO another brush for alternate ways to draw stuff
 
 type LineBrush struct{
 	Width    x
 	In       y
-
+	CurveDivision uint8
 }
 
-func (p LineBrush) Line(px1, py1, px2, py2 x) LimitedPattern {
-	return Translated{NewRotated(Reduced{Square{Filling{p.In}}, float32(unitX*2)/float32(math.Sqrt(float64(px2-px1)*float64(px2-px1) + float64(py2-py1)*float64(py2-py1))),float32(unitX*4)/float32(p.Width) },math.Atan2(float64(py1-py2),float64(px2-px1)) ).(LimitedPattern),(px1+px2)/2, (py1+py2)/2}
+func (p LineBrush) Line(x1, y1, x2, y2 x) LimitedPattern {
+	return Translated{NewRotated(Reduced{Square{Filling{p.In}}, float32(unitX*2)/float32(math.Sqrt(float64(x2-x1)*float64(x2-x1) + float64(y2-y1)*float64(y2-y1))),float32(unitX*4)/float32(p.Width) },math.Atan2(float64(y1-y2),float64(x2-x1)) ).(LimitedPattern),(x1+x2)/2, (y1+y2)/2}
 }
 
+
+func (p LineBrush) Arc(x1,y1,rx,ry x, a float64, l,s bool, x2,y2 x) LimitedPattern {
+	return nil
+}
 
 func (p LineBrush) Box(x,y x) LimitedPattern {
 	return Limiter{Composite{p.Line(-x,y, x,y),p.Line(x,y,x,-y),p.Line(x,-y,-x,-y),p.Line(-x,-y,-x,y)},max4(x+p.Width,p.Width-x,p.Width-y,y-p.Width)}
@@ -30,7 +35,6 @@ func (p LineBrush) Polygon(coords ...[2]x) Pattern {
 }
 
 type bezierResolution uint8
-const bezierDivision bezierResolution= 1<<6   // divides into 4
 const bezierMax = math.MaxUint8
 
 func linearDivision(s,e x) (func (bezierResolution) x ){
@@ -69,10 +73,11 @@ func (p LineBrush) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
 	yfn:=doubleDivision(sy, cy, ey)
 	var s []Pattern
 	var li bezierResolution
-	for i := bezierDivision-1; li<i ; li,i=i,i+bezierDivision {
+	step:=bezierResolution(1<<(8-p.CurveDivision))
+	for i := step-1; li<i ; li,i=i,i+step {
 		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
 	}
-	return Limiter{NewComposite(s...),max(max(max(sx,ex),cx),max(max(sy,ey),cy))}
+	return Limiter{NewComposite(s...),max(max(max(sx,ex),cx),max(max(sy,ey),cy))+p.Width}
 }
 
 
@@ -81,10 +86,11 @@ func (p LineBrush) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPatte
 	yfn:=tripleDivision(sy, c1y, c2y, ey)
 	var s []Pattern
 	var li bezierResolution
-	for i := bezierDivision-1; li<i ; li,i=i,i+bezierDivision {
+	step:=bezierResolution(1<<(8-p.CurveDivision))
+	for i := step-1; li<i ; li,i=i,i+step {
 		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
 	}
-	return Limiter{NewComposite(s...),max(max(max(sx,ex),max(c1x,c2x)),max(max(sy,ey),max(c1y,c2y)))}  
+	return Limiter{NewComposite(s...),max(max(max(sx,ex),max(c1x,c2x)),max(max(sy,ey),max(c1y,c2y)))+p.Width}  
 }
 
 
@@ -93,10 +99,11 @@ func (p LineBrush) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) L
 	yfn:=quadroupleDivision(sy, c1y, c2y, c3y, ey)
 	var s []Pattern
 	var li bezierResolution
-	for i := bezierDivision-1; li<i ; li,i=i,i+bezierDivision {
+	step:=bezierResolution(1<<(8-p.CurveDivision))
+	for i := step-1; li<i ; li,i=i,i+step {
 		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
 	}
-	return Limiter{NewComposite(s...),max(max(max(max(sx,ex),max(c1x,c2x)),c3x),max(max(max(sy,ey),max(c1y,c2y)),c3y)) }
+	return Limiter{NewComposite(s...),max(max(max(max(sx,ex),max(c1x,c2x)),c3x),max(max(max(sy,ey),max(c1y,c2y)),c3y))+p.Width }
 }
 
 
@@ -158,6 +165,18 @@ func (p *Brush) LineClose() LimitedPattern {
 	return s
 }
 
+func (p *Brush) ArcTo(rx,ry x, a float64, large,sweep bool,x,y x) LimitedPattern {
+	if p.Relative {
+		x += p.x
+		y += p.y
+	}
+	s := p.Arc(p.x,p.y,rx,ry,a,large,sweep,x,y)
+	p.x, p.y=x,y
+	return s
+}
+
+
+
 func (p *Brush) QuadraticBezierTo(cx,cy,px,py x) LimitedPattern {
 	if p.Relative {
 		px += p.x
@@ -183,3 +202,4 @@ func (p *Brush) CubicBezierTo(c1x,c1y,c2x,c2y,px,py x) LimitedPattern {
 	p.x, p.y=px,py
 	return s
 }
+

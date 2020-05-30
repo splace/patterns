@@ -37,7 +37,7 @@ func TestImageLines(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	b := Brush{LineBrush:LineBrush{2*unitX, unitY}, Relative: true}
+	b := Brush{LineBrush:LineBrush{2*unitX, unitY,3}, Relative: true}
 	png.Encode(file, Plan9PalettedImage{NewDepiction(b.Line(-100*unitX, 100*unitX, 100*unitX, -100*unitX), 400, 400, color.Opaque, color.Transparent)})
 }
 
@@ -52,7 +52,7 @@ func TestImageBitCoin(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	b := Brush{LineBrush:LineBrush{20*unitX, unitY}, Relative: true}
+	b := Brush{LineBrush:LineBrush{20*unitX, unitY,3}, Relative: true}
 	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{UnlimitedShrunk{p.Draw(&b),6},50*unitX}, 400, 400, color.Opaque, color.Transparent)})
 }
 

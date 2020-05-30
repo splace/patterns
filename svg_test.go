@@ -132,15 +132,24 @@ Graph
 	*/
 }
 
-func ExampleSVGpathScanAllways() {
-	b := Brush{LineBrush:LineBrush{Width: 2*unitX, In: unitY}}
+func ExampleSVGpathScanCubicRings() {
+	f:="M-%[1]v,0C-%[1]v,-%[1]v %[1]v,-%[1]v %[1]v,0C%[1]v,%[1]v -%[1]v,%[1]v -%[1]v,0z"
+	
+	radius:=15
+	cpath:=fmt.Sprintf(f,radius)
+	radius=10
+	cpath+=fmt.Sprintf(f,radius)
+	radius=5
+	cpath+=fmt.Sprintf(f,radius)
+
 	p:=Path{}
-	_,err:=fmt.Sscan("M217.021,167.042 c18.631,-9.483 30.288,-26.184 27.565,-54.007",&p)
+	_,err:=fmt.Sscan(cpath,&p)
 	if err!=nil{
 		fmt.Println(err)
 	}
-	fmt.Printf("%#v\n",p)
-	Output(Limiter{UnlimitedShrunk{p.Draw(&b),10},50*unitX})
+
+	b := Brush{LineBrush:LineBrush{Width: 4*unitX, In: unitY, CurveDivision:3}}
+	Output(Shrunk{Limiter{p.Draw(&b),18*unitX},0.5})
 	/* Output:
 Graph
        -8	-----------------
@@ -162,6 +171,48 @@ Graph
         8	-----------------
 	*/
 }
+
+
+func ExampleSVGpathScanSmoothCubic() {
+	f:="M-%[1]v,0C-%[1]v,-%[1]v %[1]v,-%[1]v %[1]v,0S-%[1]v,%[1]v -%[1]v,0z"
+	
+	radius:=15
+	cpath:=fmt.Sprintf(f,radius)
+	radius=10
+	cpath+=fmt.Sprintf(f,radius)
+	radius=5
+	cpath+=fmt.Sprintf(f,radius)
+
+	p:=Path{}
+	_,err:=fmt.Sscan(cpath,&p)
+	if err!=nil{
+		fmt.Println(err)
+	}
+
+	b := Brush{LineBrush:LineBrush{Width: 4*unitX, In: unitY, CurveDivision:3}}
+	Output(Shrunk{Limiter{p.Draw(&b),18*unitX},0.5})
+	/* Output:
+Graph
+       -8	-----------------
+       -7	-----------------
+       -6	--XXXXXXXXXXXX---
+       -5	--XXXXXXXXXXXX---
+       -4	--XX--------XX---
+       -3	--XX--------XX---
+       -2	--XX--------XX---
+       -1	--XX--------XX---
+        0	--XX--------XX---
+        1	--XX--------XX---
+        2	--XX--------XX---
+        3	--XX--------XX---
+        4	--XXXXXXXXXXXX---
+        5	--XXXXXXXXXXXX---
+        6	-----------------
+        7	-----------------
+        8	-----------------
+	*/
+}
+
 
 
 func ExampleSVGpathScanComplex() {

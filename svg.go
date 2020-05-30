@@ -126,7 +126,7 @@ type SmoothCubicBezierTo []x
 
 func (s SmoothCubicBezierTo) Draw(b *Brush)Pattern{
 	b.Relative=false
-	return b.CubicBezierTo(b.x+(s[0]-s[2]),b.y+(s[1]-s[3]),s[4],s[5],s[6],s[7])
+	return b.CubicBezierTo(b.x+(s[2]-s[0]),b.y+(s[3]-s[1]),s[4],s[5],s[6],s[7])
 }
 
 type CubicBezierToRelative []x
@@ -143,8 +143,24 @@ func (s SmoothCubicBezierToRelative) Draw(b *Brush)Pattern{
 	return b.CubicBezierTo((s[0]-s[2]),(s[1]-s[3]),s[4],s[5],s[6],s[7])
 }
 
-// TODO read though comma-> space filter
+type ArcTo []x
 
+func (s ArcTo) Draw(b *Brush)Pattern{
+	b.Relative=false
+	return b.ArcTo(s[0],s[1],float64(s[2])/unitX,s[3]!=0,s[4]!=0,s[5],s[6])
+}
+
+type ArcToRelative []x
+
+func (s ArcToRelative) Draw(b *Brush)Pattern{
+	b.Relative=true
+	return b.ArcTo(s[0],s[1],float64(s[2])/unitX,s[3]!=0,s[4]!=0,s[5],s[6])
+}
+
+// Scan a path into a slice of Drawers, all using the same slice of x's for their coordinates.
+// the x's are a one-to-one mapping of the values in the provided texture path representation. (enabling regeneration of textual form exactly, not just equivalent)
+// AND each Drawer, even smoothed, is independent (relatively) of any others, by vertue of overlapping slices from the x's.
+// Notice: above features cause an odd edge case; long sequences of smoothed quadratic Beziers need to look all the way back to a non-smoothed Quadratic Bezier,to find their control point, which then needs to be reflected back through all points!.(with potential relative/absolute switching along the way)
 func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 	var xs []x
 	var lc,c rune
@@ -228,7 +244,7 @@ func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 				_,err=fmt.Fscan(state,&xs[len(xs)-6],&xs[len(xs)-5],&xs[len(xs)-4],&xs[len(xs)-3],&xs[len(xs)-2],&xs[len(xs)-1])
 				if err!=nil{return err}
 				*p=append(*p,CubicBezierToRelative(xs[len(xs)-6:]))
-			// smooth curves need back-referenced control point.
+			// smooth curves use back-referenced control points where possible..
 			case 'T': // smooth quadratic Bézier curveto
 				return fmt.Errorf("Not supported")
 				xs=append(xs,0,0)
@@ -271,19 +287,12 @@ func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 				_,err=fmt.Fscan(state,&xs[len(xs)-4],&xs[len(xs)-3],&xs[len(xs)-2],&xs[len(xs)-1])
 				if err!=nil{return err}
 				switch (*p)[len(*p)-1].(type){
-				case CubicBezierTo,SmoothCubicBezierTo:
+				case CubicBezierTo,SmoothCubicBezierTo,CubicBezierToRelative,SmoothCubicBezierToRelative:
 					*p=append(*p,SmoothCubicBezierTo(xs[len(xs)-8:]))
-				case CubicBezierToRelative,SmoothCubicBezierToRelative:
-					// this is absolute and previous was relative, cann't use back ref, insert new point
-					xs=append(xs,xs[len(xs)-3:]...)
-					copy(xs[len(xs)-3:],xs[len(xs)-5:len(xs)-3])
-					xs[len(xs)-5]=2*xs[len(xs)-8]-xs[len(xs)-10]
-					xs[len(xs)-4]=2*xs[len(xs)-7]-xs[len(xs)-9]
-					*p=append(*p,SmoothCubicBezierTo(xs[len(xs)-8:]))
+				// if previous command was relative can't just use back-reference
+				//case MoveToRelative,LineToRelative,HorizontalLineToRelative,VeticalLineToRelative,QuadraticBezierToRelative,SmoothQuadraticBezierToRelative,CubicBezierToRelative,SmoothCubicBezierToRelative,ArcToRelative: 
 				default:
 					// no first control point to back reference so insert duplicate first point.
-					xs=append(xs,xs[len(xs)-3:]...)
-					copy(xs[len(xs)-3:],xs[len(xs)-5:len(xs)-3])
 					*p=append(*p,CubicBezierTo(xs[len(xs)-8:]))
 				}
 			case 's': // smooth cubic Bézier curve relative
@@ -291,25 +300,26 @@ func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 				_,err=fmt.Fscan(state,&xs[len(xs)-2],&xs[len(xs)-1])
 				if err!=nil{return err}
 				switch (*p)[len(*p)-1].(type){
-				case CubicBezierTo,SmoothCubicBezierTo:
-					// this is relative and previous was absolute, cann't use back ref, insert new point
-					xs=append(xs,xs[len(xs)-3:]...)
-					copy(xs[len(xs)-3:],xs[len(xs)-5:len(xs)-3])
-					xs[len(xs)-5]=2*xs[len(xs)-8]-xs[len(xs)-10]
-					xs[len(xs)-4]=2*xs[len(xs)-7]-xs[len(xs)-9]
-					*p=append(*p,SmoothCubicBezierTo(xs[len(xs)-8:]))
-				case CubicBezierToRelative,SmoothCubicBezierToRelative:
-					*p=append(*p,SmoothCubicBezierTo(xs[len(xs)-8:]))
+				case CubicBezierTo,SmoothCubicBezierTo,CubicBezierToRelative,SmoothCubicBezierToRelative:
+					*p=append(*p,SmoothCubicBezierToRelative(xs[len(xs)-8:]))
 				default:
 					// no first control point to back reference so insert duplicate first point.
 					xs=append(xs,xs[len(xs)-3:]...)
 					copy(xs[len(xs)-3:],xs[len(xs)-5:len(xs)-3])
-					*p=append(*p,CubicBezierTo(xs[len(xs)-8:]))
+					*p=append(*p,CubicBezierToRelative(xs[len(xs)-8:]))
 				}
 			case 'A': // elliptical Arc
 				return fmt.Errorf("Not supported")
+				xs=append(xs,0,0,0,0,0,0,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-7],&xs[len(xs)-5],&xs[len(xs)-5],&xs[len(xs)-4],&xs[len(xs)-3],&xs[len(xs)-2],&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,ArcTo(xs[len(xs)-7:]))
 			case 'a': // elliptical Arc relative
 				return fmt.Errorf("Not supported")
+				xs=append(xs,0,0,0,0,0,0,0)
+				_,err=fmt.Fscan(state,&xs[len(xs)-7],&xs[len(xs)-5],&xs[len(xs)-5],&xs[len(xs)-4],&xs[len(xs)-3],&xs[len(xs)-2],&xs[len(xs)-1])
+				if err!=nil{return err}
+				*p=append(*p,ArcToRelative(xs[len(xs)-7:]))
 		
 			case '0','1','2','3','4','5','6','7','8','9','.','-','+':
 				// numeric parameter so repeat switch using previous command

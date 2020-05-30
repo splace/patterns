@@ -76,15 +76,15 @@ func (p UnlimitedReduced) at(px, py x) y {
 // a LimitedPattern Zoomed
 type Shrunk struct {
 	LimitedPattern
-	zx float32
+	float32
 }
 
 func (p Shrunk) at(px, py x) y {
-	return p.LimitedPattern.at(x(float32(px)*p.zx), x(float32(py)*p.zx))
+	return p.LimitedPattern.at(x(float32(px)*p.float32), x(float32(py)*p.float32))
 }
 
 func (p Shrunk) MaxX() x {
-	return x(float32(p.LimitedPattern.MaxX()) / p.zx)
+	return x(float32(p.LimitedPattern.MaxX()) / p.float32)
 }
 
 // a Pattern Zoomed

@@ -4,7 +4,7 @@ package patterns
 
 
 func ExampleBrushLine() {
-	b := Brush{LineBrush:LineBrush{2*unitX, unitY}, Relative: true}
+	b := Brush{LineBrush:LineBrush{2*unitX, unitY,3}, Relative: true}
 	Output(b.Line(0, 0, 10*unitX, -10*unitX))
 	/* Output:
 Graph
@@ -44,7 +44,7 @@ Graph
 }
 
 func ExampleBrushLineNonZeroStart() {
-	b := Brush{LineBrush:LineBrush{2*unitX, unitY}, Relative: true}
+	b := Brush{LineBrush:LineBrush{2*unitX, unitY,3}, Relative: true}
 	Output(b.Line(5*unitX, -5*unitX, -10*unitX, 10*unitX))
 	/* Output:
 Graph
@@ -90,7 +90,7 @@ Graph
 
 
 func ExampleBrushLineCross() {
-	b := Brush{LineBrush:LineBrush{2*unitX, unitY}, Relative: true}
+	b := Brush{LineBrush:LineBrush{2*unitX, unitY,3}, Relative: true}
 	Output(
 		Limiter{
 			Composite{
@@ -147,7 +147,7 @@ Graph
 
 
 func ExampleBrushPolygon() {
-	b := Brush{LineBrush:LineBrush{2.1*unitX, unitY}, Relative: true}
+	b := Brush{LineBrush:LineBrush{2.1*unitX, unitY,3}, Relative: true}
 	p := b.Polygon([2]x{0, 0}, [2]x{7*unitX, -7*unitX},[2]x{-10*unitX, 0})
 	Output(Limiter{p,10*unitX})
 	/* Output:
@@ -188,7 +188,7 @@ Graph
 }
 
 func ExampleBrushQuadraticBezier() {
-	b := Brush{LineBrush:LineBrush{2.1*unitX, unitY}, Relative: true}
+	b := Brush{LineBrush:LineBrush{2.1*unitX, unitY,3}, Relative: true}
 	p := b.QuadraticBezier(0,0,7*unitX,-7*unitX,-10*unitX,0)
 	Output(Limiter{p,10*unitX})
 	/* Output:
@@ -230,7 +230,7 @@ Graph
 
 
 func ExampleBrushCubicBezier() {
-	b := Brush{LineBrush:LineBrush{8.1*unitX, unitY}, Relative: true}
+	b := Brush{LineBrush:LineBrush{8.1*unitX, unitY,3}, Relative: true}
 	p := b.CubicBezier(0,50*unitX,40*unitX,-40*unitX,-40*unitX,-20*unitX,-50*unitX,0)
 	Output(Limiter{p,50*unitX})
 	/* Output:
@@ -272,7 +272,7 @@ Graph
 
 
 func ExampleSVGDozer() {
-	b := Brush{LineBrush:LineBrush{2*unitX, unitY}, Relative: true}
+	b := Brush{LineBrush:LineBrush{2*unitX, unitY,3}, Relative: true}
 	p:=b.Box(5*unitX,5*unitX)
 	Output(Limiter{p,15*unitX})
 	/* Output:
