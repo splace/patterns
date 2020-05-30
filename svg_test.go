@@ -215,6 +215,7 @@ Graph
 
 
 
+
 func ExampleSVGpathScanMulti() {
 	b := Brush{LineBrush:LineBrush{Width: 18*unitX, In: unitY, CurveDivision:2}}
 	p:=Path{}
