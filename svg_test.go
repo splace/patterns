@@ -132,24 +132,14 @@ Graph
 	*/
 }
 
-func ExampleSVGpathScanCubicRings() {
-	f:="M-%[1]v,0C-%[1]v,-%[1]v %[1]v,-%[1]v %[1]v,0C%[1]v,%[1]v -%[1]v,%[1]v -%[1]v,0z"
-	
-	radius:=15
-	cpath:=fmt.Sprintf(f,radius)
-	radius=10
-	cpath+=fmt.Sprintf(f,radius)
-	radius=5
-	cpath+=fmt.Sprintf(f,radius)
-
+func ExampleSVGpathScanCubicOverlap() {
 	p:=Path{}
-	_,err:=fmt.Sscan(cpath,&p)
+	_,err:=fmt.Sscan("M20,15 C-30,-30 -30,30 20,-15",&p)
 	if err!=nil{
 		fmt.Println(err)
 	}
-
-	b := Brush{LineBrush:LineBrush{Width: 4*unitX, In: unitY, CurveDivision:3}}
-	Output(Shrunk{Limiter{p.Draw(&b),18*unitX},0.5})
+	b := Brush{LineBrush:LineBrush{Width: 2*unitX, In: unitY,CurveDivision:3}}
+	Output(Limiter{p.Draw(&b),20*unitX})
 	/* Output:
 Graph
        -8	-----------------
@@ -171,7 +161,6 @@ Graph
         8	-----------------
 	*/
 }
-
 
 func ExampleSVGpathScanSmoothCubic() {
 	f:="M-%[1]v,0C-%[1]v,-%[1]v %[1]v,-%[1]v %[1]v,0S-%[1]v,%[1]v -%[1]v,0z"

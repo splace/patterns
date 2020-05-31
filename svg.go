@@ -127,7 +127,7 @@ type SmoothCubicBezierTo []x
 func (s SmoothCubicBezierTo) Draw(b *Brush)Pattern{
 	b.Relative=false
 	if len(s)==4{
-		return b.CubicBezierTo(s[4],s[5],s[4],s[5],s[6],s[7])
+		return b.CubicBezierTo(s[0],s[1],s[0],s[1],s[2],s[3])
 	}
 	return b.CubicBezierTo(b.x+(s[2]-s[0]),b.y+(s[3]-s[1]),s[4],s[5],s[6],s[7])
 }
@@ -145,9 +145,9 @@ type SmoothCubicBezierToRelative []x
 func (s SmoothCubicBezierToRelative) Draw(b *Brush)Pattern{
 	b.Relative=true
 	if len(s)==4{
-		return b.CubicBezierTo(s[4],s[5],s[4],s[5],s[6],s[7])
+		return b.CubicBezierTo(s[0],s[1],s[0],s[1],s[2],s[3])
 	}
-	return b.CubicBezierTo((s[0]-s[2]),(s[1]-s[3]),s[4],s[5],s[6],s[7])
+	return b.CubicBezierTo((s[2]-s[0]),(s[3]-s[1]),s[4],s[5],s[6],s[7])
 }
 
 type ArcTo []x
@@ -297,7 +297,7 @@ func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 				if err!=nil{return err}
 				switch (*p)[len(*p)-1].(type){
 				case CubicBezierTo,SmoothCubicBezierTo,CubicBezierToRelative,SmoothCubicBezierToRelative:
-					*p=append(*p,SmoothCubicBezierTo(xs[len(xs)-6:]))
+					*p=append(*p,SmoothCubicBezierTo(xs[len(xs)-8:]))  // include back-reference to last 4 paramters of these commands
 				//case MoveToRelative,LineToRelative,HorizontalLineToRelative,VeticalLineToRelative,QuadraticBezierToRelative,SmoothQuadraticBezierToRelative,CubicBezierToRelative,SmoothCubicBezierToRelative,ArcToRelative: 
 				default:
 					// no first control point to back reference duplicate first point.
@@ -309,7 +309,7 @@ func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 				if err!=nil{return err}
 				switch (*p)[len(*p)-1].(type){
 				case CubicBezierTo,SmoothCubicBezierTo,CubicBezierToRelative,SmoothCubicBezierToRelative:
-					*p=append(*p,SmoothCubicBezierToRelative(xs[len(xs)-6:]))
+					*p=append(*p,SmoothCubicBezierToRelative(xs[len(xs)-8:]))
 				default:
 					*p=append(*p,SmoothCubicBezierToRelative(xs[len(xs)-4:]))
 				}
