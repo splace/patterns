@@ -69,8 +69,6 @@ func (p *Brush) ArcTo(rx,ry x, a float64, large,sweep bool,x,y x) LimitedPattern
 	return s
 }
 
-
-
 func (p *Brush) QuadraticBezierTo(cx,cy,px,py x) LimitedPattern {
 	if p.Relative {
 		px += p.x
