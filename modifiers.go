@@ -34,12 +34,15 @@ func (p UnlimitedTranslated) at(px, py x) y {
 	return p.Pattern.at(px-p.dx, py-p.dy)
 }
 
-
-func max(a, b x) x {
-	if b > a {a = b}
+func abs(a x) x {
+	if a < 0 {return -a}
 	return a
 }
 
+func max(a, b x) x {
+	if abs(b)>abs(a) {a = b}
+	return a
+}
 
 func max4(a, b, c, d x) x {
 	return max(max(a,b),max(c,d))
@@ -107,17 +110,6 @@ func (p Rotated) at(px, py x) y {
 	return p.LimitedPattern.at(x(float64(px)*p.cosA-float64(py)*p.sinA), x(float64(px)*p.sinA+float64(py)*p.cosA))
 }
 
-func max4float64(a, b, c, d float64) float64 {
-	if b > a {a = b}
-	if c > a {a = c}
-	if d > a {a=d}
-	return a
-}
-
-func (p Rotated) MaxX() x {
-	return x(float64(p.LimitedPattern.MaxX())/max4float64(p.sinA,p.cosA,-p.sinA,-p.cosA))
-}
-
 // a Pattern Rotated
 type UnlimitedRotated struct {
 	Pattern
@@ -130,10 +122,11 @@ func (p UnlimitedRotated) at(px, py x) y {
 
 
 func NewRotated(p Pattern, a float64) Pattern {
+	s,c:=math.Sincos(a)
 	if lp,ok:=p.(LimitedPattern);ok{
-		return Rotated{lp, math.Sin(a), math.Cos(a)}
+		return Rotated{lp, s, c}
 	}
-	return UnlimitedRotated{p, math.Sin(a), math.Cos(a)}
+	return UnlimitedRotated{p, s,c}
 }
 
 
@@ -172,3 +165,6 @@ func (p Limiter) MaxX() x {
 
 
 
+/* run: args="" Mon 1 Jun 01:04:30 BST 2020 go version go1.14.3 linux/amd64
+Mon 1 Jun 01:04:30 BST 2020
+*/

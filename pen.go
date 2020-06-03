@@ -1,17 +1,31 @@
 package patterns
 
 
-// brush holds state, style/position , for line based patterns
-// lines produced are independent.
-type Brush struct {
-	LineBrush
-	Relative bool
-	x, y     x
-	sx, sy   x
+type Nib interface{
+	Line(x,x,x,x) LimitedPattern
+	QuadraticBezier(x,x,x,x,x,x) LimitedPattern
+	CubicBezier(x,x,x,x,x,x,x,x) LimitedPattern
+	Arc(x,x,x,x,float64,bool,bool,x,x) LimitedPattern
 }
 
+// brush holds state, style/position , for line based patterns
+// lines produced are independent.
+type Pen struct {
+	Nib
+	Relative bool
+	x, y     x
+}
 
-func (p *Brush) LineTo(px, py x) LimitedPattern {
+func (p *Pen) MoveTo(px, py x) {
+	if p.Relative {
+		px += p.x
+		py += p.y
+	}
+	p.x, p.y, p.x, p.y = px, py, px, py
+	return
+}
+
+func (p *Pen) LineTo(px, py x) LimitedPattern {
 	if p.Relative {
 		px += p.x
 		py += p.y
@@ -21,7 +35,7 @@ func (p *Brush) LineTo(px, py x) LimitedPattern {
 	return s
 }
 
-func (p *Brush) LineToVertical(py x) LimitedPattern {
+func (p *Pen) LineToVertical(py x) LimitedPattern {
 	if p.Relative {
 		py += p.y
 	}
@@ -30,7 +44,7 @@ func (p *Brush) LineToVertical(py x) LimitedPattern {
 	return s
 }
 
-func (p *Brush) LineToHorizontal(px x) LimitedPattern {
+func (p *Pen) LineToHorizontal(px x) LimitedPattern {
 	if p.Relative {
 		px += p.x
 	}
@@ -39,27 +53,18 @@ func (p *Brush) LineToHorizontal(px x) LimitedPattern {
 	return s
 }
 
-func (p *Brush) StartLine(px1, py1, px2, py2 x) LimitedPattern {
+func (p *Pen) StartLine(px1, py1, px2, py2 x) LimitedPattern {
 	p.MoveTo(px1,py1)
 	return p.LineTo(px2, py2)
 }
 
-func (p *Brush) MoveTo(px, py x) {
-	if p.Relative {
-		px += p.x
-		py += p.y
-	}
-	p.x, p.y, p.sx, p.sy = px, py, px, py
-	return
-}
-
-func (p *Brush) LineClose() LimitedPattern {
-	s := p.Line(p.x, p.y, p.sx, p.sy)
-	p.x, p.y = p.sx, p.sy
+func (p *Pen) LineClose() LimitedPattern {
+	s := p.Line(p.x, p.y, p.x, p.y)
+	p.x, p.y = p.x,p.y
 	return s
 }
 
-func (p *Brush) ArcTo(rx,ry x, a float64, large,sweep bool,x,y x) LimitedPattern {
+func (p *Pen) ArcTo(rx,ry x, a float64, large,sweep bool,x,y x) LimitedPattern {
 	if p.Relative {
 		x += p.x
 		y += p.y
@@ -69,7 +74,7 @@ func (p *Brush) ArcTo(rx,ry x, a float64, large,sweep bool,x,y x) LimitedPattern
 	return s
 }
 
-func (p *Brush) QuadraticBezierTo(cx,cy,px,py x) LimitedPattern {
+func (p *Pen) QuadraticBezierTo(cx,cy,px,py x) LimitedPattern {
 	if p.Relative {
 		px += p.x
 		py += p.y
@@ -81,7 +86,7 @@ func (p *Brush) QuadraticBezierTo(cx,cy,px,py x) LimitedPattern {
 	return s
 }
 
-func (p *Brush) CubicBezierTo(c1x,c1y,c2x,c2y,px,py x) LimitedPattern {
+func (p *Pen) CubicBezierTo(c1x,c1y,c2x,c2y,px,py x) LimitedPattern {
 	if p.Relative {
 		px += p.x
 		py += p.y
