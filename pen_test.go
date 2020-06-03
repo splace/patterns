@@ -4,7 +4,7 @@ package patterns
 
 
 func ExampleBrushLine() {
-	b := Pen{Nib:Facet{2*unitX, unitY,3}, Relative: true}
+	b := Pen{Nib:Faceted{4*unitX, unitY,3}, Relative: true}
 	Output(b.Line(0, 0, 10*unitX, -10*unitX))
 	/* Output:
 Graph
