@@ -53,10 +53,8 @@ type Square struct {
 	Filling
 }
 
-const unitXm = -unitX
-
 func (p Square) at(px, py x) (v y) {
-	if py < unitX && py >= unitXm && px >= unitXm && px < unitX {
+	if py < unitX && py >= -unitX && px >= -unitX && px < unitX {
 		return p.Fill
 	}
 	return
@@ -64,10 +62,6 @@ func (p Square) at(px, py x) (v y) {
 
 func (p Square) MaxX() x {
 	return unitX
-}
-
-func NewFrame(Extent, Width float32, f Filling) LimitedPattern {
-	return Limiter{UnlimitedInverted{Composite{Shrunk{Square{f}, 1/(Extent - Width/2)}, UnlimitedInverted{Shrunk{Square{f}, 1/(Extent + Width/2)}}}}, X(Extent + Width)}
 }
 
 

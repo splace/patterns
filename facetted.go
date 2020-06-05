@@ -5,10 +5,10 @@ import "math"
 
 // TODO brush interface for alternative ways to draw stuff
 
-// Faceted is a Nib that produces patterns with curves sub-divided into straight lines.
+// Facetted is a Nib that produces patterns with curves sub-divided into straight lines.
 // CurveDivision:  power of 2 number of divisions.
 // default 0 - no division, all curves a single straight line
-type Faceted struct{
+type Facetted struct{
 	Width    x
 	In       y
 	CurveDivision uint8
@@ -16,14 +16,15 @@ type Faceted struct{
 
 
 
-func (p Faceted) Line(x1, y1, x2, y2 x) LimitedPattern {
-	dx,dy:=float64(x1-x2),float64(y2-y1)
-	return Translated{NewRotated(Reduced{Square{Filling{p.In}}, float32(float64(unitX)*2/math.Hypot(dx,dy)),float32(unitX*4/p.Width)},math.Atan2(dx,dy)).(LimitedPattern),(x1+x2)/2, (y1+y2)/2}
+func (p Facetted) Line(x1, y1, x2, y2 x) LimitedPattern {
+	ndx,dy:=float64(x1-x2),float64(y2-y1)
+	// NewRotated calculates maxX for case where the provided limitedpattern of 'full' but here we know better.
+	return Translated{NewRotated(NewLine(x(math.Hypot(ndx,dy)),p.Width, Filling{p.In}),math.Atan2(ndx,dy)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
 }
 
 
 
-func (p Faceted) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) LimitedPattern {
+func (p Facetted) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) LimitedPattern {
 	// if ellipse too small expand to just fit, which will depend on angle, uggg.
 	if rx==ry{
 		// much simpler, just a circle, angle redundent
@@ -64,11 +65,11 @@ func (p Faceted) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) Limite
 	return nil
 }
 
-func (p Faceted) Box(x,y x) LimitedPattern {
+func (p Facetted) Box(x,y x) LimitedPattern {
 	return Limiter{Composite{p.Line(-x,y, x,y),p.Line(x,y,x,-y),p.Line(x,-y,-x,-y),p.Line(-x,-y,-x,y)},max4(x+p.Width,p.Width-x,p.Width-y,y-p.Width)}
 }
 
-func (p Faceted) Polygon(coords ...[2]x) Pattern {
+func (p Facetted) Polygon(coords ...[2]x) Pattern {
 	// TODO calc limits
 	s := make([]Pattern, len(coords)) 
 	for i := 1; i < len(s); i++ {
@@ -144,7 +145,7 @@ func quadroupleDivision(s,c1,c2,c3,e x) (func (divider) x ){
 //		}
 //	}
 
-func (p Faceted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
+func (p Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
 	xfn:=doubleDivision(sx, cx, ex)
 	yfn:=doubleDivision(sy, cy, ey)
 	var s []Pattern
@@ -157,7 +158,7 @@ func (p Faceted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
 }
 
 
-func (p Faceted) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
+func (p Facetted) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
 	xfn:=tripleDivision(sx, c1x, c2x, ex)
 	yfn:=tripleDivision(sy, c1y, c2y, ey)
 	var s []Pattern
@@ -170,7 +171,7 @@ func (p Faceted) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern
 }
 
 
-func (p Faceted) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) LimitedPattern {
+func (p Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) LimitedPattern {
 	xfn:=quadroupleDivision(sx, c1x, c2x, c3x, ex)
 	yfn:=quadroupleDivision(sy, c1y, c2y, c3y, ey)
 	var s []Pattern

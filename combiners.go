@@ -20,7 +20,7 @@ func (c Composite) at(px, py x) (total y) {
 				continue
 			}
 		}
-		total = composit(total, p.at(px, py))
+		total = compose(total, p.at(px, py))
 		if total.isOpaque() {
 			return
 		}

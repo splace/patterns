@@ -58,7 +58,7 @@ func (v y) isOpaque() bool {
 	return bool(v)
 }
 
-func composit(y1, y2 y) y {
+func compose(y1, y2 y) y {
 	return y1 || y2
 }
 

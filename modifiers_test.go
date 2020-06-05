@@ -8,8 +8,8 @@ import (
 )
 
 
-func ExampleShifted() {
-	Output(Translated{Shrunk{Square{Filling{unitY}}, .5}, 2*unitX, 2*unitX})
+func ExampleModifiersShifted() {
+	Output(Translated{Square{Filling{unitY}}, 2*unitX, 2*unitX},unitX)
 	/* Output:
 Graph
        -5	-----------
@@ -26,8 +26,8 @@ Graph
 	*/
 }
 
-func ExampleTranslated() {
-	Output(Translated{Shrunk{Square{Filling{unitY}}, .5}, 2*unitX, 0})
+func ExampleModifiersTranslated() {
+	Output(Translated{Shrunk{Square{Filling{unitY}}, .5}, 2*unitX, 0},unitX)
 	/* Output:
 Graph
        -5	-----------
@@ -44,8 +44,8 @@ Graph
 	*/
 }
 
-func ExampleZoomed() {
-	Output(Shrunk{Square{Filling{unitY}}, .25})
+func ExampleModifiersZoomed() {
+	Output(Shrunk{Square{Filling{unitY}}, .25},unitX)
 	/* Output:
 Graph
        -5	-----------
@@ -62,8 +62,8 @@ Graph
 	*/
 }
 
-func ExampleScaled() {
-	Output(Limiter{Reduced{Square{Filling{unitY}}, .125, 1},8*unitX})
+func ExampleModifiersScaled() {
+	Output(Limiter{Reduced{Square{Filling{unitY}}, .125, 1},8*unitX},unitX)
 	/* Output:
 Graph
        -9	-------------------
@@ -88,8 +88,8 @@ Graph
 	*/
 }
 
-func ExampleRotated() {
-	Output(Limiter{Rotated{Shrunk{Square{Filling{unitY}}, .5}, .707, .707},3*unitX})
+func ExampleModifiersRotated() {
+	Output(Limiter{Rotated{Shrunk{Square{Filling{unitY}}, .5}, .707, .707},3*unitX},unitX*.5)
 	/* Output:
 Graph
        -4	---------
@@ -104,8 +104,8 @@ Graph
 	*/
 }
 
-func ExampleInverted() {
-	Output(Inverted{Shrunk{Square{Filling{unitY}}, .5}})
+func ExampleModifiersInverted() {
+	Output(Inverted{Shrunk{Square{Filling{unitY}}, .5}},unitX)
 	/* Output:
 Graph
        -3	XXXXXXX
@@ -117,5 +117,6 @@ Graph
         3	XXXXXXX
 	*/
 }
+
 
 

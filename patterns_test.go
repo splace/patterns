@@ -30,11 +30,9 @@ func ExampleXscanMuilti(){
 	// 13.45 0.5 -0.3 -0.091
 }
 
-
-const margin=unitX
-
-func Output(p LimitedPattern){
-	PrintGraph(p,-p.MaxX()-margin, p.MaxX()+margin, -p.MaxX()-margin, p.MaxX()+margin, unitX)
+// one step margin 
+func Output(p LimitedPattern,step x){
+	PrintGraph(p,-p.MaxX()-step, p.MaxX()+step, -p.MaxX()-step, p.MaxX()+step, step)
 }
 
 func PrintGraph(p Pattern, startx, endx, starty, endy, step x) {
@@ -49,7 +47,7 @@ func PrintGraph(p Pattern, startx, endx, starty, endy, step x) {
 }
 
 func ExampleConstant() {
-	Output(Limiter{Constant{Filling{unitY}},5*unitX})
+	Output(Limiter{Constant{Filling{unitY}},5*unitX},unitX)
 	/* Output:
 Graph
        -6	XXXXXXXXXXXXX
@@ -69,7 +67,7 @@ Graph
 }
 
 func ExampleDisc() {
-	Output(Disc{Filling{unitY}})
+	Output(Disc{Filling{unitY}},unitX)
 	/* Output:
 Graph
        -2	-----
@@ -81,7 +79,7 @@ Graph
 }
 
 func ExampleSquare() {
-	Output(Square{Filling{unitY}})
+	Output(Square{Filling{unitY}},unitX)
 	/* Output:
 Graph
        -2	-----

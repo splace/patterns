@@ -4,8 +4,8 @@ package patterns
 
 
 func ExampleBrushLine() {
-	b := Pen{Nib:Faceted{4*unitX, unitY,3}, Relative: true}
-	Output(b.Line(0, 0, 10*unitX, -10*unitX))
+	b := Pen{Nib:Facetted{unitX, unitY,3}, Relative: true}
+	Output(b.Line(0, 0, 10*unitX, -10*unitX),unitX)
 	/* Output:
 Graph
       -15	--------------------------------
