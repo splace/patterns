@@ -342,6 +342,38 @@ Graph
 
 
 
+func ExampleSVGpathScanMultitest() {
+bitcoin:=`c0 36-57 32-75 32V-80z`
+	p:=Path{}
+	_,err:=fmt.Sscan(bitcoin,&p)
+	if err!=nil{
+		fmt.Println(err)
+	}
+	fmt.Printf("%#v\n",p)
+	b := Brush{Pen:Pen{Nib:Facetted{Width: 16*unitX, In: unitY, CurveDivision:0}}}
+	Output(Limiter{UnlimitedReduced{p.Draw(&b),2,4},60*unitX},unitX)
+	/* Output:
+Graph
+       -8	-----------------
+       -7	-----------------
+       -6	--XXXXXXXXXXXX---
+       -5	--XXXXXXXXXXXX---
+       -4	--XX--------XX---
+       -3	--XX--------XX---
+       -2	--XX--------XX---
+       -1	--XX--------XX---
+        0	--XX--------XX---
+        1	--XX--------XX---
+        2	--XX--------XX---
+        3	--XX--------XX---
+        4	--XXXXXXXXXXXX---
+        5	--XXXXXXXXXXXX---
+        6	-----------------
+        7	-----------------
+        8	-----------------
+	*/
+}
+
 func ExampleSVGpathScanMulti() {
 bitcoin:=`M66-8c19-9 30-26 28-54-4-38-37-51-78-54l0-53h-32l0 51c-8 0-17 0-26 0L-42-169l-32 0 0 53c-7 0-14 0-20 0v0l-44 0 0 34c0 0 24 0 23 0 13 0 17 8 18 14l0 60v84c-1 4-3 11-12 11 0 0-23 0-23 0l-6 38h42c8 0 15 0 23 0l0 53 32 0 0-53c9 0 17 0 26 0l0 53h32l0-53c54-3 92-17 97-67C116 18 97-1 66-8zM-41-80c18 0 75-6 75 32 0 36-57 32-75 32V-80zM-41 87l0-71c22 0 90-6 90 35C49 92-20 87-41 87z`
 /*	bitcoin:=
@@ -395,9 +427,9 @@ z
 	if err!=nil{
 		fmt.Println(err)
 	}
-//	fmt.Printf("%#v\n",p)
-	b := Brush{Pen:Pen{Nib:Facetted{Width: 10*unitX, In: unitY, CurveDivision:2}}}
-	Output(Limiter{UnlimitedShrunk{p.Draw(&b),8},45*unitX},unitX)
+	fmt.Printf("%#v\n",p)
+	b := Brush{Pen:Pen{Nib:Facetted{Width: 16*unitX, In: unitY, CurveDivision:0}}}
+	Output(Limiter{UnlimitedReduced{p.Draw(&b),2,4},60*unitX},unitX)
 	/* Output:
 Graph
        -8	-----------------
@@ -419,4 +451,3 @@ Graph
         8	-----------------
 	*/
 }
-

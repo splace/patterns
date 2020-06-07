@@ -44,8 +44,16 @@ func max(a, b x) x {
 	return a
 }
 
+func max2(a, b x) x {
+	return max(abs(a),abs(b))
+}
+
 func max4(a, b, c, d x) x {
-	return max(max(abs(a),abs(b)),max(abs(c),abs(d)))
+	return max2(max2(a,b),max2(c,d))
+}
+
+func max6(a, b, c, d, e, f  x) x {
+	return max2(max4(a,b,c,d),max2(e,f))
 }
 
 // a LimitedPattern Scaled
