@@ -18,8 +18,9 @@ type Facetted struct{
 
 func (p Facetted) Line(x1, y1, x2, y2 x) LimitedPattern {
 	ndx,dy:=float64(x1-x2),float64(y2-y1)
-	// NewRotated calculates maxX for case where the provided limitedpattern of 'full' but here we know better.
-	return Translated{NewRotated(NewLine(x(math.Hypot(ndx,dy)),p.Width, Filling{p.In}),math.Atan2(ndx,dy)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
+	// NewRotated actually returns a LimitedPattern (as a Pattern) because NewLine returns one, so assert can never fail.
+	// TODO here we know MaxX better than z.
+	return Translated{NewRotated(Rectangle(x(math.Hypot(ndx,dy)),p.Width, Filling{p.In}),math.Atan2(dy,ndx)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
 }
 
 
@@ -66,7 +67,7 @@ func (p Facetted) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) Limit
 }
 
 func (p Facetted) Box(x,y x) LimitedPattern {
-	return Limiter{Composite{p.Line(-x,y, x,y),p.Line(x,y,x,-y),p.Line(x,-y,-x,-y),p.Line(-x,-y,-x,y)},max4(x+p.Width,p.Width-x,p.Width-y,y-p.Width)}
+	return Limiter{Composite{p.Line(-x,y, x,y),p.Line(x,y,x,-y),p.Line(x,-y,-x,-y),p.Line(-x,-y,-x,y)},max(x+p.Width,y+p.Width)}
 }
 
 func (p Facetted) Polygon(coords ...[2]x) Pattern {

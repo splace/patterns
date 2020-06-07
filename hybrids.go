@@ -1,7 +1,7 @@
 package patterns
 
-func NewLine(h, w x, f Filling) LimitedPattern {
-	return Reduced{Square{f}, float32(unitX)/float32(h),float32(unitX)/float32(w)}
+func Rectangle(h, w x, f Filling) LimitedPattern {
+	return Reduced{Square{f}, float32(unitX*2)/float32(h),float32(unitX*2)/float32(w)}
 }
 
 // nice for testing shows region not in pattern AND inside extended limits

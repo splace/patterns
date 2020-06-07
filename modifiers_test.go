@@ -4,12 +4,19 @@ import (
 //"fmt"
 //"io/ioutil"
 //"strings"
-//"testing"
+"testing"
 )
+
+func TestModifierMax(t *testing.T){
+	if max4(-2500,2500,2500,-2500)!=2500{
+		t.Error( max4(-2500,2500,2500,-2500))
+	}
+}
+
 
 
 func ExampleModifiersShifted() {
-	Output(Translated{Square{Filling{unitY}}, 2*unitX, 2*unitX},unitX)
+	Output(Translated{Square{Filling{unitY}}, 4*unitX, 3*unitX},unitX)
 	/* Output:
 Graph
        -5	-----------

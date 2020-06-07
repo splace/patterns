@@ -17,7 +17,7 @@ type Translated struct {
 }
 
 func (p Translated) at(px, py x) y {
-	return p.LimitedPattern.(Pattern).at(px, py)
+	return p.LimitedPattern.at(px-p.dx, py-p.dy)
 }
 
 func (p Translated) MaxX() x {
@@ -40,12 +40,12 @@ func abs(a x) x {
 }
 
 func max(a, b x) x {
-	if abs(b)>abs(a) {a = b}
+	if b>a {a = b}
 	return a
 }
 
 func max4(a, b, c, d x) x {
-	return max(max(a,b),max(c,d))
+	return max(max(abs(a),abs(b)),max(abs(c),abs(d)))
 }
 
 // a LimitedPattern Scaled
@@ -55,7 +55,7 @@ type Reduced struct {
 }
 
 func (p Reduced) at(px, py x) y {
-	return p.LimitedPattern.(Pattern).at(px,py)
+	return p.LimitedPattern.at(x(float32(px)*p.sx), x(float32(py)*p.sy))
 }
 
 func (p Reduced) MaxX() x {
@@ -83,7 +83,7 @@ type Shrunk struct {
 }
 
 func (p Shrunk) at(px, py x) y {
-	return p.LimitedPattern.(Pattern).at(px,py)
+	return p.LimitedPattern.at(x(float32(px)*p.float32), x(float32(py)*p.float32))
 }
 
 func (p Shrunk) MaxX() x {
@@ -107,7 +107,7 @@ type Rotated struct {
 }
 
 func (p Rotated) at(px, py x) y {
-	return p.LimitedPattern.(Pattern).at(px,py)
+	return p.LimitedPattern.at(x(float64(px)*p.cosA-float64(py)*p.sinA), x(float64(px)*p.sinA+float64(py)*p.cosA))
 }
 
 func (p Rotated) MaxX() x {

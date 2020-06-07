@@ -2,12 +2,260 @@ package patterns
 
 import "fmt"
 import "io"
+import "strings"
 
 type Drawer interface{
 	Draw(*Brush)Pattern
 }
 
 type Path []Drawer
+
+
+func (p Path) String()string {
+	b :=new(strings.Builder)
+	var ls Drawer
+	for _,s:=range(p){
+		switch st:=s.(type){
+		case MoveTo:
+			fmt.Fprintf(b,"\nM%v,%v",st[0],st[1])
+		case MoveToRelative:
+			fmt.Fprintf(b,"\nm%v,%v",st[0],st[1])
+		case LineTo:
+			switch ls.(type){
+			case LineTo,MoveTo:
+				fmt.Fprintf(b," %v,%v",st[0],st[1])
+			default:
+				fmt.Fprintf(b,"\nL%v,%v",st[0],st[1])
+			}
+		case LineToRelative:
+			switch ls.(type){
+			case LineToRelative,MoveToRelative:
+				fmt.Fprintf(b," %v,%v",st[0],st[1])
+			default:
+				fmt.Fprintf(b,"\nl%v,%v",st[0],st[1])
+			}
+		case VerticalLineTo:
+			fmt.Fprintf(b,"\nV%v",st[0])
+		case VerticalLineToRelative:
+			fmt.Fprintf(b,"\nv%v",st[0])
+		case HorizontalLineTo:
+			fmt.Fprintf(b,"\nH%v",st[0])
+		case HorizontalLineToRelative:
+			fmt.Fprintf(b,"\nh%v",st[0])
+		case CloseRelative:
+			fmt.Fprintf(b,"\nz")
+		case Close:
+			fmt.Fprintf(b,"\nZ")
+		case QuadraticBezierTo:
+			switch ls.(type){
+			case QuadraticBezierTo:
+				fmt.Fprintf(b," %v,%v %v,%v",st[0],st[1],st[2],st[3])
+			default:
+				fmt.Fprintf(b,"\nQ%v,%v %v,%v",st[0],st[1],st[2],st[3])
+			}
+		case SmoothQuadraticBezierTo:
+			switch ls.(type){
+			case SmoothQuadraticBezierTo:
+				fmt.Fprintf(b," %v,%v",st[0],st[1])
+			default:
+				fmt.Fprintf(b,"\nT%v,%v",st[0],st[1])
+			}
+		case QuadraticBezierToRelative:
+			switch ls.(type){
+			case QuadraticBezierToRelative:
+				fmt.Fprintf(b," %v,%v %v,%v",st[0],st[1],st[2],st[3])
+			default:
+				fmt.Fprintf(b,"\nq%v,%v %v,%v",st[0],st[1],st[2],st[3])
+			}
+		case SmoothQuadraticBezierToRelative:
+			switch ls.(type){
+			case SmoothQuadraticBezierToRelative:
+				fmt.Fprintf(b," %v,%v",st[0],st[1])
+			default:
+				fmt.Fprintf(b,"\nt%v,%v",st[0],st[1])
+			}
+		case CubicBezierTo:
+			switch ls.(type){
+			case CubicBezierTo:
+				fmt.Fprintf(b," %v,%v %v,%v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5])
+			default:
+				fmt.Fprintf(b,"\nC%v,%v %v,%v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5])
+			}
+		case SmoothCubicBezierTo:
+			switch ls.(type){
+			case CubicBezierTo:
+				fmt.Fprintf(b," %v,%v %v,%v",st[0],st[1],st[2],st[3])
+			default:
+				fmt.Fprintf(b,"\nS%v,%v %v,%v",st[0],st[1],st[2],st[3])
+			}
+		case CubicBezierToRelative:
+			switch ls.(type){
+			case CubicBezierToRelative:
+				fmt.Fprintf(b," %v,%v %v,%v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5])
+			default:
+				fmt.Fprintf(b,"\nc%v,%v %v,%v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5])
+			}
+		case SmoothCubicBezierToRelative:
+			switch ls.(type){
+			case SmoothCubicBezierToRelative:
+				fmt.Fprintf(b," %v,%v %v,%v",st[0],st[1],st[2],st[3])
+			default:
+				fmt.Fprintf(b,"\ns%v,%v %v,%v",st[0],st[1],st[2],st[3])
+			}
+		case ArcTo:
+			switch ls.(type){
+			case ArcTo:
+				fmt.Fprintf(b," %v,%v %v %v %v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5],st[6])
+			default:
+				fmt.Fprintf(b,"\nA%v,%v %v %v %v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5],st[6])
+			}
+		case ArcToRelative:
+			switch ls.(type){
+			case ArcToRelative:
+				fmt.Fprintf(b," %v,%v %v %v %v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5],st[6])
+			default:
+				fmt.Fprintf(b,"\na%v,%v %v %v %v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5],st[6])
+			}
+		}
+		ls=s
+	}
+	return b.String()[1:]
+}
+
+// skip repeat command and leading zero/space/, when leading point or neg
+type CompactPath Path
+
+type presep x
+func (cx presep) String()(s string){
+	s=fmt.Sprint(x(cx))
+	switch s[0]{
+	case '0':
+		if len(s)>1 {return ","+s[1:]}
+		return ","+s
+	case '1','2','3','4','5','6','7','8','9':
+		return ","+s
+	}	
+	return 
+}
+
+type compactx x
+func (cx compactx) String()(s string){
+	s=fmt.Sprint(x(cx))
+	if len(s)>1 && s[0]=='0' {return s[1:]}
+	return 
+}
+
+func (p CompactPath) String()string {
+	b :=new(strings.Builder)
+	var ls Drawer
+	for _,s:=range(p){
+		switch st:=s.(type){
+		case MoveTo:
+			fmt.Fprintf(b,"M%v%v",compactx(st[0]),presep(st[1]))
+		case MoveToRelative:
+			fmt.Fprintf(b,"m%v%v",compactx(st[0]),presep(st[1]))
+		case LineTo:
+			switch ls.(type){
+			case LineTo,MoveTo:
+				fmt.Fprintf(b,"%v%v",presep(st[0]),presep(st[1]))
+			default:
+				fmt.Fprintf(b,"L%v%v",compactx(st[0]),presep(st[1]))
+			}
+		case LineToRelative:
+			switch ls.(type){
+			case LineToRelative,MoveToRelative:
+				fmt.Fprintf(b,"%v%v",presep(st[0]),presep(st[1]))
+			default:
+				fmt.Fprintf(b,"l%v%v",compactx(st[0]),presep(st[1]))
+			}
+		case VerticalLineTo:
+			fmt.Fprintf(b,"V%v",compactx(st[0]))
+		case VerticalLineToRelative:
+			fmt.Fprintf(b,"v%v",compactx(st[0]))
+		case HorizontalLineTo:
+			fmt.Fprintf(b,"H%v",compactx(st[0]))
+		case HorizontalLineToRelative:
+			fmt.Fprintf(b,"h%v",compactx(st[0]))
+		case CloseRelative:
+			fmt.Fprintf(b,"z")
+		case Close:
+			fmt.Fprintf(b,"Z")
+		case QuadraticBezierTo:
+			switch ls.(type){
+			case QuadraticBezierTo:
+				fmt.Fprintf(b,"%v%v%v%v",presep(st[0]),presep(st[1]),presep(st[2]),presep(st[3]))
+			default:
+				fmt.Fprintf(b,"Q%v%v%v%v",compactx(st[0]),presep(st[1]),presep(st[2]),presep(st[3]))
+			}
+		case SmoothQuadraticBezierTo:
+			switch ls.(type){
+			case SmoothQuadraticBezierTo:
+				fmt.Fprintf(b,"%v%v",presep(st[0]),presep(st[1]))
+			default:
+				fmt.Fprintf(b,"T%v%v",compactx(st[0]),presep(st[1]))
+			}
+		case QuadraticBezierToRelative:
+			switch ls.(type){
+			case QuadraticBezierToRelative:
+				fmt.Fprintf(b,"%v%v%v%v",presep(st[0]),presep(st[1]),presep(st[2]),presep(st[3]))
+			default:
+				fmt.Fprintf(b,"q%v%v%v%v",compactx(st[0]),presep(st[1]),presep(st[2]),presep(st[3]))
+			}
+		case SmoothQuadraticBezierToRelative:
+			switch ls.(type){
+			case SmoothQuadraticBezierToRelative:
+				fmt.Fprintf(b,"%v%v",presep(st[0]),presep(st[1]))
+			default:
+				fmt.Fprintf(b,"t%v%v",compactx(st[0]),presep(st[1]))
+			}
+		case CubicBezierTo:
+			switch ls.(type){
+			case CubicBezierTo:
+				fmt.Fprintf(b,"%v%v%v%v%v%v",presep(st[0]),presep(st[1]),presep(st[2]),presep(st[3]),presep(st[4]),presep(st[5]))
+			default:
+				fmt.Fprintf(b,"C%v%v%v%v%v%v",compactx(st[0]),presep(st[1]),presep(st[2]),presep(st[3]),presep(st[4]),presep(st[5]))
+			}
+		case SmoothCubicBezierTo:
+			switch ls.(type){
+			case CubicBezierTo:
+				fmt.Fprintf(b,"%v%v%v%v",presep(st[0]),presep(st[1]),presep(st[2]),presep(st[3]))
+			default:
+				fmt.Fprintf(b,"S%v%v%v%v",compactx(st[0]),presep(st[1]),presep(st[2]),presep(st[3]))
+			}
+		case CubicBezierToRelative:
+			switch ls.(type){
+			case CubicBezierToRelative:
+				fmt.Fprintf(b,"%v%v%v%v%v%v",presep(st[0]),presep(st[1]),presep(st[2]),presep(st[3]),presep(st[4]),presep(st[5]))
+			default:
+				fmt.Fprintf(b,"c%v%v%v%v%v%v",compactx(st[0]),presep(st[1]),presep(st[2]),presep(st[3]),presep(st[4]),presep(st[5]))
+			}
+		case SmoothCubicBezierToRelative:
+			switch ls.(type){
+			case SmoothCubicBezierToRelative:
+				fmt.Fprintf(b,"%v%v%v%v",presep(st[0]),presep(st[1]),presep(st[2]),presep(st[3]))
+			default:
+				fmt.Fprintf(b,"s%v%v%v%v",compactx(st[0]),presep(st[1]),presep(st[2]),presep(st[3]))
+			}
+		case ArcTo:
+			switch ls.(type){
+			case ArcTo:
+				fmt.Fprintf(b,"%v%v%v%v%v%v%v",presep(st[0]),presep(st[1]),presep(st[2]),presep(st[3]),presep(st[4]),presep(st[5]),presep(st[6]))
+			default:
+				fmt.Fprintf(b,"A%v%v%v%v%v%v%v",compactx(st[0]),presep(st[1]),presep(st[2]),presep(st[3]),presep(st[4]),presep(st[5]),presep(st[6]))
+			}
+		case ArcToRelative:
+			switch ls.(type){
+			case ArcToRelative:
+				fmt.Fprintf(b,"%v%v%v%v%v%v%v",presep(st[0]),presep(st[1]),presep(st[2]),presep(st[3]),presep(st[4]),presep(st[5]),presep(st[6]))
+			default:
+				fmt.Fprintf(b,"a%v%v%v%v%v%v%v",compactx(st[0]),presep(st[1]),presep(st[2]),presep(st[3]),presep(st[4]),presep(st[5]),presep(st[6]))
+			}
+		}
+		ls=s
+	}
+	return b.String()
+}
+
 
 // draw a path using the provided brush
 func (p Path) Draw(b *Brush)(c Composite) {
@@ -20,7 +268,7 @@ func (p Path) Draw(b *Brush)(c Composite) {
 	return
 }
 
-// a brush is a Pen that also stored control points for smoothed segments
+// a brush is a Pen that also stores control points for smoothed bezier segments
 type Brush struct {
 	Pen
 	dqcx, dqcy  x 
@@ -65,18 +313,18 @@ func (s LineToRelative) Draw(b *Brush)Pattern{
 	return b.LineTo(s[0],s[1])
 }
 
-type VeticalLineTo []x
+type VerticalLineTo []x
 
-func (s VeticalLineTo) Draw(b *Brush)Pattern{
+func (s VerticalLineTo) Draw(b *Brush)Pattern{
 	b.Relative=false
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = 0,0
 	return b.LineToVertical(s[0])
 }
 
-type VeticalLineToRelative []x
+type VerticalLineToRelative []x
 
-func (s VeticalLineToRelative) Draw(b *Brush)Pattern{
+func (s VerticalLineToRelative) Draw(b *Brush)Pattern{
 	b.Relative=true
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = 0,0
@@ -109,6 +357,12 @@ func (s Close) Draw(b *Brush)Pattern{
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = 0,0
 	return b.LineClose()
+}
+
+type CloseRelative struct{}
+
+func (s CloseRelative) Draw(b *Brush)Pattern{
+	return Close(s).Draw(b)
 }
 
 //var quadraticControlx, quadraticControly x
@@ -226,6 +480,15 @@ func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 			if err==io.EOF {return nil}
 			return err
 		}
+		if c==',' {
+			state.SkipSpace()
+			c,_,err=state.ReadRune()
+			if err!=nil{
+				if err==io.EOF {return nil}
+				return err
+			}
+		}
+		
 		for {
 			switch c{
 			//case '?'
@@ -253,8 +516,10 @@ func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 				_,err=fmt.Fscan(state,&xs[len(xs)-2],&xs[len(xs)-1])
 				if err!=nil{return err}
 				*p=append(*p,LineToRelative(xs[len(xs)-2:]))
-			case 'z','Z':
+			case 'Z':
 				*p=append(*p,Close{})
+			case 'z':
+				*p=append(*p,CloseRelative{})
 			case 'H':
 				xs=append(xs,0)
 				_,err=fmt.Fscan(state,&xs[len(xs)-1])
@@ -269,12 +534,12 @@ func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 				xs=append(xs,0)
 				_,err=fmt.Fscan(state,&xs[len(xs)-1])
 				if err!=nil{return err}
-				*p=append(*p,VeticalLineTo(xs[len(xs)-1:]))
+				*p=append(*p,VerticalLineTo(xs[len(xs)-1:]))
 			case 'v':
 				xs=append(xs,0)
 				_,err=fmt.Fscan(state,&xs[len(xs)-1])
 				if err!=nil{return err}
-				*p=append(*p,VeticalLineToRelative(xs[len(xs)-1:]))
+				*p=append(*p,VerticalLineToRelative(xs[len(xs)-1:]))
 			
 			// TODO  for curves create their own paths?	
 			// or use transform to get quadratic, and create cubic from a series f these?
@@ -437,4 +702,3 @@ func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 	}
 	return nil
 }
-
