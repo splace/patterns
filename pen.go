@@ -1,7 +1,7 @@
 package patterns
 
 
-// Nib can create LimitedPatterns in a particular way.
+// Nibs can create line based LimitedPatterns in a particular way.
 type Nib interface{
 	Line(x,x,x,x) LimitedPattern
 	QuadraticBezier(x,x,x,x,x,x) LimitedPattern
