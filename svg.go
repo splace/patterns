@@ -122,7 +122,7 @@ func (p Path) String()string {
 	return b.String()[1:]
 }
 
-// skip repeat command and leading zero/space/, when leading point or neg
+// skip repeated commands and leading zero/space/comma when leading point or neg
 type CompactPath Path
 
 type presep x

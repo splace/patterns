@@ -24,9 +24,9 @@ func (p x) String() string {
 	return fmt.Sprint(float32(p)/float32(unitX))
 }
 
-var xscan float32
 
 func (p *x) Scan(state fmt.ScanState, v rune) (err error) {
+	var xscan float32
 	state.SkipSpace()
 	r,_,err:=state.ReadRune()
 	if err!=nil{return}
