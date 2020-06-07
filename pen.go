@@ -1,6 +1,7 @@
 package patterns
 
 
+// Nib can create LimitedPatterns in a particular way.
 type Nib interface{
 	Line(x,x,x,x) LimitedPattern
 	QuadraticBezier(x,x,x,x,x,x) LimitedPattern
@@ -8,8 +9,8 @@ type Nib interface{
 	Arc(x,x,x,x,float64,bool,bool,x,x) LimitedPattern
 }
 
-// brush holds state, style/position , for line based patterns
-// lines produced are independent.
+// Pens have methods to create LimitedPatterns using their current position.
+// they call their embedded Nib's methods with absolute position.
 type Pen struct {
 	Nib
 	Relative bool
