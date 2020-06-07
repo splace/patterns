@@ -8,6 +8,10 @@ import "math"
 // Facetted is a Nib that produces patterns with curves sub-divided into straight lines.
 // CurveDivision:  power of 2 number of divisions.
 // default 0 - no division, all curves a single straight line
+// uses direct definition of bezier curves, cascading linear division, to give more lines where more curvature.
+// unoptimised limits 
+// * bezier curves are limited to being within hull of control points.
+// uses conic projection for arc, again more lines where more curvative.
 type Facetted struct{
 	Width    x
 	In       y
