@@ -67,7 +67,7 @@ func (p Facetted) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) Limit
 }
 
 func (p Facetted) Box(x,y x) LimitedPattern {
-	return Limiter{Composite{p.Line(-x,y, x,y),p.Line(x,y,x,-y),p.Line(x,-y,-x,-y),p.Line(-x,-y,-x,y)},max(x+p.Width,y+p.Width)}
+	return Limiter{Composite{p.Line(-x,y, x,y),p.Line(x,y,x,-y),p.Line(x,-y,-x,-y),p.Line(-x,-y,-x,y)},max2(x+p.Width,y+p.Width)}
 }
 
 func (p Facetted) Polygon(coords ...[2]x) Pattern {
@@ -155,7 +155,7 @@ func (p Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
 	for i := step-1; li<i ; li,i=i,i+step {
 		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
 	}
-	return Limiter{NewComposite(s...),max(max(max(sx,ex),cx),max(max(sy,ey),cy))+p.Width}
+	return Limiter{NewComposite(s...),max6(sx,ex,cx,sy,ey,cy)+p.Width}
 }
 
 
@@ -168,7 +168,7 @@ func (p Facetted) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPatter
 	for i := step-1; li<i ; li,i=i,i+step {
 		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
 	}
-	return Limiter{NewComposite(s...),max(max(max(sx,ex),max(c1x,c2x)),max(max(sy,ey),max(c1y,c2y)))+p.Width}  
+	return Limiter{NewComposite(s...),max8(sx,ex,c1x,c2x,sy,ey,c1y,c2y)+p.Width}  
 }
 
 
@@ -181,6 +181,6 @@ func (p Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) Li
 	for i := step-1; li<i ; li,i=i,i+step {
 		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
 	}
-	return Limiter{NewComposite(s...),max(max(max(max(sx,ex),max(c1x,c2x)),c3x),max(max(max(sy,ey),max(c1y,c2y)),c3y))+p.Width }
+	return Limiter{NewComposite(s...),max10(sx,ex,c1x,c2x,c3x,sy,ey,c1y,c2y,c3y)+p.Width }
 }
 

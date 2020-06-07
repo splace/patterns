@@ -38,7 +38,6 @@ func abs(a x) x {
 	if a < 0 {return -a}
 	return a
 }
-
 func max(a, b x) x {
 	if b>a {a = b}
 	return a
@@ -54,6 +53,14 @@ func max4(a, b, c, d x) x {
 
 func max6(a, b, c, d, e, f  x) x {
 	return max2(max4(a,b,c,d),max2(e,f))
+}
+
+func max8(a, b, c, d, e, f,g,h  x) x {
+	return max2(max4(a,b,c,d),max4(e,f,g,h))
+}
+
+func max10(a, b, c, d, e, f,g,h,i,j  x) x {
+	return max2(max8(a,b,c,d,e,f,g,h),max2(i,j))
 }
 
 // a LimitedPattern Scaled
