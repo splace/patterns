@@ -7,9 +7,8 @@ import "math"
 // Curves are divided using CurveDivision:  power of 2 number of divisions.
 // default 0 - no division, all curves a single straight line
 // it uses direct definition of bezier curves, cascading linear division, to give more lines where more curvature.
-// unoptimised limits. 
 // * bezier curves are limited to being within hull of control points.
-// uses conic projection for arc, again more lines where more curvative.
+// uses conic projection for arc, again more lines where more curvature.
 type Facetted struct{
 	Width    x
 	In       y
@@ -77,7 +76,7 @@ func OffsetRotaters (ox,oy,a float64) (func(float64,float64)(float64,float64),fu
 func (p Facetted) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) LimitedPattern {
 	// if ellipse too small expand to just fit, which will depend on angle, uggg.
 	if rx==ry{
-		// much simpler, just a circle, angle redundent
+		// much simpler, just a circle, angle redundant
 		var cx,cy,a1,a2 float64
 		if sweep {
 			cx,cy= circleCentre(x2,y2,rx,x1,y1)
@@ -88,14 +87,14 @@ func (p Facetted) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) Limit
 		if large {
 			a1,a2=a2,a1+2*math.Pi
 		}
-		// scale divisions so you get the same steps per angle
+		// scale divisions so you get the consistent side angles
 		halfDivisions:=uint8(float64(uint8(1)<<p.CurveDivision)*(a2-a1)/math.Pi)+1
-		cwr,_:=OffsetRotaters(cx,cy,(a2-a1)*.5/float64(halfDivisions))
+		ocwr,_:=OffsetRotaters(cx,cy,(a2-a1)*.5/float64(halfDivisions))
 		s := make([]Pattern, halfDivisions*2) 
 		maxx:=max2(x1,y1)
 		dx,dy:= float64(x1),float64(y1)
 		for i:=range(s[:len(s)-1]){
-			ex,ey:=cwr(dx,dy)
+			ex,ey:=ocwr(dx,dy)
 			s[i]=p.Line(x(dx),x(dy),x(ex),x(ey))
 			dx,dy=ex,ey
 			maxx=max2(maxx,max2(x(ex),x(ey)))
@@ -188,7 +187,6 @@ func (p Facetted) Box(x,y x) LimitedPattern {
 }
 
 func (p Facetted) Polygon(coords ...[2]x) LimitedPattern {
-	// TODO calc limits
 	s := make([]Pattern, len(coords)) 
 	maxx:=max2(coords[0][0], coords[0][1])
 	for i := 1; i < len(s); i++ {
