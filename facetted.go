@@ -94,7 +94,7 @@ func (p Facetted) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) Limit
 		s := make([]Pattern, halfDivisions*2) 
 		maxx:=max2(x1,y1)
 		dx,dy:= float64(x1),float64(y1)
-		for i:=uint8(0);i<halfDivisions*2-1; i++{
+		for i:=range(s[:len(s)-1]){
 			ex,ey:=cwr(dx,dy)
 			s[i]=p.Line(x(dx),x(dy),x(ex),x(ey))
 			dx,dy=ex,ey

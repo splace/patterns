@@ -50,8 +50,8 @@ func ExampleFacettedCircle() {
 }
 
 func ExampleFacettedArcPrint() {
-	f:=Facetted{Width:2*unitX, In:unitY,CurveDivision:2}
-	Output(f.Arc(-15*unitX,-10*unitX,26*unitX,26*unitX,0,false,true,15*unitX,-10*unitX),unitX)
+	f:=Facetted{Width:2*unitX, In:unitY,CurveDivision:1}
+	Output(f.Arc(-15*unitX,-10*unitX,16*unitX,16*unitX,0,false,false,15*unitX,-10*unitX),unitX)
 	
 	// Output:
 	/*
