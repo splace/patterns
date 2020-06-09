@@ -29,7 +29,6 @@ func (p Facetted) Line(x1, y1, x2, y2 x) LimitedPattern {
 
 // find centre of circle given two points on rim and radius
 func circleCentre(sx, sy, r, ex, ey x) (x,y float64){
-	// centre on midline
 	// midpoint
 	mx,my:=(ex+sx)>>1,(ey+sy)>>1
 	// vector along midline times distance apart
@@ -41,7 +40,7 @@ func circleCentre(sx, sy, r, ex, ey x) (x,y float64){
 	if d2>4*r2 {
 		panic("circle too small")
 	}
-	// factor along midline
+	// multiplying factor of centre along midline
 	m:=math.Sqrt(float64(r2)/float64(d2)-0.25)
 	// centre
 	return float64(mx)+float64(vmx)*m,float64(my)+float64(vmy)*m
