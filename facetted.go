@@ -59,6 +59,20 @@ func Rotaters (a float64) (func(float64,float64)(float64,float64),func(float64,f
 	}
 }
 
+func OffsetRotaters (ox,oy,a float64) (func(float64,float64)(float64,float64),func(float64,float64)(float64,float64)){
+	sa,ca:=math.Sincos(a)
+	return func(x,y float64) (float64, float64) {
+		x-=ox
+		y-=oy
+		return x*ca+y*sa+ox, y*ca-x*sa+oy
+	},
+	func(x,y float64) (float64, float64) {
+		x-=ox
+		y-=oy
+		return x*ca-y*sa+ox, y*ca+x*sa+oy
+	}
+}
+
 
 func (p Facetted) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) LimitedPattern {
 	// if ellipse too small expand to just fit, which will depend on angle, uggg.
@@ -76,14 +90,12 @@ func (p Facetted) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) Limit
 		}
 		// scale divisions so you get the same steps per angle
 		halfDivisions:=uint8(float64(uint8(1)<<p.CurveDivision)*(a2-a1)/math.Pi)+1
-		cwr,_:=Rotaters((a2-a1)*.5/float64(halfDivisions))
+		cwr,_:=OffsetRotaters(cx,cy,(a2-a1)*.5/float64(halfDivisions))
 		s := make([]Pattern, halfDivisions*2) 
 		maxx:=max2(x1,y1)
 		dx,dy:= float64(x1),float64(y1)
 		for i:=uint8(0);i<halfDivisions*2-1; i++{
-			ex,ey:=cwr(dx-cx,dy-cy)
-			ex+=cx
-			ey+=cy
+			ex,ey:=cwr(dx,dy)
 			s[i]=p.Line(x(dx),x(dy),x(ex),x(ey))
 			dx,dy=ex,ey
 			maxx=max2(maxx,max2(x(ex),x(ey)))
