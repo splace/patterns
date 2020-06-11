@@ -47,7 +47,7 @@ func PrintGraph(p Pattern, startx, endx, starty, endy, step x) {
 }
 
 func ExampleConstant() {
-	Output(Limiter{Constant{Filling{unitY}},5*unitX},unitX)
+	Output(Limiter{Constant(unitY),5*unitX},unitX)
 	/* Output:
 Graph
        -6	XXXXXXXXXXXXX
@@ -67,7 +67,7 @@ Graph
 }
 
 func ExampleDisc() {
-	Output(Disc{Filling{unitY}},unitX)
+	Output(Disc(unitY),unitX)
 	/* Output:
 Graph
        -2	-----
@@ -79,7 +79,7 @@ Graph
 }
 
 func ExampleSquare() {
-	Output(Square{Filling{unitY}},unitX)
+	Output(Square(unitY),unitX)
 	/* Output:
 Graph
        -2	-----

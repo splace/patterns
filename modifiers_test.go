@@ -16,7 +16,7 @@ func TestModifierMax(t *testing.T){
 
 
 func ExampleModifiersShifted() {
-	Output(Translated{Square{Filling{unitY}}, 4*unitX, 3*unitX},unitX)
+	Output(Translated{Square(unitY), 4*unitX, 3*unitX},unitX)
 	/* Output:
 Graph
        -5	-----------
@@ -34,7 +34,7 @@ Graph
 }
 
 func ExampleModifiersTranslated() {
-	Output(Translated{Shrunk{Square{Filling{unitY}}, .5}, 2*unitX, 0},unitX)
+	Output(Translated{Shrunk{Square(unitY), .5}, 2*unitX, 0},unitX)
 	/* Output:
 Graph
        -5	-----------
@@ -52,7 +52,7 @@ Graph
 }
 
 func ExampleModifiersZoomed() {
-	Output(Shrunk{Square{Filling{unitY}}, .25},unitX)
+	Output(Shrunk{Square(unitY), .25},unitX)
 	/* Output:
 Graph
        -5	-----------
@@ -70,7 +70,7 @@ Graph
 }
 
 func ExampleModifiersScaled() {
-	Output(Limiter{Reduced{Square{Filling{unitY}}, .125, 1},8*unitX},unitX)
+	Output(Limiter{Reduced{Square(unitY), .125, 1},8*unitX},unitX)
 	/* Output:
 Graph
        -9	-------------------
@@ -96,7 +96,7 @@ Graph
 }
 
 func ExampleModifiersRotated() {
-	Output(Limiter{Rotated{Shrunk{Square{Filling{unitY}}, .5}, .707, .707},3*unitX},unitX*.5)
+	Output(Limiter{Rotated{Shrunk{Square(unitY), .5}, .707, .707},3*unitX},unitX*.5)
 	/* Output:
 Graph
        -4	---------
@@ -112,7 +112,7 @@ Graph
 }
 
 func ExampleModifiersInverted() {
-	Output(Inverted{Shrunk{Square{Filling{unitY}}, .5}},unitX)
+	Output(Inverted{Shrunk{Square(unitY), .5}},unitX)
 	/* Output:
 Graph
        -3	XXXXXXX

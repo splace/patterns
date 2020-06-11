@@ -18,7 +18,7 @@ func TestImageSquare(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	png.Encode(file, Plan9PalettedImage{Depiction{Shrunk{Square{Filling{unitY}}, .10}, image.Rect(-40, -40, 40, 40), 2, color.Opaque, color.Transparent}})
+	png.Encode(file, Plan9PalettedImage{Depiction{Shrunk{Square(unitY), .10}, image.Rect(-40, -40, 40, 40), 2, color.Opaque, color.Transparent}})
 }
 
 func TestImageBox(t *testing.T) {
@@ -28,7 +28,7 @@ func TestImageBox(t *testing.T) {
 	}
 	defer file.Close()
 
-	png.Encode(file, Plan9PalettedImage{NewDepiction(NewFrame(199, 1, Filling{unitY}), 400, 400, color.Opaque, color.Transparent)})
+	png.Encode(file, Plan9PalettedImage{NewDepiction(NewFrame(199, 1, Filling(unitY)), 400, 400, color.Opaque, color.Transparent)})
 }
 
 func TestImageLines(t *testing.T) {

@@ -1,7 +1,7 @@
 package patterns
 
 import "math"
-//import "fmt"
+import "fmt"
 
 // Facetted is a Nib using straight lines with a particular width.
 // Curves are divided using CurveDivision:  power of 2 number of divisions.
@@ -21,13 +21,13 @@ func (p Facetted) Line(x1, y1, x2, y2 x) LimitedPattern {
 	ndx,dy:=float64(x1-x2),float64(y2-y1)
 	// NewRotated actually returns a LimitedPattern (as a Pattern) because NewLine returns one, so assert can never fail.
 	// TODO could reduce MaxX since we know better than worst case used by rotate.
-	return Translated{NewRotated(Rectangle(x(math.Hypot(ndx,dy)),p.Width, Filling{p.In}),math.Atan2(dy,ndx)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
+	return Translated{NewRotated(Rectangle(x(math.Hypot(ndx,dy)),p.Width, Filling(p.In)),math.Atan2(dy,ndx)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
 }
 
 
 
 
-// find centre of circle given two points on rim and radius
+// find centre of circle given two points on rim and radius.
 func circleCentre(sx, sy, r, ex, ey x) (x,y float64){
 	// midpoint
 	mx,my:=(ex+sx)>>1,(ey+sy)>>1
@@ -74,32 +74,36 @@ func OffsetRotaters (ox,oy,a float64) (func(float64,float64)(float64,float64),fu
 
 func (p Facetted) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) LimitedPattern {
 	// if ellipse too small expand to just fit, which will depend on angle, uggg.
+	// TODO for rx!=ry translate/rotate and squash, then do below then reverse transform on every point. 
 	if rx==ry{
 		// much simpler, just a circle, angle redundant
 		var cx,cy,a1,a2 float64
-		if sweep {
-			cx,cy= circleCentre(x2,y2,rx,x1,y1)
-		}else{
+		if large == sweep {
 			cx,cy= circleCentre(x1,y1,rx,x2,y2)
+		}else{
+			cx,cy= circleCentre(x2,y2,rx,x1,y1)
 		}
+		fmt.Println(cx,cy)
 		a1,a2=math.Atan2(float64(x1)-cx,float64(y1)-cy),math.Atan2(float64(x2)-cx,float64(y2)-cy)
-		if large {
-			a1,a2=a2,a1+2*math.Pi
+		fmt.Println(a1,a2)
+		if !sweep {
+			a1,a2=a2,a1+math.Pi*2
 		}
-		// scale divisions so you get the consistent side angles
-		halfDivisions:=uint8(float64(uint8(1)<<p.CurveDivision)*(a2-a1)/math.Pi)+1
+		fmt.Println("Angles:",a1,a2)
+		// scale divisions so you get, somewhat, consistent side angles
+		halfDivisions:=int8(math.Abs(float64(uint8(1)<<p.CurveDivision)*(a2-a1)/math.Pi))+1
 		ocwr,_:=OffsetRotaters(cx,cy,(a2-a1)*.5/float64(halfDivisions))
 		s := make([]Pattern, halfDivisions*2) 
-		maxx:=max2(x1,y1)
+		maxx:=max2(max2(x1,y1),max2(x2,y2))
 		dx,dy:= float64(x1),float64(y1)
 		for i:=range(s[:len(s)-1]){
 			ex,ey:=ocwr(dx,dy)
+			fmt.Println(ex,ey)
 			s[i]=p.Line(x(dx),x(dy),x(ex),x(ey))
 			dx,dy=ex,ey
 			maxx=max2(maxx,max2(x(ex),x(ey)))
 		}
 		s[len(s)-1]=p.Line(x(dx),x(dy),x2,y2)
-		maxx=max2(maxx,max2(x2,y2))
 	return Limiter{NewComposite(s...),maxx+p.Width}
 	}
 		

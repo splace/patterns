@@ -4,7 +4,7 @@ package patterns
 
 
 func ExampleHybridsLine() {
-	p := Rectangle(10*unitX, 2*unitX, Filling{unitY})
+	p := Rectangle(10*unitX, 2*unitX, Filling(unitY))
 	Output(p,unitX)
 	/* Output:
 Graph

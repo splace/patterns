@@ -34,7 +34,6 @@ func NewComposite(ps ...Pattern) Composite {
 }
 
 
-// panics if its first Pattern item istn't a LimitedPattern
 type LimitedComposite Composite
 
 func (c LimitedComposite) at(px, py x) (total y) {
@@ -42,6 +41,7 @@ func (c LimitedComposite) at(px, py x) (total y) {
 }
 
 
+// panics if its first Pattern item istn't a LimitedPattern
 func (c LimitedComposite) MaxX() x{
 	return Composite(c)[0].(LimitedPattern).MaxX() 
 }
