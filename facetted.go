@@ -200,40 +200,6 @@ func (p Facetted) Polygon(coords ...[2]x) LimitedPattern {
 	return Limiter{NewComposite(s...),maxx+p.Width}
 }
 
-type divider uint8
-const dividerMax = math.MaxUint8
-
-func linearDivision(f x) (func (divider) x ){
-		return func(t divider)x{return f*x(t)/dividerMax} 
-	}
-	
-func doubleDivision(s,c,e x) (func (divider) x ){
-		scfn:= linearDivision(c-s)
-		cefn:= linearDivision(e-c)
-		return func(t divider)x{
-			return s+scfn(t)+linearDivision(-s-scfn(t)+c+cefn(t))(t)
-		}
-	}
-
-func tripleDivision(s,c1,c2,e x) (func (divider) x ){
-		sc1fn:= linearDivision(c1-s)
-		c1c2fn:= linearDivision(c2-c1)
-		c2efn:= linearDivision(e-c2)
-		return func(t divider)x{
-			return doubleDivision(s+sc1fn(t),c1+c1c2fn(t),c2+c2efn(t))(t)
-		}
-	}
-
-func quadroupleDivision(s,c1,c2,c3,e x) (func (divider) x ){
-		sc1fn:= linearDivision(c1-s)
-		c1c2fn:= linearDivision(c2-c1)
-		c2c3fn:= linearDivision(c3-c2)
-		c3efn:= linearDivision(e-c3)
-		return func(t divider)x{
-			return tripleDivision(s+sc1fn(t),c1+c1c2fn(t),c2+c2c3fn(t),c3+c3efn(t))(t)
-		}
-	}
-
 
 //func linearDivision(s,e x) (func (divider) x ){
 //		return func(t divider)x{return s+(e-s)*x(t)/dividerMax} 
@@ -266,41 +232,42 @@ func quadroupleDivision(s,c1,c2,c3,e x) (func (divider) x ){
 //		}
 //	}
 
+
 func (p Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
-	xfn:=doubleDivision(sx, cx, ex)
-	yfn:=doubleDivision(sy, cy, ey)
 	var s []Pattern
-	var li divider
-	step:=divider(1<<(8-p.CurveDivision))
-	for i := step-1; li<i ; li,i=i,i+step {
-		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
+	maxx:=max2(max2(sx,sy),max2(ex,ey))
+	for l:=range(Divider(1<<(8-p.CurveDivision)).QuadraticBezier(sx, sy, cx, cy, ex, ey)){
+		s= append(s,p.Line(sx,sy,l[0],l[1]))
+		sx,sy=l[0],l[1]
+		maxx=max2(maxx,max2(sx,sy))
 	}
-	return Limiter{NewComposite(s...),max6(sx,ex,cx,sy,ey,cy)+p.Width}
+	s= append(s,p.Line(sx,sy,ex,ey))
+	return Limiter{NewComposite(s...),max2(cx,cy)+p.Width}  
 }
 
 
 func (p Facetted) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
-	xfn:=tripleDivision(sx, c1x, c2x, ex)
-	yfn:=tripleDivision(sy, c1y, c2y, ey)
 	var s []Pattern
-	var li divider
-	step:=divider(1<<(8-p.CurveDivision))
-	for i := step-1; li<i ; li,i=i,i+step {
-		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
+	maxx:=max2(max2(sx,sy),max2(ex,ey))
+	for l:=range(Divider(1<<(8-p.CurveDivision)).CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey)){
+		s= append(s,p.Line(sx,sy,l[0],l[1]))
+		sx,sy=l[0],l[1]
+		maxx=max2(maxx,max2(sx,sy))
 	}
-	return Limiter{NewComposite(s...),max8(sx,ex,c1x,c2x,sy,ey,c1y,c2y)+p.Width}  
+	s= append(s,p.Line(sx,sy,ex,ey))
+	return Limiter{NewComposite(s...),max4(c1x,c2x,c1y,c2y)+p.Width}  
 }
 
 
 func (p Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) LimitedPattern {
-	xfn:=quadroupleDivision(sx, c1x, c2x, c3x, ex)
-	yfn:=quadroupleDivision(sy, c1y, c2y, c3y, ey)
 	var s []Pattern
-	var li divider
-	step:=divider(1<<(8-p.CurveDivision))
-	for i := step-1; li<i ; li,i=i,i+step {
-		s= append(s,p.Line(xfn(li),yfn(li),xfn(i),yfn(i)))
+	maxx:=max2(max2(sx,sy),max2(ex,ey))
+	for l:=range(Divider(1<<(8-p.CurveDivision)).QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x, c3y,ex, ey)){
+		s= append(s,p.Line(sx,sy,l[0],l[1]))
+		sx,sy=l[0],l[1]
+		maxx=max2(maxx,max2(sx,sy))
 	}
-	return Limiter{NewComposite(s...),max10(sx,ex,c1x,c2x,c3x,sy,ey,c1y,c2y,c3y)+p.Width }
+	s= append(s,p.Line(sx,sy,ex,ey))
+	return Limiter{NewComposite(s...),max6(c1x,c2x,c3x,c1y,c2y,c3y)+p.Width}  
 }
 
