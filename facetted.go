@@ -15,8 +15,6 @@ type Facetted struct{
 	CurveDivision uint8
 }
 
-
-
 func (p Facetted) Line(x1, y1, x2, y2 x) LimitedPattern {
 	ndx,dy:=float64(x1-x2),float64(y2-y1)
 	// NewRotated actually returns a LimitedPattern (as a Pattern) because NewLine returns one, so assert can never fail.
@@ -25,7 +23,59 @@ func (p Facetted) Line(x1, y1, x2, y2 x) LimitedPattern {
 }
 
 
+func (p Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
+	var s []Pattern
+	maxx:=max2(max2(sx,sy),max2(ex,ey))
+	for l:=range(Divide(1<<(8-p.CurveDivision)).QuadraticBezier(sx, sy, cx, cy, ex, ey)){
+		s= append(s,p.Line(sx,sy,l[0],l[1]))
+		sx,sy=l[0],l[1]
+		maxx=max2(maxx,max2(sx,sy))
+	}
+	s= append(s,p.Line(sx,sy,ex,ey))
+	return Limiter{NewComposite(s...),max2(cx,cy)+p.Width}  
+}
 
+
+func (p Facetted) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
+	var s []Pattern
+	maxx:=max2(max2(sx,sy),max2(ex,ey))
+	for l:=range(Divide(1<<(8-p.CurveDivision)).CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey)){
+		s= append(s,p.Line(sx,sy,l[0],l[1]))
+		sx,sy=l[0],l[1]
+		maxx=max2(maxx,max2(sx,sy))
+	}
+	s= append(s,p.Line(sx,sy,ex,ey))
+	return Limiter{NewComposite(s...),max4(c1x,c2x,c1y,c2y)+p.Width}  
+}
+
+
+func (p Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) LimitedPattern {
+	var s []Pattern
+	maxx:=max2(max2(sx,sy),max2(ex,ey))
+	for l:=range(Divide(1<<(8-p.CurveDivision)).QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x, c3y,ex, ey)){
+		s= append(s,p.Line(sx,sy,l[0],l[1]))
+		sx,sy=l[0],l[1]
+		maxx=max2(maxx,max2(sx,sy))
+	}
+	s= append(s,p.Line(sx,sy,ex,ey))
+	return Limiter{NewComposite(s...),max6(c1x,c2x,c3x,c1y,c2y,c3y)+p.Width}  
+}
+
+
+func (p Facetted) Box(x,y x) LimitedPattern {
+	return Limiter{Composite{p.Line(-x,y, x,y),p.Line(x,y,x,-y),p.Line(x,-y,-x,-y),p.Line(-x,-y,-x,y)},max2(x+p.Width,y+p.Width)}
+}
+
+func (p Facetted) Polygon(coords ...[2]x) LimitedPattern {
+	s := make([]Pattern, len(coords)) 
+	maxx:=max2(coords[0][0], coords[0][1])
+	for i := 1; i < len(s); i++ {
+		s[i-1] = p.Line(coords[i-1][0], coords[i-1][1],coords[i][0], coords[i][1])
+		maxx=max2(maxx,max2(coords[i][0], coords[i][1]))
+	}
+	s[len(coords)-1] = p.Line(coords[len(coords)-1][0], coords[len(coords)-1][1],coords[0][0], coords[0][1])
+	return Limiter{NewComposite(s...),maxx+p.Width}
+}
 
 // find centre of circle given two points on rim and radius.
 func circleCentre(sx, sy, r, ex, ey x) (x,y float64){
@@ -184,90 +234,3 @@ func (p Facetted) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) Limit
 	
 	return nil
 }
-
-func (p Facetted) Box(x,y x) LimitedPattern {
-	return Limiter{Composite{p.Line(-x,y, x,y),p.Line(x,y,x,-y),p.Line(x,-y,-x,-y),p.Line(-x,-y,-x,y)},max2(x+p.Width,y+p.Width)}
-}
-
-func (p Facetted) Polygon(coords ...[2]x) LimitedPattern {
-	s := make([]Pattern, len(coords)) 
-	maxx:=max2(coords[0][0], coords[0][1])
-	for i := 1; i < len(s); i++ {
-		s[i-1] = p.Line(coords[i-1][0], coords[i-1][1],coords[i][0], coords[i][1])
-		maxx=max2(maxx,max2(coords[i][0], coords[i][1]))
-	}
-	s[len(coords)-1] = p.Line(coords[len(coords)-1][0], coords[len(coords)-1][1],coords[0][0], coords[0][1])
-	return Limiter{NewComposite(s...),maxx+p.Width}
-}
-
-
-//func linearDivision(s,e x) (func (divider) x ){
-//		return func(t divider)x{return s+(e-s)*x(t)/dividerMax} 
-//	}
-//	
-//func doubleDivision(s,c,e x) (func (divider) x ){
-//		scfn:= linearDivision(s,c)
-//		cefn:= linearDivision(c,e)
-//		return func(t divider)x{
-//			return linearDivision(scfn(t),cefn(t))(t)
-//		}
-//	}
-
-//func tripleDivision(s,c1,c2,e x) (func (divider) x ){
-//		sc1fn:= linearDivision(s,c1)
-//		c1c2fn:= linearDivision(c1,c2)
-//		c2efn:= linearDivision(c2,e)
-//		return func(t divider)x{
-//			return doubleDivision(sc1fn(t),c1c2fn(t),c2efn(t))(t)
-//		}
-//	}
-
-//func quadroupleDivision(s,c1,c2,c3,e x) (func (divider) x ){
-//		sc1fn:= linearDivision(s,c1)
-//		c1c2fn:= linearDivision(c1,c2)
-//		c2c3fn:= linearDivision(c2,c3)
-//		c3efn:= linearDivision(c3,e)
-//		return func(t divider)x{
-//			return tripleDivision(sc1fn(t),c1c2fn(t),c2c3fn(t),c3efn(t))(t)
-//		}
-//	}
-
-
-func (p Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
-	var s []Pattern
-	maxx:=max2(max2(sx,sy),max2(ex,ey))
-	for l:=range(Divider(1<<(8-p.CurveDivision)).QuadraticBezier(sx, sy, cx, cy, ex, ey)){
-		s= append(s,p.Line(sx,sy,l[0],l[1]))
-		sx,sy=l[0],l[1]
-		maxx=max2(maxx,max2(sx,sy))
-	}
-	s= append(s,p.Line(sx,sy,ex,ey))
-	return Limiter{NewComposite(s...),max2(cx,cy)+p.Width}  
-}
-
-
-func (p Facetted) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
-	var s []Pattern
-	maxx:=max2(max2(sx,sy),max2(ex,ey))
-	for l:=range(Divider(1<<(8-p.CurveDivision)).CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey)){
-		s= append(s,p.Line(sx,sy,l[0],l[1]))
-		sx,sy=l[0],l[1]
-		maxx=max2(maxx,max2(sx,sy))
-	}
-	s= append(s,p.Line(sx,sy,ex,ey))
-	return Limiter{NewComposite(s...),max4(c1x,c2x,c1y,c2y)+p.Width}  
-}
-
-
-func (p Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) LimitedPattern {
-	var s []Pattern
-	maxx:=max2(max2(sx,sy),max2(ex,ey))
-	for l:=range(Divider(1<<(8-p.CurveDivision)).QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x, c3y,ex, ey)){
-		s= append(s,p.Line(sx,sy,l[0],l[1]))
-		sx,sy=l[0],l[1]
-		maxx=max2(maxx,max2(sx,sy))
-	}
-	s= append(s,p.Line(sx,sy,ex,ey))
-	return Limiter{NewComposite(s...),max6(c1x,c2x,c3x,c1y,c2y,c3y)+p.Width}  
-}
-

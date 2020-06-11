@@ -4,76 +4,13 @@ import "math"
 import "fmt"
 
 
-type Divider uint8
+type Divide uint8
 const dividerMax = math.MaxUint8
 
-func linearDivision(f x) (func (Divider) x ){
-		return func(t Divider)x{return f*x(t)/dividerMax} 
-	}
-	
-func doubleDivision(s,c,e x) (func (Divider) x ){
-		scfn:= linearDivision(c-s)
-		cefn:= linearDivision(e-c)
-		return func(t Divider)x{
-			return s+scfn(t)+linearDivision(-s-scfn(t)+c+cefn(t))(t)
-		}
-	}
-
-func tripleDivision(s,c1,c2,e x) (func (Divider) x ){
-		sc1fn:= linearDivision(c1-s)
-		c1c2fn:= linearDivision(c2-c1)
-		c2efn:= linearDivision(e-c2)
-		return func(t Divider)x{
-			return doubleDivision(s+sc1fn(t),c1+c1c2fn(t),c2+c2efn(t))(t)
-		}
-	}
-
-func quadroupleDivision(s,c1,c2,c3,e x) (func (Divider) x ){
-		sc1fn:= linearDivision(c1-s)
-		c1c2fn:= linearDivision(c2-c1)
-		c2c3fn:= linearDivision(c3-c2)
-		c3efn:= linearDivision(e-c3)
-		return func(t Divider)x{
-			return tripleDivision(s+sc1fn(t),c1+c1c2fn(t),c2+c2c3fn(t),c3+c3efn(t))(t)
-		}
-	}
-
-
-//func linearDivision(s,e x) (func (Divider) x ){
-//		return func(t Divider)x{return s+(e-s)*x(t)/dividerMax} 
-//	}
-//	
-//func doubleDivision(s,c,e x) (func (Divider) x ){
-//		scfn:= linearDivision(s,c)
-//		cefn:= linearDivision(c,e)
-//		return func(t Divider)x{
-//			return linearDivision(scfn(t),cefn(t))(t)
-//		}
-//	}
-
-//func tripleDivision(s,c1,c2,e x) (func (Divider) x ){
-//		sc1fn:= linearDivision(s,c1)
-//		c1c2fn:= linearDivision(c1,c2)
-//		c2efn:= linearDivision(c2,e)
-//		return func(t Divider)x{
-//			return doubleDivision(sc1fn(t),c1c2fn(t),c2efn(t))(t)
-//		}
-//	}
-
-//func quadroupleDivision(s,c1,c2,c3,e x) (func (Divider) x ){
-//		sc1fn:= linearDivision(s,c1)
-//		c1c2fn:= linearDivision(c1,c2)
-//		c2c3fn:= linearDivision(c2,c3)
-//		c3efn:= linearDivision(c3,e)
-//		return func(t Divider)x{
-//			return tripleDivision(sc1fn(t),c1c2fn(t),c2c3fn(t),c3efn(t))(t)
-//		}
-//	}
-
-func (d Divider) Curve(xfn, yfn func(Divider)x)  <-chan [2]x {
-	step:=Divider(dividerMax/d)
+func (d Divide) Curve(xfn, yfn func(Divide)x)  <-chan [2]x {
+	step:=Divide(dividerMax/d)
 	ch:=make(chan [2]x,d)
-	var li Divider
+	var li Divide
 	go func(){
 		for i := step-1; li<i ; li,i=i,i+step {
 			ch <- [2]x{xfn(i),yfn(i)}
@@ -84,15 +21,15 @@ func (d Divider) Curve(xfn, yfn func(Divider)x)  <-chan [2]x {
 }
 
 
-func (d Divider) QuadraticBezier(sx, sy, cx, cy, ex, ey x)  <-chan [2]x {
+func (d Divide) QuadraticBezier(sx, sy, cx, cy, ex, ey x)  <-chan [2]x {
 	return  d.Curve(doubleDivision(sx, cx, ex),doubleDivision(sy, cy, ey))
 }
 
-func (d Divider) CubicBezier(sx, sy, c1x, c1y, c2x, c2y, ex, ey x)  <-chan [2]x {
+func (d Divide) CubicBezier(sx, sy, c1x, c1y, c2x, c2y, ex, ey x)  <-chan [2]x {
 	return  d.Curve(tripleDivision(sx, c1x, c2x, ex),tripleDivision(sy, c1y, c2y, ey))
 }
 
-func (d Divider) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x)  <-chan [2]x {
+func (d Divide) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x)  <-chan [2]x {
 	return  d.Curve(quadroupleDivision(sx, c1x, c2x, c3x, ex),quadroupleDivision(sy, c1y, c2y, c3y, ey))
 }
 
@@ -143,7 +80,7 @@ func offsetRotaters (ox,oy,a float64) (func(float64,float64)(float64,float64),fu
 	}
 }
 
-func  (d Divider) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-chan [2]x{
+func  (d Divide) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-chan [2]x{
 	// if ellipse too small expand to just fit, which will depend on angle, uggg.
 	// TODO for rx!=ry translate/rotate and squash, then do below then reverse transform on every point. 
 	if rx==ry{
@@ -166,9 +103,9 @@ func  (d Divider) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-ch
 		ocwr,_:=offsetRotaters(cx,cy,(a2-a1)*.5/float64(halfDivisions))
 		dx,dy:= float64(x1),float64(y1)
 		
-		step:=Divider(dividerMax>>d)
+		step:=Divide(dividerMax>>d)
 		ch:=make(chan [2]x,halfDivisions<<1)
-		var li Divider
+		var li Divide
 		go func(){
 			for i := step-1; li<i ; li,i=i,i+step {
 				dx,dy:=ocwr(dx,dy)
@@ -184,3 +121,70 @@ func  (d Divider) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-ch
 
 	return nil
 }
+
+func linearDivision(f x) (func (Divide) x ){
+	return func(t Divide)x{return f*x(t)/dividerMax} 
+}
+	
+func doubleDivision(s,c,e x) (func (Divide) x ){
+	scfn:= linearDivision(c-s)
+	cefn:= linearDivision(e-c)
+	return func(t Divide)x{
+		return s+scfn(t)+linearDivision(-s-scfn(t)+c+cefn(t))(t)
+	}
+}
+
+func tripleDivision(s,c1,c2,e x) (func (Divide) x ){
+	sc1fn:= linearDivision(c1-s)
+	c1c2fn:= linearDivision(c2-c1)
+	c2efn:= linearDivision(e-c2)
+	return func(t Divide)x{
+		return doubleDivision(s+sc1fn(t),c1+c1c2fn(t),c2+c2efn(t))(t)
+	}
+}
+
+func quadroupleDivision(s,c1,c2,c3,e x) (func (Divide) x ){
+	sc1fn:= linearDivision(c1-s)
+	c1c2fn:= linearDivision(c2-c1)
+	c2c3fn:= linearDivision(c3-c2)
+	c3efn:= linearDivision(e-c3)
+	return func(t Divide)x{
+		return tripleDivision(s+sc1fn(t),c1+c1c2fn(t),c2+c2c3fn(t),c3+c3efn(t))(t)
+	}
+}
+
+
+//func linearDivision(s,e x) (func (divider) x ){
+//		return func(t divider)x{return s+(e-s)*x(t)/dividerMax} 
+//	}
+//	
+//func doubleDivision(s,c,e x) (func (divider) x ){
+//		scfn:= linearDivision(s,c)
+//		cefn:= linearDivision(c,e)
+//		return func(t divider)x{
+//			return linearDivision(scfn(t),cefn(t))(t)
+//		}
+//	}
+
+//func tripleDivision(s,c1,c2,e x) (func (divider) x ){
+//		sc1fn:= linearDivision(s,c1)
+//		c1c2fn:= linearDivision(c1,c2)
+//		c2efn:= linearDivision(c2,e)
+//		return func(t divider)x{
+//			return doubleDivision(sc1fn(t),c1c2fn(t),c2efn(t))(t)
+//		}
+//	}
+
+//func quadroupleDivision(s,c1,c2,c3,e x) (func (divider) x ){
+//		sc1fn:= linearDivision(s,c1)
+//		c1c2fn:= linearDivision(c1,c2)
+//		c2c3fn:= linearDivision(c2,c3)
+//		c3efn:= linearDivision(c3,e)
+//		return func(t divider)x{
+//			return tripleDivision(sc1fn(t),c1c2fn(t),c2c3fn(t),c3efn(t))(t)
+//		}
+//	}
+
+/* run: args="" Thu 11 Jun 23:57:19 BST 2020 go version go1.14.3 linux/amd64
+Thu 11 Jun 23:57:20 BST 2020
+*/
