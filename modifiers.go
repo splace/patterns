@@ -1,13 +1,7 @@
 package patterns
 
-import (
-	"encoding/gob"
-	"math"
-)
-
-func init() {
-	gob.Register(Translated{})
-}
+import "math"
+//import "fmt"
 
 
 // a LimitedPattern translated
@@ -66,29 +60,29 @@ func max10(a, b, c, d, e, f,g,h,i,j  x) x {
 // a LimitedPattern Scaled
 type Reduced struct {
 	LimitedPattern
-	sx, sy float32
+	x, y float32
 }
 
 func (p Reduced) at(px, py x) y {
-	return p.LimitedPattern.at(x(float32(px)*p.sx), x(float32(py)*p.sy))
+	return p.LimitedPattern.at(x(float32(px)*p.x), x(float32(py)*p.y))
 }
 
 func (p Reduced) MaxX() x {
-	if p.sx>p.sy{
-		return x(float32(p.LimitedPattern.MaxX())/p.sy)
+	if p.y>p.x{
+		return x(float32(p.LimitedPattern.MaxX())/p.x)
 	}
-	return x(float32(p.LimitedPattern.MaxX()) / p.sx)
+	return x(float32(p.LimitedPattern.MaxX()) / p.y)
 }
 
 
 // a Pattern Scaled
 type UnlimitedReduced struct {
 	Pattern
-	sx, sy float32
+	x, y float32
 }
 
 func (p UnlimitedReduced) at(px, py x) y {
-	return p.Pattern.at(x(float32(px)*p.sx), x(float32(py)*p.sy))
+	return p.Pattern.at(x(float32(px)*p.x), x(float32(py)*p.y))
 }
 
 // a LimitedPattern Zoomed

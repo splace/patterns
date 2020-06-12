@@ -15,6 +15,7 @@ type Pen struct {
 	Nib
 	Relative bool
 	x, y     x
+	sx,sy x
 }
 
 func (p *Pen) MoveTo(px, py x) {
@@ -22,7 +23,7 @@ func (p *Pen) MoveTo(px, py x) {
 		px += p.x
 		py += p.y
 	}
-	p.x, p.y, p.x, p.y = px, py, px, py
+	p.x, p.y, p.sx, p.sy = px, py, px, py
 	return
 }
 
@@ -60,8 +61,8 @@ func (p *Pen) StartLine(px1, py1, px2, py2 x) LimitedPattern {
 }
 
 func (p *Pen) LineClose() LimitedPattern {
-	s := p.Line(p.x, p.y, p.x, p.y)
-	p.x, p.y = p.x,p.y
+	s := p.Line(p.x, p.y, p.sx, p.sy)
+	p.sx, p.sy = p.x,p.y
 	return s
 }
 

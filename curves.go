@@ -7,9 +7,10 @@ import "fmt"
 type Divide uint8
 const dividerMax = math.MaxUint8
 
+// Curve provides variable numbers of intermediate points
 func (d Divide) Curve(xfn, yfn func(Divide)x)  <-chan [2]x {
-	step:=Divide(dividerMax/d)
 	ch:=make(chan [2]x,d)
+	step:=dividerMax/d
 	var li Divide
 	go func(){
 		for i := step-1; li<i ; li,i=i,i+step {
@@ -20,6 +21,7 @@ func (d Divide) Curve(xfn, yfn func(Divide)x)  <-chan [2]x {
 	return ch
 }
 
+// bezier curves direct from definition, that is; hierarchical linear division, this gives more lines where more curvature.
 
 func (d Divide) QuadraticBezier(sx, sy, cx, cy, ex, ey x)  <-chan [2]x {
 	return  d.Curve(doubleDivision(sx, cx, ex),doubleDivision(sy, cy, ey))
@@ -84,33 +86,31 @@ func  (d Divide) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-cha
 	// if ellipse too small expand to just fit, which will depend on angle, uggg.
 	// TODO for rx!=ry translate/rotate and squash, then do below then reverse transform on every point. 
 	if rx==ry{
-		// much simpler, just a circle, angle redundant
-		var cx,cy,a1,a2 float64
-		if large == sweep {
+		// just a circle, angle redundant
+		var cx,cy float64
+		if large != sweep {
 			cx,cy= centreOfCircle(x1,y1,rx,x2,y2)
 		}else{
 			cx,cy= centreOfCircle(x2,y2,rx,x1,y1)
 		}
 		fmt.Println(cx,cy)
-		a1,a2=math.Atan2(float64(x1)-cx,float64(y1)-cy),math.Atan2(float64(x2)-cx,float64(y2)-cy)
+		// angle, to x-axis, of start and end from centre, 
+		a1,a2:=math.Atan2(float64(y1)-cy,float64(x1)-cx),math.Atan2(float64(y2)-cy,float64(x2)-cx)
 		fmt.Println(a1,a2)
-		if !sweep {
-			a1,a2=a2,a1+math.Pi*2
+		if sweep {
+			a1,a2=a2,a1
 		}
+		ocwr,_:=offsetRotaters(cx,cy,(a1-a2)/float64(d))
 		fmt.Println("Angles:",a1,a2)
 		// scale divisions so you get, somewhat, consistent side angles
-		halfDivisions:=int8(math.Abs(float64(uint8(1)<<d)*(a2-a1)/math.Pi))+1
-		ocwr,_:=offsetRotaters(cx,cy,(a2-a1)*.5/float64(halfDivisions))
-		dx,dy:= float64(x1),float64(y1)
+		//halfDivisions:=int8(math.Abs(float64(uint8(1)<<d)*(a2-a1)/math.Pi))+1
+		//ocwr,_:=offsetRotaters(cx,cy,(a2-a1)*.5/float64(halfDivisions))
 		
-		step:=Divide(dividerMax>>d)
-		ch:=make(chan [2]x,halfDivisions<<1)
-		var li Divide
+		ch:=make(chan [2]x,d-1)
+		dx,dy:= float64(x1),float64(y1)
 		go func(){
-			for i := step-1; li<i ; li,i=i,i+step {
-				dx,dy:=ocwr(dx,dy)
-				fmt.Println(dx,dy)
-				//s[i]=p.Line(x(dx),x(dy),x(ex),x(ey))
+			for li:=Divide(1); li<d ; li++ {
+				dx,dy=ocwr(dx,dy)
 				ch <- [2]x{x(dx),x(dy)}
 			}
 			close(ch)

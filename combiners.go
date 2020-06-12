@@ -1,12 +1,5 @@
 package patterns
 
-import (
-	"encoding/gob"
-)
-
-func init() {
-	gob.Register(Composite{})
-}
 
 // Pattern thats composed from layered Patterns
 type Composite []Pattern

@@ -4,15 +4,13 @@ import "math"
 import "fmt"
 
 // Facetted is a Nib using straight lines with a particular width.
-// Curves are divided using CurveDivision:  power of 2 number of divisions.
+// Curves are divided acording to CurveDivision:  (power of 2 number of divisions.)
 // default 0 - no division, all curves a single straight line
-// it uses direct definition of bezier curves, cascading linear division, to give more lines where more curvature.
-// * bezier curves are limited to being within hull of control points.
-// uses conic projection for arc, again more lines where more curvature.
 type Facetted struct{
 	Width    x
 	In       y
 	CurveDivision uint8
+//	Lwidth x // last width to make tappered lines
 }
 
 func (p Facetted) Line(x1, y1, x2, y2 x) LimitedPattern {
@@ -32,7 +30,7 @@ func (p Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
 		maxx=max2(maxx,max2(sx,sy))
 	}
 	s= append(s,p.Line(sx,sy,ex,ey))
-	return Limiter{NewComposite(s...),max2(cx,cy)+p.Width}  
+	return Limiter{NewComposite(s...),maxx+p.Width}  
 }
 
 
@@ -45,7 +43,7 @@ func (p Facetted) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPatter
 		maxx=max2(maxx,max2(sx,sy))
 	}
 	s= append(s,p.Line(sx,sy,ex,ey))
-	return Limiter{NewComposite(s...),max4(c1x,c2x,c1y,c2y)+p.Width}  
+	return Limiter{NewComposite(s...),maxx+p.Width}  
 }
 
 
@@ -58,7 +56,7 @@ func (p Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) Li
 		maxx=max2(maxx,max2(sx,sy))
 	}
 	s= append(s,p.Line(sx,sy,ex,ey))
-	return Limiter{NewComposite(s...),max6(c1x,c2x,c3x,c1y,c2y,c3y)+p.Width}  
+	return Limiter{NewComposite(s...),maxx+p.Width}  
 }
 
 
@@ -96,7 +94,7 @@ func circleCentre(sx, sy, r, ex, ey x) (x,y float64){
 	return float64(mx)+float64(vmx)*m,float64(my)+float64(vmy)*m
 }
 
-// functions that rotate clockwise and counterclockwise by the provided angle
+// functions that rotate clockwise and counterclockwise,about origin, by the provided angle
 func Rotaters (a float64) (func(float64,float64)(float64,float64),func(float64,float64)(float64,float64)){
 	sa,ca:=math.Sincos(a)
 	return func(x,y float64) (float64, float64) {
@@ -107,6 +105,7 @@ func Rotaters (a float64) (func(float64,float64)(float64,float64),func(float64,f
 	}
 }
 
+// functions that rotate clockwise and counterclockwise,about a point, by the provided angle
 func OffsetRotaters (ox,oy,a float64) (func(float64,float64)(float64,float64),func(float64,float64)(float64,float64)){
 	sa,ca:=math.Sincos(a)
 	return func(x,y float64) (float64, float64) {
@@ -121,8 +120,19 @@ func OffsetRotaters (ox,oy,a float64) (func(float64,float64)(float64,float64),fu
 	}
 }
 
+func (p Facetted) Arc(sx,sy,rx,ry x, a float64, large,sweep bool, ex,ey x) LimitedPattern {
+	var s []Pattern
+	maxx:=max2(max2(sx,sy),max2(ex,ey))
+	for l:=range(Divide(1<<(8-p.CurveDivision)).Arc(sx,sy,rx,ry, a, large,sweep, ex,ey)){
+		s= append(s,p.Line(sx,sy,l[0],l[1]))
+		sx,sy=l[0],l[1]
+		maxx=max2(maxx,max2(sx,sy))
+	}
+	s= append(s,p.Line(sx,sy,ex,ey))
+	return Limiter{NewComposite(s...),maxx+p.Width}  
+}
 
-func (p Facetted) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) LimitedPattern {
+func (p Facetted) ArcOld(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) LimitedPattern {
 	// if ellipse too small expand to just fit, which will depend on angle, uggg.
 	// TODO for rx!=ry translate/rotate and squash, then do below then reverse transform on every point. 
 	if rx==ry{

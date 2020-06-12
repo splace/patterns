@@ -396,7 +396,7 @@ z
 		fmt.Println(err)
 	}
 	fmt.Printf("%#v\n",p)
-	b := Brush{Pen:Pen{Nib:Facetted{Width: 16*unitX, In: unitY, CurveDivision:2}}}
+	b := Brush{Pen:Pen{Nib:Facetted{Width: 16*unitX, In: unitY, CurveDivision:1}}}
 	Output(Limiter{UnlimitedReduced{p.Draw(&b),2.3,4.4},60*unitX},unitX)
 	/* Output:
 Graph

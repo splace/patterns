@@ -50,15 +50,18 @@ func ExampleFacettedCircle() {
 }
 
 func ExampleFacettedArcPrint() {
-	f:=Facetted{Width:1*unitX, In:unitY,CurveDivision:2}
+	f:=Facetted{Width:.2*unitX, In:unitY,CurveDivision:2}
 	Output(
 		LimitedComposite{
-			f.Arc(-30*unitX,0*unitX,38*unitX,38*unitX,0,true,false,30*unitX,0*unitX),
+			f.Arc(-1*unitX,0,2*unitX,2*unitX,0,false,false,1*unitX,0),
+			f.Arc(-1*unitX,0,2*unitX,2*unitX,0,true,false,1*unitX,0),
+			f.Arc(-1*unitX,0,2*unitX,2*unitX,0,false,true,1*unitX,0),
+			f.Arc(-1*unitX,0,2*unitX,2*unitX,0,true,true,1*unitX,0),
 			//f.Arc(-30*unitX,0*unitX,38*unitX,38*unitX,0,false,false,30*unitX,0*unitX),
 			//f.Arc(-30*unitX,0*unitX,38*unitX,38*unitX,0,true,true,30*unitX,0*unitX),
 			//f.Arc(-30*unitX,0*unitX,38*unitX,38*unitX,0,false,true,30*unitX,0*unitX),
 		},
-		unitX,
+		unitX*0.1,
 	)
 	// Output:
 	/*

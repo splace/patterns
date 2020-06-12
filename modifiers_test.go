@@ -70,7 +70,7 @@ Graph
 }
 
 func ExampleModifiersScaled() {
-	Output(Limiter{Reduced{Square(unitY), .125, 1},8*unitX},unitX)
+	Output(Reduced{Square(unitY), .125, 1},unitX)
 	/* Output:
 Graph
        -9	-------------------
