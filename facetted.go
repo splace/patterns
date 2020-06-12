@@ -4,7 +4,7 @@ import "math"
 import "fmt"
 
 // Facetted is a Nib using straight lines with a particular width.
-// Curves are divided acording to CurveDivision:  (power of 2 number of divisions.)
+// Curves are divided according to CurveDivision:  (power of 2 number of divisions.)
 // default 0 - no division, all curves a single straight line
 type Facetted struct{
 	Width    x

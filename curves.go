@@ -21,7 +21,7 @@ func (d Divide) Curve(xfn, yfn func(Divide)x)  <-chan [2]x {
 	return ch
 }
 
-// bezier curves direct from definition, that is; hierarchical linear division, this gives more lines where more curvature.
+// bezier curves direct from definition, that is; hierarchical linear division, this gives more points where more curvature.
 
 func (d Divide) QuadraticBezier(sx, sy, cx, cy, ex, ey x)  <-chan [2]x {
 	return  d.Curve(doubleDivision(sx, cx, ex),doubleDivision(sy, cy, ey))

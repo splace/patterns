@@ -1,7 +1,7 @@
 package patterns
 
 
-// Pattern thats composed from layered Patterns
+// Pattern that is made from overlaying Patterns
 type Composite []Pattern
 
 func (c Composite) at(px, py x) (total y) {
