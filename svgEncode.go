@@ -116,7 +116,7 @@ func (p Path) String()string {
 	return b.String()[1:]
 }
 
-// skip repeated commands and leading zero/space/comma when leading point or neg
+// prints in compact form. skips repeated command letters/leading zeros/spaces/commas is number stats with point or neg. sign
 type CompactPath Path
 
 type presep x
@@ -252,12 +252,7 @@ func (p CompactPath) String()string {
 
 
 
-// Scan a path into a slice of Drawers, all using slices of x's for the same array for their coordinates.
-// the x's are a one-to-one mapping of the values in the provided texture path representation. (enabling regeneration of textual form exactly, not just equivalent)
-// AND each Drawer, even smoothed, is independent (relatively) of any others, by vertue of overlapping slices from the x's.
-// Note: above features prevent support for long sequences of smoothed quadratic Beziers, since they are dependent on a previous onn-smoothed Quadratic Bezier an unlimited number of segments previously, to find their control point.
-// paths containing these should be pre-parsed to remove smoothed segments, really representing wrist friendly hand-editing compression.
-// 
+// Scan a path into a slice of Drawers
 func (p *Path) Scan(state fmt.ScanState,r rune) (err error){
 	var xs []x
 	var lc,c rune

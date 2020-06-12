@@ -1,7 +1,7 @@
 package patterns
 
 
-// Nibs can create line based LimitedPatterns in a particular way.
+// Nibs can create LimitedPatterns from lines and curves.
 type Nib interface{
 	Line(x,x,x,x) LimitedPattern
 	QuadraticBezier(x,x,x,x,x,x) LimitedPattern
@@ -9,8 +9,7 @@ type Nib interface{
 	Arc(x,x,x,x,float64,bool,bool,x,x) LimitedPattern
 }
 
-// Pens have methods to create LimitedPatterns using their current position.
-// they call their embedded Nib's methods with absolute position.
+// Pens have methods to create LimitedPatterns using their current position and subpath start.
 type Pen struct {
 	Nib
 	Relative bool
