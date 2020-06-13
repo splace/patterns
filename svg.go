@@ -19,9 +19,13 @@ func (p Path) Draw(b *Brush)(c Composite) {
 
 // a brush is a Pen that also stores control points for smoothed bezier segments
 type Brush struct {
-	Pen
+	PenPath
 	dqcx, dqcy  x 
 	dccx, dccy  x 
+}
+
+func NewBrush(n Nib) *Brush{
+	return &Brush{PenPath:PenPath{Pen:Pen{Nib:n}}}
 }
 
 type MoveTo []x

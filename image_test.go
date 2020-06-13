@@ -37,7 +37,7 @@ func TestImageLines(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	p := Pen{Nib:Facetted{2*unitX, unitY,3}, Relative: true}
+	p := Pen{Nib:Facetted{2*unitX, unitY,3}}
 
 	png.Encode(file, Plan9PalettedImage{NewDepiction(p.Line(-100*unitX, 100*unitX, 100*unitX, -100*unitX), 400, 400, color.Opaque, color.Transparent)})
 }
@@ -53,8 +53,8 @@ func TestImageBitCoin(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	b := Brush{Pen:Pen{Nib:Facetted{20*unitX, unitY,2}, Relative: true}}
-	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{UnlimitedShrunk{p.Draw(&b),6},50*unitX}, 400, 400, color.Opaque, color.Transparent)})
+	b := NewBrush(Facetted{20*unitX, unitY,2})
+	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{UnlimitedShrunk{p.Draw(b),6},50*unitX}, 400, 400, color.Opaque, color.Transparent)})
 }
 
 func TestImageRings(t *testing.T) {
@@ -75,9 +75,9 @@ func TestImageRings(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	b := Brush{Pen:Pen{Nib:Facetted{1*unitX, unitY,4}, Relative: true}}
-	b1 := Brush{Pen:Pen{Nib:Facetted{2*unitX, unitY,3}, Relative: true}}
-	c:=Composite{UnlimitedShrunk{p.Draw(&b),0.2},UnlimitedShrunk{p.Draw(&b1),0.5}}
+	b := NewBrush(Facetted{1*unitX, unitY,4})
+	b1 := NewBrush(Facetted{2*unitX, unitY,3})
+	c:=Composite{UnlimitedShrunk{p.Draw(b),0.2},UnlimitedShrunk{p.Draw(b1),0.5}}
 	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c,50*unitX}, 1600, 1600, color.Opaque, color.Transparent)})
 }
 
@@ -87,9 +87,9 @@ func TestImageRoundedBox(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	b := Brush{Pen:Pen{Nib:Facetted{1*unitX, unitY,2}, Relative: true}}
-	p := RoundedBoxPath(40*unitX,30*unitX, 15*unitX)
-	c:=UnlimitedShrunk{p.Draw(&b),0.3}
+	b := NewBrush(Facetted{1*unitX, unitY,2})
+	p := RoundedBox(40*unitX,30*unitX, 15*unitX)
+	c:=UnlimitedShrunk{p.Draw(b),0.3}
 	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c,50*unitX}, 2500, 1600, color.Opaque, color.Transparent)})
 }
 

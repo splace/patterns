@@ -5,9 +5,9 @@ package patterns
 
 
 func ExampleSVGShapesChamferedBoxPath() {
-	p := ChamferedBoxPath(40*unitX,30*unitX, 4*unitX)
-	b := Brush{Pen:Pen{Nib:Facetted{Width: 2*unitX, In: unitY, CurveDivision:2}}}
-	PrintGraph(p.Draw(&b),-25*unitX,25*unitX,-20*unitX,20*unitX,unitX)
+	p := ChamferedBox(40*unitX,30*unitX, 4*unitX)
+	b := NewBrush(Facetted{Width: 2*unitX, In: unitY, CurveDivision:2})
+	PrintGraph(p.Draw(b),-25*unitX,25*unitX,-20*unitX,20*unitX,unitX)
 	/* Output:
 Graph
       -20	---------------------------------------------------
@@ -55,9 +55,9 @@ Graph
 }
 
 func ExampleSVGShapesRoundedBoxPath() {
-	p := RoundedBoxPath(40*unitX,30*unitX, 15*unitX)
-	b := Brush{Pen:Pen{Nib:Facetted{Width: unitX, In: unitY, CurveDivision:2}}}
-	PrintGraph(p.Draw(&b),-25*unitX,25*unitX,-20*unitX,20*unitX,unitX)
+	p := RoundedBox(40*unitX,30*unitX, 15*unitX)
+	b := NewBrush(Facetted{Width: unitX, In: unitY, CurveDivision:2})
+	PrintGraph(p.Draw(b),-25*unitX,25*unitX,-20*unitX,20*unitX,unitX)
 	/* Output:
 Graph
       -20	---------------------------------------------------
@@ -105,9 +105,9 @@ Graph
 }
 
 func ExampleSVGShapesRoundedBoxPathWithHole() {
-	p := RoundedBoxPath(20*unitX,15*unitX, 15*unitX)
-	b := Brush{Pen:Pen{Nib:Facetted{Width: 5*unitX, In: unitY, CurveDivision:2}}}
-	Output(Limiter{p.Draw(&b),22.5*unitX},unitX)
+	p := RoundedBox(20*unitX,15*unitX, 15*unitX)
+	b := NewBrush(Facetted{Width: 5*unitX, In: unitY, CurveDivision:2})
+	Output(Limiter{p.Draw(b),22.5*unitX},unitX)
 	/* Output:
 Graph
       -20	---------------------------------------------------

@@ -1,6 +1,6 @@
 package patterns
 
-func ChamferedBoxPath(hw,hh,r x) Path {
+func ChamferedBox(hw,hh,r x) Path {
 	owr,ohr:=hw-r,hh-r
 	return Path{
 		MoveTo{owr,hh},
@@ -15,7 +15,7 @@ func ChamferedBoxPath(hw,hh,r x) Path {
 	}
 }
 
-func RoundedBoxPath(hw,hh,r x) Path {
+func RoundedBox(hw,hh,r x) Path {
 	owr,ohr:=hw-r,hh-r
 	return Path{
 		MoveTo{owr,hh},

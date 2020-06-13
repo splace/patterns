@@ -9,95 +9,100 @@ type Nib interface{
 	Arc(x,x,x,x,float64,bool,bool,x,x) LimitedPattern
 }
 
-// Pens have methods to create LimitedPatterns using their current position and subpath start.
+// Pens have methods to create LimitedPatterns using their current position.
 type Pen struct {
 	Nib
 	Relative bool
 	x, y     x
-	sx,sy x
 }
 
-func (p *Pen) MoveTo(px, py x) {
+// PenPath have methods to create LimitedPatterns using a Pen and the loops start.
+type PenPath struct{
+	Pen
+	x,y x
+}
+
+func (p *PenPath) MoveTo(px, py x) {
 	if p.Relative {
-		px += p.x
-		py += p.y
+		px += p.Pen.x
+		py += p.Pen.y
 	}
-	p.x, p.y, p.sx, p.sy = px, py, px, py
+	p.Pen.x, p.Pen.y, p.x, p.y = px, py, px, py
 	return
 }
 
-func (p *Pen) LineTo(px, py x) LimitedPattern {
+func (p *PenPath) LineTo(px, py x) LimitedPattern {
 	if p.Relative {
-		px += p.x
-		py += p.y
+		px += p.Pen.x
+		py += p.Pen.y
 	}
-	s := p.Line(p.x, p.y, px, py)
-	p.x, p.y = px, py
+	s := p.Line(p.Pen.x, p.Pen.y, px, py)
+	p.Pen.x, p.Pen.y = px, py
 	return s
 }
 
-func (p *Pen) LineToVertical(py x) LimitedPattern {
+func (p *PenPath) LineToVertical(py x) LimitedPattern {
 	if p.Relative {
-		py += p.y
+		py += p.Pen.y
 	}
-	s := p.Line(p.x, p.y, p.x, py)
-	p.y = py
+	s := p.Line(p.Pen.x, p.Pen.y, p.Pen.x, py)
+	p.Pen.y = py
 	return s
 }
 
-func (p *Pen) LineToHorizontal(px x) LimitedPattern {
+func (p *PenPath) LineToHorizontal(px x) LimitedPattern {
 	if p.Relative {
-		px += p.x
+		px += p.Pen.x
 	}
-	s := p.Line(p.x, p.y, px, p.y)
-	p.x = px
+	s := p.Line(p.Pen.x, p.Pen.y, px, p.Pen.y)
+	p.Pen.x = px
 	return s
 }
 
-func (p *Pen) StartLine(px1, py1, px2, py2 x) LimitedPattern {
+func (p *PenPath) StartLine(px1, py1, px2, py2 x) LimitedPattern {
 	p.MoveTo(px1,py1)
 	return p.LineTo(px2, py2)
 }
 
-func (p *Pen) LineClose() LimitedPattern {
-	s := p.Line(p.x, p.y, p.sx, p.sy)
-	p.sx, p.sy = p.x,p.y
+func (p *PenPath) LineClose() LimitedPattern {
+	s := p.Line(p.Pen.x, p.Pen.y, p.x, p.y)
+	p.x, p.y = p.Pen.x,p.Pen.y
 	return s
 }
 
-func (p *Pen) ArcTo(rx,ry x, a float64, large,sweep bool,x,y x) LimitedPattern {
+func (p *PenPath) ArcTo(rx,ry x, a float64, large,sweep bool,x,y x) LimitedPattern {
 	if p.Relative {
-		x += p.x
-		y += p.y
+		x += p.Pen.x
+		y += p.Pen.y
 	}
-	s := p.Arc(p.x,p.y,rx,ry,a,large,sweep,x,y)
-	p.x, p.y=x,y
+	s := p.Arc(p.Pen.x,p.Pen.y,rx,ry,a,large,sweep,x,y)
+	p.Pen.x, p.Pen.y=x,y
 	return s
 }
 
-func (p *Pen) QuadraticBezierTo(cx,cy,px,py x) LimitedPattern {
+func (p *PenPath) QuadraticBezierTo(cx,cy,px,py x) LimitedPattern {
 	if p.Relative {
-		px += p.x
-		py += p.y
-		cx += p.x
-		cy += p.y
+		px += p.Pen.x
+		py += p.Pen.y
+		cx += p.Pen.x
+		cy += p.Pen.y
 	}
-	s := p.QuadraticBezier(p.x,p.y,cx,cy,px, py)
-	p.x, p.y=px,py
+	s := p.QuadraticBezier(p.Pen.x,p.Pen.y,cx,cy,px, py)
+	p.Pen.x, p.Pen.y=px,py
 	return s
 }
 
-func (p *Pen) CubicBezierTo(c1x,c1y,c2x,c2y,px,py x) LimitedPattern {
+func (p *PenPath) CubicBezierTo(c1x,c1y,c2x,c2y,px,py x) LimitedPattern {
 	if p.Relative {
-		px += p.x
-		py += p.y
-		c1x += p.x
-		c1y += p.y
-		c2x += p.x
-		c2y += p.y
+		px += p.Pen.x
+		py += p.Pen.y
+		c1x += p.Pen.x
+		c1y += p.Pen.y
+		c2x += p.Pen.x
+		c2y += p.Pen.y
 	}
-	s := p.CubicBezier(p.x,p.y,c1x,c1y,c2x,c2y,px, py)
-	p.x, p.y=px,py
+	s := p.CubicBezier(p.Pen.x,p.Pen.y,c1x,c1y,c2x,c2y,px, py)
+	p.Pen.x, p.Pen.y=px,py
 	return s
 }
 

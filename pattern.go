@@ -27,7 +27,8 @@ func (p x) String() string {
 	return fmt.Sprint(float32(p)/float32(unitX))
 }
 
-
+// x is scaled as required on scan
+// commas are separators by default
 func (p *x) Scan(state fmt.ScanState, v rune) (err error) {
 	var xscan float32
 	state.SkipSpace()
