@@ -102,22 +102,18 @@ type PenPath struct{
 }
 
 func (p *PenPath) MoveTo(px, py x) {
-	if p.Relative {
-		px += p.Pen.x
-		py += p.Pen.y
-	}
-	p.Pen.x, p.Pen.y, p.x, p.y = px, py, px, py
+	p.Pen.MoveTo(px,py)
+	p.x, p.y= px, py
 	return
 }
 
-
-func (p *PenPath) StartLine(px1, py1, px2, py2 x) LimitedPattern {
-	p.MoveTo(px1,py1)
-	return p.LineTo(px2, py2)
+func (p *PenPath) StartLine(x1, y1, x2, y2 x) LimitedPattern {
+	p.MoveTo(x1,y1)
+	return p.LineTo(x2, y2)
 }
 
 func (p *PenPath) LineClose() LimitedPattern {
-	s := p.Line(p.Pen.x, p.Pen.y, p.x, p.y)
+	s := p.Line(p.Pen.x,p.Pen.y,p.x, p.y)
 	p.x, p.y = p.Pen.x,p.Pen.y
 	return s
 }
