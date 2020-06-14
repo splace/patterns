@@ -4,7 +4,7 @@ package patterns
 
 
 func ExamplePenLine() {
-	p := Pen{Nib:Facetted{unitX, unitY,3}}
+	p := Pen{Nib:Facetted{nil,unitX, unitY,3}}
 	Output(p.Line(0, 0, 5*unitX, 5*unitX),unitX)
 	/* Output:
 Graph
@@ -27,7 +27,7 @@ Graph
 }
 
 func ExamplePenLineNonZeroStart() {
-	p := Pen{Nib:Facetted{unitX, unitY,3}}
+	p := Pen{Nib:Facetted{nil,unitX, unitY,3}}
 	Output(p.Line(5*unitX, -5*unitX, -10*unitX, 10*unitX),unitX)
 	/* Output:
 Graph
@@ -65,7 +65,7 @@ Graph
 
 
 func ExamplePenLineCross() {
-	p := Pen{Nib:Facetted{unitX, unitY,3}}
+	p := Pen{Nib:Facetted{nil,unitX, unitY,3}}
 	Output(
 		Limiter{
 			Composite{
@@ -113,7 +113,7 @@ Graph
 
 
 func ExampleBrushPolygon() {
-	p := Facetted{unitX, unitY,3}
+	p := Facetted{nil,unitX, unitY,3}
 	Output(Limiter{p.Polygon([2]x{0, 5*unitX}, [2]x{7*unitX, -7*unitX},[2]x{-10*unitX, 5*unitX}),10*unitX},unitX)
 	/* Output:
 Graph

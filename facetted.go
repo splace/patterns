@@ -3,10 +3,11 @@ package patterns
 import "math"
 import "fmt"
 
-// Facetted is a Nib using straight lines with a particular width.
+// Facetted is a Nib using just straight lines, from another nib, with a particular width.
 // Curves are divided according to CurveDivision:  (power of 2 number of divisions.)
 // default 0 - no division, all curves a single straight line
 type Facetted struct{
+	Nib
 	Width    x
 	In       y
 	CurveDivision uint8
@@ -14,12 +15,11 @@ type Facetted struct{
 }
 
 func (p Facetted) Line(x1, y1, x2, y2 x) LimitedPattern {
-	ndx,dy:=float64(x1-x2),float64(y2-y1)
-	// NewRotated actually returns a LimitedPattern (as a Pattern) because NewLine returns one, so assert can never fail.
-	// TODO could reduce MaxX since we know better than worst case used by rotate.
-	return Translated{NewRotated(Rectangle(x(math.Hypot(ndx,dy)),p.Width, Filling(p.In)),math.Atan2(dy,ndx)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
+	if p.Nib==nil{
+		return LineNib{}.Line(x1, y1, x2, y2)
+	}
+	return p.Nib.Line(x1, y1, x2, y2)
 }
-
 
 func (p Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
 	var s []Pattern
@@ -60,20 +60,7 @@ func (p Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) Li
 }
 
 
-func (p Facetted) Box(x,y x) LimitedPattern {
-	return Limiter{Composite{p.Line(-x,y, x,y),p.Line(x,y,x,-y),p.Line(x,-y,-x,-y),p.Line(-x,-y,-x,y)},max2(x+p.Width,y+p.Width)}
-}
 
-func (p Facetted) Polygon(coords ...[2]x) LimitedPattern {
-	s := make([]Pattern, len(coords)) 
-	maxx:=max2(coords[0][0], coords[0][1])
-	for i := 1; i < len(s); i++ {
-		s[i-1] = p.Line(coords[i-1][0], coords[i-1][1],coords[i][0], coords[i][1])
-		maxx=max2(maxx,max2(coords[i][0], coords[i][1]))
-	}
-	s[len(coords)-1] = p.Line(coords[len(coords)-1][0], coords[len(coords)-1][1],coords[0][0], coords[0][1])
-	return Limiter{NewComposite(s...),maxx+p.Width}
-}
 
 // find centre of circle given two points on rim and radius.
 func circleCentre(sx, sy, r, ex, ey x) (x,y float64){
@@ -244,3 +231,21 @@ func (p Facetted) ArcOld(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x) Li
 	
 	return nil
 }
+
+
+
+func (p Facetted) Box(x,y x) LimitedPattern {
+	return Limiter{Composite{p.Line(-x,y, x,y),p.Line(x,y,x,-y),p.Line(x,-y,-x,-y),p.Line(-x,-y,-x,y)},max2(x+p.Width,y+p.Width)}
+}
+
+func (p Facetted) Polygon(coords ...[2]x) LimitedPattern {
+	s := make([]Pattern, len(coords)) 
+	maxx:=max2(coords[0][0], coords[0][1])
+	for i := 1; i < len(s); i++ {
+		s[i-1] = p.Line(coords[i-1][0], coords[i-1][1],coords[i][0], coords[i][1])
+		maxx=max2(maxx,max2(coords[i][0], coords[i][1]))
+	}
+	s[len(coords)-1] = p.Line(coords[len(coords)-1][0], coords[len(coords)-1][1],coords[0][0], coords[0][1])
+	return Limiter{NewComposite(s...),maxx+p.Width}
+}
+

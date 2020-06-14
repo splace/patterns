@@ -104,10 +104,8 @@ func (s Close) Draw(b *Brush)Pattern{
 	return b.LineClose()
 }
 
-type CloseRelative struct{}
-
-func (s CloseRelative) Draw(b *Brush)Pattern{
-	return Close(s).Draw(b)
+type CloseRelative struct{
+	Close
 }
 
 //var quadraticControlx, quadraticControly x
