@@ -1,11 +1,12 @@
 package patterns
 
-//import "fmt"
+import "fmt"
 //import "testing"
 
 
 func ExampleSVGShapesChamferedBoxPath() {
 	p := ChamferedBox(40*unitX,30*unitX, 4*unitX)
+	fmt.Println(p)
 	b := NewBrush(Facetted{Width: 2*unitX, In: unitY, CurveDivision:2})
 	PrintGraph(p.Draw(b),-25*unitX,25*unitX,-20*unitX,20*unitX,unitX)
 	/* Output:

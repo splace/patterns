@@ -27,7 +27,7 @@ Graph
 }
 
 func ExamplePenLineNonZeroStart() {
-	p := Pen{Nib:Facetted{unitX, unitY,3}, Relative: true}
+	p := Pen{Nib:Facetted{unitX, unitY,3}}
 	Output(p.Line(5*unitX, -5*unitX, -10*unitX, 10*unitX),unitX)
 	/* Output:
 Graph

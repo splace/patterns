@@ -116,7 +116,7 @@ func ExampleSVGcompactPathPrint() {
 	if err!=nil{
 		fmt.Println(err)
 	}
-	fmt.Printf("%v\n",CompactPath(p))
+	fmt.Printf("%v\n",MaxCompactStringer(p))
 	// Output:
 	// m0-1-5,.5,0,0h-10l.5,2z
 }
@@ -127,14 +127,14 @@ func TestSVGcompactPathTextRoundtrip(t *testing.T) {
 	if err!=nil{
 		fmt.Println(err)
 	}
-	cpt:=fmt.Sprint(CompactPath(p))
+	cpt:=fmt.Sprint(MaxCompactStringer(p))
 	p2:=Path{}
 	_,err=fmt.Sscan(cpt,&p2)
 	if err!=nil{
 		fmt.Println(err)
 	}
-	if cpt!=fmt.Sprint(CompactPath(p2)){
-		t.Errorf("%q != %q (%v)",cpt,fmt.Sprint(CompactPath(p2)),p2)
+	if cpt!=fmt.Sprint(MaxCompactStringer(p2)){
+		t.Errorf("%q != %q (%v)",cpt,fmt.Sprint(MaxCompactStringer(p2)),p2)
 	}
 }
 

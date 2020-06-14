@@ -31,7 +31,6 @@ func NewBrush(n Nib) *Brush{
 type MoveTo []x
 
 func (s MoveTo) Draw(b *Brush)Pattern{
-	b.Relative=false
 	b.MoveTo(s[0],s[1])
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = 0,0
@@ -41,8 +40,7 @@ func (s MoveTo) Draw(b *Brush)Pattern{
 type MoveToRelative []x
 
 func (s MoveToRelative) Draw(b *Brush)Pattern{
-	b.Relative=true
-	b.MoveTo(s[0],s[1])
+	b.MoveTo(b.PenPath.Pen.x+s[0],b.PenPath.Pen.y+s[1])
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = 0,0
 	return nil
@@ -51,7 +49,6 @@ func (s MoveToRelative) Draw(b *Brush)Pattern{
 type LineTo []x
 
 func (s LineTo) Draw(b *Brush)Pattern{
-	b.Relative=false
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = 0,0
 	return b.LineTo(s[0],s[1])
@@ -60,16 +57,14 @@ func (s LineTo) Draw(b *Brush)Pattern{
 type LineToRelative []x
 
 func (s LineToRelative) Draw(b *Brush)Pattern{
-	b.Relative=true
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = 0,0
-	return b.LineTo(s[0],s[1])
+	return b.LineTo(b.PenPath.Pen.x+s[0],b.PenPath.Pen.y+s[1])
 }
 
 type VerticalLineTo []x
 
 func (s VerticalLineTo) Draw(b *Brush)Pattern{
-	b.Relative=false
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = 0,0
 	return b.LineToVertical(s[0])
@@ -78,16 +73,14 @@ func (s VerticalLineTo) Draw(b *Brush)Pattern{
 type VerticalLineToRelative []x
 
 func (s VerticalLineToRelative) Draw(b *Brush)Pattern{
-	b.Relative=true
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = 0,0
-	return b.LineToVertical(s[0])
+	return b.LineToVertical(b.PenPath.Pen.y+s[0])
 }
 
 type HorizontalLineTo []x
 
 func (s HorizontalLineTo) Draw(b *Brush)Pattern{
-	b.Relative=false
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = 0,0
 	return b.LineToHorizontal(s[0])
@@ -96,10 +89,9 @@ func (s HorizontalLineTo) Draw(b *Brush)Pattern{
 type HorizontalLineToRelative []x
 
 func (s HorizontalLineToRelative) Draw(b *Brush)Pattern{
-	b.Relative=true
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = 0,0
-	return b.LineToHorizontal(s[0])
+	return b.LineToHorizontal(b.PenPath.Pen.x+s[0])
 }
 
 
@@ -123,7 +115,6 @@ func (s CloseRelative) Draw(b *Brush)Pattern{
 type QuadraticBezierTo []x
 
 func (s QuadraticBezierTo) Draw(b *Brush)Pattern{
-	b.Relative=false
 	b.dqcx, b.dqcy = s[2]-s[0], s[3]-s[1]
 	b.dccx, b.dccy = 0,0
 	return b.QuadraticBezierTo(s[0],s[1],s[2],s[3])
@@ -132,10 +123,9 @@ func (s QuadraticBezierTo) Draw(b *Brush)Pattern{
 type SmoothQuadraticBezierTo []x
 
 func (s SmoothQuadraticBezierTo) Draw(b *Brush)Pattern{
-	b.Relative=false
 	b.dccx, b.dccy = 0,0
-	b.dqcx+=b.x
-	b.dqcy+=b.y
+	b.dqcx+=b.PenPath.Pen.x
+	b.dqcy+=b.PenPath.Pen.y
 	p:=b.QuadraticBezierTo(b.dqcx,b.dqcy,s[0],s[1])
 	b.dqcx,b.dqcy=s[0]-b.dqcx,s[1]-b.dqcy
 	return p
@@ -144,18 +134,16 @@ func (s SmoothQuadraticBezierTo) Draw(b *Brush)Pattern{
 type QuadraticBezierToRelative []x
 
 func (s QuadraticBezierToRelative) Draw(b *Brush)Pattern{
-	b.Relative=true
 	b.dccx, b.dccy = 0,0
 	b.dqcx, b.dqcy = s[2]-s[0], s[3]-s[1]
-	return b.QuadraticBezierTo(s[0],s[1],s[2],s[3])
+	return b.QuadraticBezierTo(b.PenPath.Pen.x+s[0],b.PenPath.Pen.y+s[1],b.PenPath.Pen.x+s[2],b.PenPath.Pen.y+s[3])
 }
 
 type SmoothQuadraticBezierToRelative []x
 
 func (s SmoothQuadraticBezierToRelative) Draw(b *Brush)Pattern{
-	b.Relative=true
 	b.dccx, b.dccy = 0,0
-	p:=b.QuadraticBezierTo(b.dqcx,b.dqcy,s[0],s[1])
+	p:=b.QuadraticBezierTo(b.PenPath.Pen.x+b.dqcx,b.PenPath.Pen.y+b.dqcy,b.PenPath.Pen.x+s[0],b.PenPath.Pen.y+s[1])
 	b.dqcx, b.dqcy = s[0]-b.dqcx, s[1]-b.dqcy
 	return p
 }
@@ -165,7 +153,6 @@ func (s SmoothQuadraticBezierToRelative) Draw(b *Brush)Pattern{
 type CubicBezierTo []x
 
 func (s CubicBezierTo) Draw(b *Brush)Pattern{
-	b.Relative=false
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = s[4]-s[2], s[5]-s[3]
 	return b.CubicBezierTo(s[0],s[1],s[2],s[3],s[4],s[5])
@@ -174,7 +161,6 @@ func (s CubicBezierTo) Draw(b *Brush)Pattern{
 type SmoothCubicBezierTo []x
 
 func (s SmoothCubicBezierTo) Draw(b *Brush)Pattern{
-	b.Relative=false
 	b.dqcx, b.dqcy = 0,0
 	p:=b.CubicBezierTo(b.dccx+b.x,b.dccy+b.y,s[0],s[1],s[2],s[3])
 	b.dccx, b.dccy = s[2]-s[0], s[3]-s[1]
@@ -184,19 +170,17 @@ func (s SmoothCubicBezierTo) Draw(b *Brush)Pattern{
 type CubicBezierToRelative []x
 
 func (s CubicBezierToRelative) Draw(b *Brush)Pattern{
-	b.Relative=true
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = s[4]-s[2], s[5]-s[3]
-	return b.CubicBezierTo(s[0],s[1],s[2],s[3],s[4],s[5])
+	return b.CubicBezierTo(b.PenPath.Pen.x+s[0],b.PenPath.Pen.y+s[1],b.PenPath.Pen.x+s[2],b.PenPath.Pen.y+s[3],b.PenPath.Pen.x+s[4],b.PenPath.Pen.y+s[5])
 }
 
 
 type SmoothCubicBezierToRelative []x
 
 func (s SmoothCubicBezierToRelative) Draw(b *Brush)Pattern{
-	b.Relative=true
 	b.dqcx, b.dqcy = 0,0
-	p:= b.CubicBezierTo(b.dccx,b.dccy,s[0],s[1],s[2],s[3])
+	p:= b.CubicBezierTo(b.PenPath.Pen.x+b.dccx,b.PenPath.Pen.y+b.dccy,b.PenPath.Pen.x+s[0],b.PenPath.Pen.y+s[1],b.PenPath.Pen.x+s[2],b.PenPath.Pen.y+s[3])
 	b.dccx, b.dccy = s[2]-s[0], s[3]-s[1]
 	return p
 }
@@ -204,14 +188,12 @@ func (s SmoothCubicBezierToRelative) Draw(b *Brush)Pattern{
 type ArcTo []x
 
 func (s ArcTo) Draw(b *Brush)Pattern{
-	b.Relative=false
 	return b.ArcTo(s[0],s[1],float64(s[2])/unitX,s[3]!=0,s[4]!=0,s[5],s[6])
 }
 
 type ArcToRelative []x
 
 func (s ArcToRelative) Draw(b *Brush)Pattern{
-	b.Relative=true
-	return b.ArcTo(s[0],s[1],float64(s[2])/unitX,s[3]!=0,s[4]!=0,s[5],s[6])
+	return b.ArcTo(s[0],s[1],float64(s[2])/unitX,s[3]!=0,s[4]!=0,b.PenPath.Pen.x+s[5],b.PenPath.Pen.y+s[6])
 }
 

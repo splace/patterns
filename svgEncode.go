@@ -7,6 +7,57 @@ import "strings"
 
 func (p Path) String()string {
 	b :=new(strings.Builder)
+	for _,s:=range(p){
+		switch st:=s.(type){
+		case MoveTo:
+			fmt.Fprintf(b,"\nM%v,%v",st[0],st[1])
+		case MoveToRelative:
+			fmt.Fprintf(b,"\nm%v,%v",st[0],st[1])
+		case LineTo:
+			fmt.Fprintf(b,"\nL%v,%v",st[0],st[1])
+		case LineToRelative:
+			fmt.Fprintf(b,"\nl%v,%v",st[0],st[1])
+		case VerticalLineTo:
+			fmt.Fprintf(b,"\nV%v",st[0])
+		case VerticalLineToRelative:
+			fmt.Fprintf(b,"\nv%v",st[0])
+		case HorizontalLineTo:
+			fmt.Fprintf(b,"\nH%v",st[0])
+		case HorizontalLineToRelative:
+			fmt.Fprintf(b,"\nh%v",st[0])
+		case CloseRelative:
+			fmt.Fprintf(b,"\nz")
+		case Close:
+			fmt.Fprintf(b,"\nZ")
+		case QuadraticBezierTo:
+			fmt.Fprintf(b,"\nQ%v,%v %v,%v",st[0],st[1],st[2],st[3])
+		case SmoothQuadraticBezierTo:
+			fmt.Fprintf(b,"\nT%v,%v",st[0],st[1])
+		case QuadraticBezierToRelative:
+			fmt.Fprintf(b,"\nq%v,%v %v,%v",st[0],st[1],st[2],st[3])
+		case SmoothQuadraticBezierToRelative:
+			fmt.Fprintf(b,"\nt%v,%v",st[0],st[1])
+		case CubicBezierTo:
+			fmt.Fprintf(b,"\nC%v,%v %v,%v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5])
+		case SmoothCubicBezierTo:
+			fmt.Fprintf(b,"\nS%v,%v %v,%v",st[0],st[1],st[2],st[3])
+		case CubicBezierToRelative:
+			fmt.Fprintf(b,"\nc%v,%v %v,%v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5])
+		case SmoothCubicBezierToRelative:
+			fmt.Fprintf(b,"\ns%v,%v %v,%v",st[0],st[1],st[2],st[3])
+		case ArcTo:
+			fmt.Fprintf(b,"\nA%v,%v %v %v %v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5],st[6])
+		case ArcToRelative:
+			fmt.Fprintf(b,"\na%v,%v %v %v %v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5],st[6])
+		}
+	}
+	return b.String()[1:]
+}
+
+type CompactStringer Path
+
+func (p CompactStringer) String()string {
+	b :=new(strings.Builder)
 	var ls Drawer
 	for _,s:=range(p){
 		switch st:=s.(type){
@@ -116,8 +167,8 @@ func (p Path) String()string {
 	return b.String()[1:]
 }
 
-// prints in compact form. skips repeated command letters/leading zeros/spaces/commas is number stats with point or neg. sign
-type CompactPath Path
+// prints in highly compact form. skips repeated command letters/leading zeros/spaces/commas is number stats with point or neg. sign
+type MaxCompactStringer Path
 
 type presep x
 func (cx presep) String()(s string){
@@ -139,7 +190,7 @@ func (cx compactx) String()(s string){
 	return 
 }
 
-func (p CompactPath) String()string {
+func (p MaxCompactStringer) String()string {
 	b :=new(strings.Builder)
 	var ls Drawer
 	for _,s:=range(p){

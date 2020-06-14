@@ -88,20 +88,21 @@ func  (d Divide) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-cha
 	if rx==ry{
 		// just a circle, angle redundant
 		var cx,cy float64
-		if large != sweep {
+		if large == sweep {
 			cx,cy= centreOfCircle(x1,y1,rx,x2,y2)
 		}else{
 			cx,cy= centreOfCircle(x2,y2,rx,x1,y1)
 		}
 		fmt.Println(cx,cy)
 		// angle, to x-axis, of start and end from centre, 
-		a1,a2:=math.Atan2(float64(y1)-cy,float64(x1)-cx),math.Atan2(float64(y2)-cy,float64(x2)-cx)
+		a1,a2:=math.Atan2(cy-float64(y1),cx-float64(x1)),math.Atan2(cy-float64(y2),cx-float64(x2))
 		fmt.Println(a1,a2)
+		da:=a2-a1
 		if sweep {
-			a1,a2=a2,a1
+			da=math.Pi*2.0-da
 		}
-		ocwr,_:=offsetRotaters(cx,cy,(a1-a2)/float64(d))
-		fmt.Println("Angles:",a1,a2)
+		ocwr,_:=offsetRotaters(cx,cy,da/float64(d))
+		fmt.Println("Angles:",da)
 		// scale divisions so you get, somewhat, consistent side angles
 		//halfDivisions:=int8(math.Abs(float64(uint8(1)<<d)*(a2-a1)/math.Pi))+1
 		//ocwr,_:=offsetRotaters(cx,cy,(a2-a1)*.5/float64(halfDivisions))
