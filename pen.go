@@ -1,15 +1,7 @@
 package patterns
 
 
-// Nibs can create LimitedPatterns from lines and curves.
-type Nib interface{
-	Line(x,x,x,x) LimitedPattern
-	QuadraticBezier(x,x,x,x,x,x) LimitedPattern
-	CubicBezier(x,x,x,x,x,x,x,x) LimitedPattern
-	Arc(x,x,x,x,float64,bool,bool,x,x) LimitedPattern
-}
-
-// Pens have methods to create LimitedPatterns relative, or not, to their current position.
+// Pens have methods to create LimitedPatterns relative to their current position.
 type Pen struct {
 	Nib
 	x, y     x
@@ -61,7 +53,7 @@ func (p *Pen) CubicBezierTo(c1x,c1y,c2x,c2y,px,py x) LimitedPattern {
 
 
 
-// PenPath have methods to create LimitedPatterns using a Pen and the loops start.
+// PenPath have methods to create LimitedPatterns using a Pen and a pens start point.
 type PenPath struct{
 	Pen
 	x,y x
