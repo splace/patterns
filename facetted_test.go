@@ -35,7 +35,7 @@ Graph
 
 
 func ExampleFacettedArc() {
-	new(Facetted).Arc(-10,0,1,21,90,false,false,10,0)
+	new(Facetted).Arc(-10,0,21,1,90,false,false,10,0)
 	// Output:
 	//
 }
@@ -49,7 +49,7 @@ func ExampleFacettedCircle() {
 	//
 }
 
-func ExampleFacettedArcPrint() {
+func ExampleFacettedCircleArcPrint() {
 	f:=Facetted{Width:.2*unitX, In:unitY,CurveDivision:2}
 	Output(
 		LimitedComposite{
@@ -59,6 +59,83 @@ func ExampleFacettedArcPrint() {
 			f.Arc(-1*unitX,0,2*unitX,2*unitX,0,true,true,1*unitX,0),
 		},
 		unitX*0.25,
+	)
+	// Output:
+	/*
+Graph
+      -10	---------------------
+       -9	---------------------
+       -8	---------------------
+       -7	---------------------
+       -6	---------------------
+       -5	---------------X-----
+       -4	--------------XX-----
+       -3	-------------X-X-----
+       -2	------------X--X-----
+       -1	-----------X---X-----
+        0	----------X----X-----
+        1	-----------X---X-----
+        2	------------X--X-----
+        3	-------------X-X-----
+        4	--------------XX-----
+        5	---------------X-----
+        6	---------------------
+        7	---------------------
+        8	---------------------
+        9	---------------------
+       10	---------------------
+       */
+}
+
+func ExampleFacettedEllipseArcPrint() {
+	f:=Facetted{Width:.2*unitX, In:unitY,CurveDivision:2}
+	Output(
+		LimitedComposite{
+			f.Arc(-1*unitX,0,2*unitX,4*unitX,0,true,false,1*unitX,0),
+			f.Arc(-1*unitX,0,2*unitX,4*unitX,0,false,false,1*unitX,0),
+			f.Arc(-1*unitX,0,2*unitX,4*unitX,0,false,true,1*unitX,0),
+			f.Arc(-1*unitX,0,2*unitX,4*unitX,0,true,true,1*unitX,0),
+		},
+		unitX*0.25,
+	)
+	// Output:
+	/*
+Graph
+      -10	---------------------
+       -9	---------------------
+       -8	---------------------
+       -7	---------------------
+       -6	---------------------
+       -5	---------------X-----
+       -4	--------------XX-----
+       -3	-------------X-X-----
+       -2	------------X--X-----
+       -1	-----------X---X-----
+        0	----------X----X-----
+        1	-----------X---X-----
+        2	------------X--X-----
+        3	-------------X-X-----
+        4	--------------XX-----
+        5	---------------X-----
+        6	---------------------
+        7	---------------------
+        8	---------------------
+        9	---------------------
+       10	---------------------
+       */
+}
+
+
+func ExampleFacettedEllipseRotatedArcPrint() {
+	f:=Facetted{Width:unitX, In:unitY,CurveDivision:2}
+	Output(
+		LimitedComposite{
+			f.Arc(-2*unitX,0,8*unitX,2*unitX,0.5,true,false,2*unitX,0),
+			f.Arc(-2*unitX,0,8*unitX,2*unitX,0.5,false,false,2*unitX,0),
+			f.Arc(-2*unitX,0,8*unitX,2*unitX,0.5,false,true,2*unitX,0),
+			f.Arc(-2*unitX,0,8*unitX,2*unitX,0.5,true,true,2*unitX,0),
+		},
+		unitX*.5,
 	)
 	// Output:
 	/*

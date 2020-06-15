@@ -1,5 +1,7 @@
 package patterns
 
+import "math"
+
 type Drawer interface{
 	Draw(*Brush)Pattern
 }
@@ -186,12 +188,12 @@ func (s SmoothCubicBezierToRelative) Draw(b *Brush)Pattern{
 type ArcTo []x
 
 func (s ArcTo) Draw(b *Brush)Pattern{
-	return b.ArcTo(s[0],s[1],float64(s[2])/unitX,s[3]!=0,s[4]!=0,s[5],s[6])
+	return b.ArcTo(s[0],s[1],float64(s[2])/unitX*math.Pi/180,s[3]!=0,s[4]!=0,s[5],s[6])
 }
 
 type ArcToRelative []x
 
 func (s ArcToRelative) Draw(b *Brush)Pattern{
-	return b.ArcTo(s[0],s[1],float64(s[2])/unitX,s[3]!=0,s[4]!=0,b.PenPath.Pen.x+s[5],b.PenPath.Pen.y+s[6])
+	return b.ArcTo(s[0],s[1],float64(s[2])/unitX*math.Pi/180,s[3]!=0,s[4]!=0,b.PenPath.Pen.x+s[5],b.PenPath.Pen.y+s[6])
 }
 

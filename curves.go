@@ -81,12 +81,50 @@ func offsetter (ox,oy float64, t func(float64,float64)(float64,float64)) (func(f
 	}
 }
 
+func xsquashers (s float64) (func(float64,float64)(float64,float64),func(float64,float64)(float64,float64)){
+	rs:=1/s
+	return func(x,y float64) (float64, float64) {
+		return x*rs,y
+	},
+	func(x,y float64) (float64, float64) {
+		return x*s,y
+	}
+}
+
+
 
 func  (d Divide) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-chan [2]x{
 	if rx!=ry{
+		// for rx!=ry use squash and/or rotate transforms, then do Circle Sector and reverse transform on points returned. 
+		if a!=0 {
+			cwa,ccwa:=rotaters(a)
+			scwa,usccwa:=xsquashers(float64(rx)/float64(ry))
+			tx1,ty1:=scwa(cwa(float64(x1),float64(y1)))
+			tx2,ty2:=scwa(cwa(float64(x2),float64(y2)))
+			ch:=make(chan [2]x,d-1)
+			go func(){
+				for l:=range(d.Sector(x(tx1),x(ty1),x(ry),large,sweep,x(tx2),x(ty2))){
+					utlx,utly:=ccwa(usccwa(float64(l[0]),float64(l[1])))
+					ch <- [2]x{x(utlx),x(utly)}
+				}
+				close(ch)
+			}()
+			return ch
+		}else{
+			sa,usa:=xsquashers(float64(rx)/float64(ry))
+			tx1,ty1:=sa(float64(x1),float64(y1))
+			tx2,ty2:=sa(float64(x2),float64(y2))
+			ch:=make(chan [2]x,d-1)
+			go func(){
+				for l:=range(d.Sector(x(tx1),x(ty1),x(ry),large,sweep,x(tx2),x(ty2))){
+					utlx,utly:=usa(float64(l[0]),float64(l[1]))
+					ch <- [2]x{x(utlx),x(utly)}
+				}
+				close(ch)
+			}()
+			return ch
 		
-		// for rx!=ry can translate/rotate and squash, then do Circle Sector and reverse transform on all returned points. 
-		panic("Support lacking")
+		}
 	}
 	return d.Sector(x1,y1,rx,large,sweep,x2,y2)
 }
