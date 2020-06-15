@@ -111,8 +111,6 @@ type CloseRelative struct{
 	Close
 }
 
-//var quadraticControlx, quadraticControly x
-
 type QuadraticBezierTo []x
 
 func (s QuadraticBezierTo) Draw(b *Brush)Pattern{
@@ -149,7 +147,6 @@ func (s SmoothQuadraticBezierToRelative) Draw(b *Brush)Pattern{
 	return p
 }
 
-//var cubicControlx, cubicControly x
 
 type CubicBezierTo []x
 
