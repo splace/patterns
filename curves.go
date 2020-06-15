@@ -70,32 +70,30 @@ func rotaters (a float64) (func(float64,float64)(float64,float64),func(float64,f
 }
 
 func offsetRotaters (ox,oy,a float64) (func(float64,float64)(float64,float64),func(float64,float64)(float64,float64)){
-	sa,ca:=math.Sincos(a)
+	cwr,ccwr:=rotaters(a)
+	return offsetter(ox,oy,cwr),offsetter(ox,oy,ccwr)
+}
+
+func offsetter (ox,oy float64, t func(float64,float64)(float64,float64)) (func(float64,float64)(float64,float64)){
 	return func(x,y float64) (float64, float64) {
-		x-=ox
-		y-=oy
-		return x*ca+y*sa+ox, y*ca-x*sa+oy
-	},
-	func(x,y float64) (float64, float64) {
-		x-=ox
-		y-=oy
-		return x*ca-y*sa+ox, y*ca+x*sa+oy
+		x,y=t(x-ox,y-oy)
+		return x+ox, y+oy
 	}
 }
 
 
 func  (d Divide) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-chan [2]x{
 	if rx!=ry{
-		// TODO for rx!=ry translate/rotate and squash, then do below then reverse transform on every point. 
+		
+		// for rx!=ry can translate/rotate and squash, then do Circle Sector and reverse transform on all returned points. 
 		panic("Support lacking")
 	}
 	return d.Sector(x1,y1,rx,large,sweep,x2,y2)
 }
 
 func  (d Divide) Sector(x1,y1,r x, large,sweep bool, x2,y2 x)  <-chan [2]x{
-	// just a circle, angle redundant
 	var cx,cy float64
-	// centre for positive angle change short sweep
+	// centre for positive angle change and short sweep
 	if large == sweep {
 		cx,cy= centreOfCircle(x1,y1,r,x2,y2)
 	}else{
