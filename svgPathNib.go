@@ -1,6 +1,6 @@
 package patterns
 
-// a Nib that doesn't actually produce patterns, but appends to itself, a Path, the svg commands needed to Draw the pattern. 
+// a Path, implementing Nib, that when used appends to itself Drawers such that when calling its Draw method returns the Pattern.
 type SimpleSvgPathNib Path
 
 func (p *SimpleSvgPathNib) Line(x1, y1, x2, y2 x) LimitedPattern {

@@ -4,15 +4,18 @@ type Drawer interface{
 	Draw(*Brush)Pattern
 }
 
+// a Path is a collection of Drawers.
+// it is itself a Drawer that Draw's its contained Drawers in order.
+// a Path can thus be an ordered collection of (sub) Paths.
+// Notice: sub-Paths will in general depend on the previous sub-Path, unless they start with a MoveTo.
 type Path []Drawer
 
 // draw a path using the provided brush
 func (p Path) Draw(b *Brush)(c Composite) {
 	for _,s:=range(p){
-		d:=s.Draw(b)
-		// draw can modify the brush without producing a pattern, no need to add these to the pattern
-		if d==nil{continue}
-		c=append(c,d)
+		if d:=s.Draw(b);d!=nil{
+			c=append(c,d)
+		}
 	}
 	return
 }

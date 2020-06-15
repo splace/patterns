@@ -3,10 +3,10 @@ package patterns
 import "math"
 import "fmt"
 
-// Facetted is a Nib using just straight lines with a particular width.
-// if a Nib is provided its Line method is used to draw the lines.
-// Curves are divided according to CurveDivision:  (power of 2 number of divisions.)
+// Facetted is a Nib producing curves using a number of straight lines.
+// curves are divided according to CurveDivision:  (power of 2 number of divisions.)
 // default 0 - no division, all curves a single straight line
+// if a Nib is provided its Line method is used to draw the straight lines.
 type Facetted struct{
 	Nib
 	Width    x

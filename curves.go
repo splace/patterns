@@ -1,7 +1,7 @@
 package patterns
 
 import "math"
-import "fmt"
+//import "fmt"
 
 
 type Divide uint8
@@ -88,21 +88,27 @@ func  (d Divide) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-cha
 	if rx==ry{
 		// just a circle, angle redundant
 		var cx,cy float64
+		// centre for positive angle change short sweep
 		if large == sweep {
 			cx,cy= centreOfCircle(x1,y1,rx,x2,y2)
 		}else{
 			cx,cy= centreOfCircle(x2,y2,rx,x1,y1)
 		}
-		fmt.Println(cx,cy)
-		// angle, to x-axis, of start and end from centre, 
-		a1,a2:=math.Atan2(cy-float64(y1),cx-float64(x1)),math.Atan2(cy-float64(y2),cx-float64(x2))
-		fmt.Println(a1,a2)
+//		fmt.Println(cx,cy)
+		// counter clockwise angle from  x-axis, of start and end from centre, 
+		a1,a2:=math.Atan2(float64(y1)-cy,float64(x1)-cx),math.Atan2(float64(y2)-cy,float64(x2)-cx)
+//		fmt.Println(a1,a2)
 		da:=a2-a1
-		if sweep {
-			da=math.Pi*2.0-da
+		if large {
+			if da<0{
+				da+=math.Pi*2
+			}else{
+				da-=math.Pi*2
+			}
 		}
-		ocwr,_:=offsetRotaters(cx,cy,da/float64(d))
-		fmt.Println("Angles:",da)
+		// atan2 produced angles are counter clockwise
+		_,occwr:=offsetRotaters(cx,cy,da/float64(d))
+//		fmt.Println("Angles:",da,da/float64(d) )
 		// scale divisions so you get, somewhat, consistent side angles
 		//halfDivisions:=int8(math.Abs(float64(uint8(1)<<d)*(a2-a1)/math.Pi))+1
 		//ocwr,_:=offsetRotaters(cx,cy,(a2-a1)*.5/float64(halfDivisions))
@@ -111,7 +117,7 @@ func  (d Divide) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-cha
 		dx,dy:= float64(x1),float64(y1)
 		go func(){
 			for li:=Divide(1); li<d ; li++ {
-				dx,dy=ocwr(dx,dy)
+				dx,dy=occwr(dx,dy)
 				ch <- [2]x{x(dx),x(dy)}
 			}
 			close(ch)
