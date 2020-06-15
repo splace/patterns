@@ -57,6 +57,7 @@ Graph
 
 func ExampleSVGShapesRoundedBoxPath() {
 	p := RoundedBox(40*unitX,30*unitX, 15*unitX)
+	fmt.Println(p)
 	b := NewBrush(Facetted{Width: unitX, In: unitY, CurveDivision:2})
 	PrintGraph(p.Draw(b),-25*unitX,25*unitX,-20*unitX,20*unitX,unitX)
 	/* Output:
@@ -107,6 +108,8 @@ Graph
 
 func ExampleSVGShapesRoundedBoxPathWithHole() {
 	p := RoundedBox(20*unitX,15*unitX, 15*unitX)
+	fmt.Println(p)
+
 	b := NewBrush(Facetted{Width: 5*unitX, In: unitY, CurveDivision:2})
 	Output(Limiter{p.Draw(b),22.5*unitX},unitX)
 	/* Output:

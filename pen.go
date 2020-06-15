@@ -1,7 +1,7 @@
 package patterns
 
 
-// Pens have methods to create LimitedPatterns relative to their current position.
+// Pens have methods to create LimitedPatterns relative to the previously drawn position.
 type Pen struct {
 	Nib
 	x, y     x
@@ -53,7 +53,7 @@ func (p *Pen) CubicBezierTo(c1x,c1y,c2x,c2y,px,py x) LimitedPattern {
 
 
 
-// PenPath have methods to create LimitedPatterns using a Pen and a pens start point.
+// PenPath have methods to create LimitedPatterns using a Pen and an origin point.
 type PenPath struct{
 	Pen
 	x,y x

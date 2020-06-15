@@ -2,7 +2,7 @@ package patterns
 
 import "math"
 
-// Nib with unit width where curves are just drawn as straight lines.
+// Nib with unit width where curves are just drawn as straight lines
 type LineNib struct{}
 
 func (p LineNib) Line(x1, y1, x2, y2 x) LimitedPattern {

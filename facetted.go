@@ -3,7 +3,8 @@ package patterns
 import "math"
 import "fmt"
 
-// Facetted is a Nib using just straight lines, from another nib, with a particular width.
+// Facetted is a Nib using just straight lines with a particular width.
+// if a Nib is provided its Line method is used to draw the lines.
 // Curves are divided according to CurveDivision:  (power of 2 number of divisions.)
 // default 0 - no division, all curves a single straight line
 type Facetted struct{
@@ -16,7 +17,10 @@ type Facetted struct{
 
 func (p Facetted) Line(x1, y1, x2, y2 x) LimitedPattern {
 	if p.Nib==nil{
-		return LineNib{}.Line(x1, y1, x2, y2)
+		ndx,dy:=float64(x1-x2),float64(y2-y1)
+		// NewRotated actually returns a LimitedPattern (as a Pattern) because NewLine returns one, so assert can never fail.
+		// TODO could reduce MaxX since we know better than worst case used by rotate.
+		return Translated{NewRotated(Rectangle(x(math.Hypot(ndx,dy)),p.Width, Filling(p.In)),math.Atan2(dy,ndx)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
 	}
 	return p.Nib.Line(x1, y1, x2, y2)
 }
