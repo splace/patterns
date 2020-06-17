@@ -31,58 +31,19 @@ func ArcCorneredRectangle(hw,hh,rx,ry,dr,a x, large,sweep bool) Path {
 	ow,oh:=hw-rx,hh-ry
 	rx+=dr*unitX
 	ry+=dr*unitX
-	if large{
-		if sweep{
-			return Path{
-				MoveTo{ow,hh},
-				ArcTo{rx,ry,a,unitX,unitX,hw,oh},
-				VerticalLineTo{-oh},
-				ArcTo{rx,ry,a,unitX,unitX,ow,-hh},
-				HorizontalLineTo{-ow},
-				ArcTo{rx,ry,-a,unitX,unitX,-hw,-oh},
-				VerticalLineTo{oh},
-				ArcTo{rx,ry,-a,unitX,unitX,-ow,hh},
-				Close{},
-			}
-		}else{
-			return Path{
-				MoveTo{ow,hh},
-				ArcTo{rx,ry,a,unitX,0,hw,oh},
-				VerticalLineTo{-oh},
-				ArcTo{rx,ry,a,unitX,0,ow,-hh},
-				HorizontalLineTo{-ow},
-				ArcTo{rx,ry,-a,unitX,0,-hw,-oh},
-				VerticalLineTo{oh},
-				ArcTo{rx,ry,-a,unitX,0,-ow,hh},
-				Close{},
-			}
-		}
-	}else{
-		if sweep{
-			return Path{
-				MoveTo{ow,hh},
-				ArcTo{rx,ry,a,0,unitX,hw,oh},
-				VerticalLineTo{-oh},
-				ArcTo{rx,ry,a,0,unitX,ow,-hh},
-				HorizontalLineTo{-ow},
-				ArcTo{rx,ry,-a,0,unitX,-hw,-oh},
-				VerticalLineTo{oh},
-				ArcTo{rx,ry,-a,0,unitX,-ow,hh},
-				Close{},
-			}
-		}else{
-			return Path{
-				MoveTo{ow,hh},
-				ArcTo{rx,ry,a,0,0,hw,oh},
-				VerticalLineTo{-oh},
-				ArcTo{rx,ry,a,0,0,ow,-hh},
-				HorizontalLineTo{-ow},
-				ArcTo{rx,ry,-a,0,0,-hw,-oh},
-				VerticalLineTo{oh},
-				ArcTo{rx,ry,-a,0,0,-ow,hh},
-				Close{},
-			}
-		}
+	var lx,sx x
+	if large {lx=unitX}
+	if sweep {sx=unitX}
+	return Path{
+		MoveTo{ow,hh},
+		ArcTo{rx,ry,a,lx,sx,hw,oh},
+		VerticalLineTo{-oh},
+		ArcTo{rx,ry,a,lx,sx,ow,-hh},
+		HorizontalLineTo{-ow},
+		ArcTo{rx,ry,-a,lx,sx,-hw,-oh},
+		VerticalLineTo{oh},
+		ArcTo{rx,ry,-a,lx,sx,-ow,hh},
+		Close{},
 	}
 }
 
