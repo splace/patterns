@@ -16,17 +16,17 @@ func ChamferedBox(hw,hh,r x) Path {
 }
 
 func RoundedBox(hw,hh,r x) Path {
-	owr,ohr:=hw-r,hh-r
+	ow,oh:=hw-r,hh-r
 	return Path{
-		MoveTo{owr,hh},
-		QuadraticBezierTo{hw,hh,hw,ohr},
-		VerticalLineTo{-ohr},
-		QuadraticBezierTo{hw,-hh,owr,-hh},
-		HorizontalLineTo{-owr},
-		QuadraticBezierTo{-hw,-hh,-hw,-ohr},
-		VerticalLineTo{ohr},
-		QuadraticBezierTo{-hw,hh,-owr,hh},
-		Close{},
+		MoveTo{ow,hh},
+		ArcTo{r,r,0,0,0,hw,oh},
+		VerticalLineTo{-oh},
+		ArcTo{r,r,0,0,0,ow,-hh},
+//		HorizontalLineTo{-ow},
+//		ArcTo{r,r,0,0,1,-hw,-oh},
+//		VerticalLineTo{oh},
+//		ArcTo{r,r,0,0,1,-ow,hh},
+//		Close{},
 	}
 }
 

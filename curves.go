@@ -8,7 +8,7 @@ import "math"
 type Divide uint8
 const dividerMax = math.MaxUint8
 
-// Curve provides variable numbers of intermediate points
+// Curve provides variable numbers of intermediate points from two independent axis functions.
 func (d Divide) Curve(xfn, yfn func(Divide)x)  <-chan [2]x {
 	ch:=make(chan [2]x,d)
 	step:=dividerMax/d
@@ -50,7 +50,7 @@ func centreOfCircle(sx, sy, r, ex, ey x) (x,y float64){
 	//
 	r2:=r*r
 	if d2>4*r2 {
-		panic("circle too small")
+		return float64(mx),float64(my)
 	}
 	// multiplying factor of centre along midline
 	m:=math.Sqrt(float64(r2)/float64(d2)-0.25)
@@ -131,14 +131,14 @@ func  (d Divide) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-cha
 
 func  (d Divide) Sector(x1,y1,r x, large,sweep bool, x2,y2 x)  <-chan [2]x{
 	var cx,cy float64
-	// centre for positive angle change and short sweep
+	// two possible centres for short sweep
 	if large == sweep {
 		cx,cy= centreOfCircle(x1,y1,r,x2,y2)
 	}else{
 		cx,cy= centreOfCircle(x2,y2,r,x1,y1)
 	}
 //		fmt.Println(cx,cy)
-	// counter clockwise angle from  x-axis, of start and end from centre, 
+	// find angles from centre of start and end points 
 	a1,a2:=math.Atan2(float64(y1)-cy,float64(x1)-cx),math.Atan2(float64(y2)-cy,float64(x2)-cx)
 //		fmt.Println(a1,a2)
 	da:=a2-a1
@@ -149,7 +149,7 @@ func  (d Divide) Sector(x1,y1,r x, large,sweep bool, x2,y2 x)  <-chan [2]x{
 			da-=math.Pi*2
 		}
 	}
-	// atan2 produces angles counter clockwise
+	// atan2 produces angles counter-clockwise from +ve x-axis
 	_,occwr:=offsetRotaters(cx,cy,da/float64(d))
 //		fmt.Println("Angles:",da,da/float64(d) )
 	ch:=make(chan [2]x,d-1)

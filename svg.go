@@ -22,7 +22,7 @@ func (p Path) Draw(b *Brush)(c Composite) {
 	return
 }
 
-// a brush is a Pen that also stores control points for smoothed bezier segments
+// a brush is a Pen that stores control points to allow generation of smoothed bezier segments
 type Brush struct {
 	PenPath
 	dqcx, dqcy  x 

@@ -1,6 +1,6 @@
 package patterns
 
-//import "fmt"
+// import "fmt"
 //import "testing"
 
 func ExampleFacettedPolygon() {
@@ -33,21 +33,6 @@ Graph
        */
 }
 
-
-func ExampleFacettedArc() {
-	new(Facetted).Arc(-10,0,21,1,90,false,false,10,0)
-	// Output:
-	//
-}
-
-func ExampleFacettedCircle() {
-	new(Facetted).Arc(-3,0,5,5,0,false,false,3,0)
-	new(Facetted).Arc(-3,0,5,5,0,false,true,3,0)
-	new(Facetted).Arc(-3,0,5,5,0,true,false,3,0)
-	new(Facetted).Arc(-3,0,5,5,0,true,true,3,0)
-	// Output:
-	//
-}
 
 func ExampleFacettedCircleArcPrint() {
 	f:=Facetted{Width:.2*unitX, In:unitY,CurveDivision:2}
@@ -127,15 +112,15 @@ Graph
 
 
 func ExampleFacettedEllipseRotatedArcPrint() {
-	f:=Facetted{Width:unitX, In:unitY,CurveDivision:2}
+	f:=Facetted{Width:unitX, In:unitY,CurveDivision:3}
 	Output(
 		LimitedComposite{
-			f.Arc(-2*unitX,0,8*unitX,2*unitX,0.5,true,false,2*unitX,0),
-			f.Arc(-2*unitX,0,8*unitX,2*unitX,0.5,false,false,2*unitX,0),
-			f.Arc(-2*unitX,0,8*unitX,2*unitX,0.5,false,true,2*unitX,0),
-			f.Arc(-2*unitX,0,8*unitX,2*unitX,0.5,true,true,2*unitX,0),
+			f.Arc(-2*unitX,0,8*unitX,2*unitX,1,true,false,2*unitX,0),
+			f.Arc(-2*unitX,0,8*unitX,2*unitX,1,false,false,2*unitX,0),
+			f.Arc(-2*unitX,0,8*unitX,2*unitX,1,false,true,2*unitX,0),
+			f.Arc(-2*unitX,0,8*unitX,2*unitX,1,true,true,2*unitX,0),
 		},
-		unitX*.5,
+		unitX*.333,
 	)
 	// Output:
 	/*
@@ -163,3 +148,4 @@ Graph
        10	---------------------
        */
 }
+
