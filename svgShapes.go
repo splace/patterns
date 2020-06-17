@@ -47,3 +47,23 @@ func ArcCorneredRectangle(hw,hh,rx,ry,dr,a x, large,sweep bool) Path {
 	}
 }
 
+func ArcCorneredTrapezoid(hw,dww,hh,rx,ry,dr,a x, large,sweep bool) Path {
+	ow,oh:=hw-rx,hh-ry
+	rx+=dr*unitX
+	ry+=dr*unitX
+	var lx,sx x
+	if large {lx=unitX}
+	if sweep {sx=unitX}
+	return Path{
+		MoveTo{ow+dww,hh},
+		ArcTo{rx,ry,a,lx,sx,hw+dww,oh},
+		LineTo{hw-dww,-oh},
+		ArcTo{rx,ry,-a,lx,sx,ow-dww,-hh},
+		HorizontalLineTo{-ow+dww},
+		ArcTo{rx,ry,a,lx,sx,-hw+dww,-oh},
+		LineTo{-hw-dww,oh},
+		ArcTo{rx,ry,-a,lx,sx,-ow-dww,hh},
+		Close{},
+	}
+}
+
