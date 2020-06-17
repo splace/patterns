@@ -5,7 +5,7 @@ import "fmt"
 
 
 func ExampleSVGPathNib() {
-	cbox := ChamferedBox(40*unitX,30*unitX, 4*unitX)
+	cbox := ChamferedRectangle(40*unitX,30*unitX, 4*unitX)
 	p:=new(Path)
 	b := NewBrush((*SimpleSvgPathNib)(p))
 	cbox.Draw(b)
@@ -31,7 +31,7 @@ func ExampleSVGPathNib() {
 
 
 func ExampleSVGPathNib2() {
-	cbox := RoundedBox(40*unitX,30*unitX, 4*unitX)
+	cbox := RoundedRectangle(40*unitX,30*unitX, 4*unitX)
 	p:=new(Path)
 	b := NewBrush((*SimpleSvgPathNib)(p))
 	cbox.Draw(b)
@@ -42,7 +42,7 @@ func ExampleSVGPathNib2() {
 
 
 func ExampleSVGPathLinesOnlyFromRoundedBox() {
-	cbox := RoundedBox(40*unitX,30*unitX, 4*unitX)
+	cbox := RoundedRectangle(40*unitX,30*unitX, 4*unitX)
 	p:=new(Path)
 	b := NewBrush(Facetted{Nib:(*SimpleSvgPathNib)(p)})
 	cbox.Draw(b)
@@ -52,7 +52,7 @@ func ExampleSVGPathLinesOnlyFromRoundedBox() {
 }
 
 func ExampleSVGPathNib3() {
-	cbox := ChamferedBox(40*unitX,30*unitX, 4*unitX)
+	cbox := ChamferedRectangle(40*unitX,30*unitX, 4*unitX)
 	p:=new(Path)
 	b := NewBrush(Facetted{Nib:(*SimpleSvgPathNib)(p),CurveDivision:3})
 	cbox.Draw(b)

@@ -1,7 +1,6 @@
 package patterns
 
 import "math"
-import "fmt"
 
 
 // Divide provides channels of a number of points along various curves (not including ends)
@@ -132,19 +131,16 @@ func  (d Divide) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-cha
 func  (d Divide) Sector(x1,y1,r x, large,sweep bool, x2,y2 x)  <-chan [2]x{
 	var cx,cy float64
 	// two possible centres for short sweep
-	if large == sweep {
+	if large != sweep {
 		cx,cy= centreOfCircle(x1,y1,r,x2,y2)
 	}else{
 		cx,cy= centreOfCircle(x2,y2,r,x1,y1)
 	}
-//		fmt.Println(cx,cy)
-	// find angles from centre of start and end points 
+	// find angles from centre to start and end points 
 	a1,a2:=math.Atan2(float64(y1)-cy,float64(x1)-cx),math.Atan2(float64(y2)-cy,float64(x2)-cx)
-//		fmt.Println(a1,a2)
 	// delta angle from start to end, calculation issues due to float64 type at odds with modula of angles
-	// a1 and a1 can be +-Pi, but da can be +-2Pi
 	da:=a2-a1
-	//da=math.Mod(da,math.Pi*2)
+	// a1 and a2 can be +-Pi, but da can be +-2Pi
 	if large {
 		if da<0 && da> -math.Pi {
 			da+=2*math.Pi
@@ -158,18 +154,8 @@ func  (d Divide) Sector(x1,y1,r x, large,sweep bool, x2,y2 x)  <-chan [2]x{
 			if da>math.Pi {da-=2*math.Pi}
 		}
 	}
-
-//	if large {
-//		if da<0{
-//			da+=math.Pi*2
-//		}else{
-//			da-=math.Pi*2
-//		}
-//	}
 	// atan2 produces angles counter-clockwise from +ve x-axis
-	fmt.Println(da)
 	_,occwr:=offsetRotaters(cx,cy,da/float64(d))
-//		fmt.Println("Angles:",da,da/float64(d) )
 	ch:=make(chan [2]x,d-1)
 	dx,dy:= float64(x1),float64(y1)
 	go func(){

@@ -1,6 +1,6 @@
 package patterns
 
-func ChamferedBox(hw,hh,r x) Path {
+func ChamferedRectangle(hw,hh,r x) Path {
 	owr,ohr:=hw-r,hh-r
 	return Path{
 		MoveTo{owr,hh},
@@ -15,19 +15,19 @@ func ChamferedBox(hw,hh,r x) Path {
 	}
 }
 
-func RoundedBox(hw,hh,r x) Path {
-	return ArcBox(hw,hh,r,r,0,0,false,true)
+func RoundedRectangle(hw,hh,r x) Path {
+	return ArcRectangle(hw,hh,r,r,0,0,false,false)
 }
 
-func ScallopedCorneredBox(hw,hh,r x) Path {
-	return ArcBox(hw,hh,r,r,0,0,false,false)
+func ScallopedCorneredRectangle(hw,hh,r x) Path {
+	return ArcRectangle(hw,hh,r,r,0,0,false,true)
 }
 
-func BallCorneredBox(hw,hh,r x) Path {
-	return ArcBox(hw,hh,r,r,0,0,true,true)
+func BallCorneredRectangle(hw,hh,r x) Path {
+	return ArcRectangle(hw,hh,r,r,0,0,true,false)
 }
 
-func ArcBox(hw,hh,rx,ry,dr,a x, large,sweep bool) Path {
+func ArcRectangle(hw,hh,rx,ry,dr,a x, large,sweep bool) Path {
 	ow,oh:=hw-rx,hh-ry
 	rx+=dr*unitX
 	ry+=dr*unitX

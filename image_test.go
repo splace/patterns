@@ -81,19 +81,30 @@ func TestImageRings(t *testing.T) {
 	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c,50*unitX}, 1600, 1600, color.Opaque, color.Transparent)})
 }
 
-func TestImageRoundedBox(t *testing.T) {
+func TestImageRoundedRectangle(t *testing.T) {
 	file, err := os.Create("./test output/RoundedBox.png")
 	if err != nil {
 		panic(err)
 	}
 	defer file.Close()
 	b := NewBrush(Facetted{Width:1*unitX, In:unitY, CurveDivision:2})
-	p := RoundedBox(40*unitX,30*unitX, 15*unitX)
+	p := RoundedRectangle(40*unitX,30*unitX, 15*unitX)
 	c:=UnlimitedShrunk{p.Draw(b),0.3}
 	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c,50*unitX}, 2500, 1600, color.Opaque, color.Transparent)})
 }
 
 
+func TestImageBallCorneredRectangle(t *testing.T) {
+	file, err := os.Create("./test output/BallCorneredRectangle.png")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	p := BallCorneredRectangle(25*unitX,20*unitX, 8*unitX)
+	b := NewBrush(Facetted{Width: unitX, In: unitY, CurveDivision:2})
+	c:=UnlimitedShrunk{p.Draw(b),0.5}
+	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c,50*unitX}, 2500, 1600, color.Opaque, color.Transparent)})
+}
 
 
 

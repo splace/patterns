@@ -3,10 +3,41 @@ package patterns
 import "fmt"
 //import "testing"
 
-
-func ExampleSVGShapesChamferedBoxPath() {
-	p := ChamferedBox(20*unitX,15*unitX, 4*unitX)
+func ExampleSVGShapesChamferedRectanglePath() {
+	p := ChamferedRectangle(20*unitX,15*unitX, 4*unitX)
 	fmt.Println(p)
+	/* Output:
+M16,15
+L20,11
+V-11
+L16,-15
+H-16
+L-20,-11
+V11
+L-16,15
+Z
+*/
+}
+
+func ExampleSVGShapesBallCorneredRectanglePath() {
+	p := BallCorneredRectangle(20*unitX,15*unitX, 8*unitX)
+	fmt.Println(p)
+	/* Output:
+M12,15
+A8,8 0 1 0 20,7
+V-7
+A8,8 0 1 0 12,-15
+H-12
+A8,8 0 1 0 -20,-7
+V7
+A8,8 0 1 0 -12,15
+Z
+*/
+}
+
+
+func ExampleSVGShapesChamferedRectanglePathGraph() {
+	p := ChamferedRectangle(20*unitX,15*unitX, 4*unitX)
 	b := NewBrush(Facetted{Width: 2*unitX, In: unitY, CurveDivision:2})
 	PrintGraph(p.Draw(b),-25*unitX,25*unitX,-20*unitX,20*unitX,unitX)
 	/* Output:
@@ -55,9 +86,8 @@ Graph
 */
 }
 
-func ExampleSVGShapesRoundedBoxPath() {
-	p := BallCorneredBox(20*unitX,15*unitX, 8*unitX)
-	fmt.Println(p)
+func ExampleSVGShapesBallCorneredRectanglePathGraph() {
+	p := BallCorneredRectangle(20*unitX,15*unitX, 8*unitX)
 	b := NewBrush(Facetted{Width: 2*unitX, In: unitY, CurveDivision:2})
 	PrintGraph(p.Draw(b),-35*unitX,35*unitX,-30*unitX,30*unitX,unitX)
 	/* Output:
@@ -106,7 +136,7 @@ Graph
 */
 }
 
-//func ExampleSVGShapesRoundedBoxPathWithHole() {
+//func ExampleSVGShapesRoundedCorneredRectanglePathWithHole() {
 //	p := RoundedBox(20*unitX,15*unitX, 5*unitX)
 //	fmt.Println(p)
 
