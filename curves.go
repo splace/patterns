@@ -1,7 +1,6 @@
 package patterns
 
 import "math"
-import "fmt"
 
 // Divide provides channels of a number of points along various curves (not including ends)
 type Divide uint8
@@ -157,7 +156,6 @@ func  (d Divide) Sector(x1,y1,r x, large,sweep bool, x2,y2 x)  <-chan [2]x{
 	// make rotation direction as required for sweep 
 	if sweep == (da<0) {da=-da}
 	// atan2 produces angles counter-clockwise from +ve x-axis
-	fmt.Println(da)
 	_,occwr:=offsetRotaters(cx,cy,da/float64(d))
 	ch:=make(chan [2]x,d-1)
 	dx,dy:= float64(x1),float64(y1)
