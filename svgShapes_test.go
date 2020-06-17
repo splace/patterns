@@ -56,7 +56,7 @@ Graph
 }
 
 func ExampleSVGShapesRoundedBoxPath() {
-	p := RoundedBox(20*unitX,15*unitX, 8*unitX)
+	p := BallCorneredBox(20*unitX,15*unitX, 8*unitX)
 	fmt.Println(p)
 	b := NewBrush(Facetted{Width: 2*unitX, In: unitY, CurveDivision:2})
 	PrintGraph(p.Draw(b),-35*unitX,35*unitX,-30*unitX,30*unitX,unitX)
