@@ -16,18 +16,18 @@ func ChamferedRectangle(hw,hh,r x) Path {
 }
 
 func RoundedRectangle(hw,hh,r x) Path {
-	return ArcRectangle(hw,hh,r,r,0,0,false,false)
+	return ArcCorneredRectangle(hw,hh,r,r,0,0,false,false)
 }
 
 func ScallopedCorneredRectangle(hw,hh,r x) Path {
-	return ArcRectangle(hw,hh,r,r,0,0,false,true)
+	return ArcCorneredRectangle(hw,hh,r,r,0,0,false,true)
 }
 
 func BallCorneredRectangle(hw,hh,r x) Path {
-	return ArcRectangle(hw,hh,r,r,0,0,true,false)
+	return ArcCorneredRectangle(hw,hh,r,r,0,0,true,false)
 }
 
-func ArcRectangle(hw,hh,rx,ry,dr,a x, large,sweep bool) Path {
+func ArcCorneredRectangle(hw,hh,rx,ry,dr,a x, large,sweep bool) Path {
 	ow,oh:=hw-rx,hh-ry
 	rx+=dr*unitX
 	ry+=dr*unitX

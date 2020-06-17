@@ -198,39 +198,3 @@ func quadroupleDivision(s,c1,c2,c3,e x) (func (Divide) x ){
 		return tripleDivision(s+sc1fn(t),c1+c1c2fn(t),c2+c2c3fn(t),c3+c3efn(t))(t)
 	}
 }
-
-
-//func linearDivision(s,e x) (func (divider) x ){
-//		return func(t divider)x{return s+(e-s)*x(t)/dividerMax} 
-//	}
-//	
-//func doubleDivision(s,c,e x) (func (divider) x ){
-//		scfn:= linearDivision(s,c)
-//		cefn:= linearDivision(c,e)
-//		return func(t divider)x{
-//			return linearDivision(scfn(t),cefn(t))(t)
-//		}
-//	}
-
-//func tripleDivision(s,c1,c2,e x) (func (divider) x ){
-//		sc1fn:= linearDivision(s,c1)
-//		c1c2fn:= linearDivision(c1,c2)
-//		c2efn:= linearDivision(c2,e)
-//		return func(t divider)x{
-//			return doubleDivision(sc1fn(t),c1c2fn(t),c2efn(t))(t)
-//		}
-//	}
-
-//func quadroupleDivision(s,c1,c2,c3,e x) (func (divider) x ){
-//		sc1fn:= linearDivision(s,c1)
-//		c1c2fn:= linearDivision(c1,c2)
-//		c2c3fn:= linearDivision(c2,c3)
-//		c3efn:= linearDivision(c3,e)
-//		return func(t divider)x{
-//			return tripleDivision(sc1fn(t),c1c2fn(t),c2c3fn(t),c3efn(t))(t)
-//		}
-//	}
-
-/* run: args="" Thu 11 Jun 23:57:19 BST 2020 go version go1.14.3 linux/amd64
-Thu 11 Jun 23:57:20 BST 2020
-*/
