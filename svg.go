@@ -13,13 +13,14 @@ type Drawer interface{
 type Path []Drawer
 
 // draw a path using the provided brush
-func (p Path) Draw(b *Brush)(c Composite) {
+func (p Path) Draw(b *Brush) Pattern {
+	var c Composite
 	for _,s:=range(p){
 		if d:=s.Draw(b);d!=nil{
 			c=append(c,d)
 		}
 	}
-	return
+	return c
 }
 
 // a brush is a Pen that stores control points to allow generation of smoothed bezier segments
