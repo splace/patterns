@@ -115,7 +115,7 @@ func TestImageArcCorneredTrapezoid(t *testing.T) {
 	}
 	defer file.Close()
 	p1 := ArcCorneredTrapezoid(25*unitX,5*unitX,20*unitX,8*unitX,4*unitX,0,45*unitX, true,true)
-	p2 := ArcCorneredTrapezoid(30*unitX,5*unitX,25*unitX,8*unitX,4*unitX,0,45*unitX, true,false)
+	p2 := ArcCorneredTrapezoid(30*unitX,5*unitX,24*unitX,8*unitX,4*unitX,0,45*unitX, true,false)
 	p:=Path{p1,p2}
 	b := NewBrush(Facetted{Width: 2*unitX, In: unitY, CurveDivision:2})
 	c:=UnlimitedShrunk{p.Draw(b),0.5}
