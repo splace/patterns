@@ -1,5 +1,6 @@
 package patterns
 
+//import "fmt"
 import "math"
 
 // Facetted is a Nib producing curves using a number of straight lines.
@@ -14,80 +15,98 @@ type Facetted struct{
 //	Lwidth x // last width to make tappered lines
 }
 
-func (p Facetted) Line(x1, y1, x2, y2 x) LimitedPattern {
-	if p.Nib==nil{
+func (f Facetted) Line(x1, y1, x2, y2 x) LimitedPattern {
+	if f.Nib==nil{
 		ndx,dy:=float64(x1-x2),float64(y2-y1)
 		// NewRotated actually returns a LimitedPattern (as a Pattern) because NewLine returns one, so assert can never fail.
 		// TODO could reduce MaxX since we know better than worst case used by rotate.
-		return Translated{NewRotated(Rectangle(x(math.Hypot(ndx,dy)),p.Width, Filling(p.In)),math.Atan2(dy,ndx)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
+		return Translated{NewRotated(Rectangle(x(math.Hypot(ndx,dy)),f.Width, Filling(f.In)),math.Atan2(dy,ndx)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
 	}
-	return p.Nib.Line(x1, y1, x2, y2)
+	return f.Nib.Line(x1, y1, x2, y2)
 }
 
-func (p Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
+func (f Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
 	var s []Pattern
-	maxx:=max2(max2(sx,sy),max2(ex,ey))
-	for l:=range(Divide(1<<(8-p.CurveDivision)).QuadraticBezier(sx, sy, cx, cy, ex, ey)){
-		s= append(s,p.Line(sx,sy,l[0],l[1]))
-		sx,sy=l[0],l[1]
-		maxx=max2(maxx,max2(sx,sy))
+	l:=Limits{sx,sy,sx,sy}
+	for p:=range(Divide(1<<(8-f.CurveDivision)).QuadraticBezier(sx, sy, cx, cy, ex, ey)){
+		s= append(s,f.Line(sx,sy,p[0],p[1]))
+		sx,sy=p[0],p[1]
+		l.Update(p)
 	}
-	s= append(s,p.Line(sx,sy,ex,ey))
-	return Limiter{NewComposite(s...),maxx+p.Width}  
+	s= append(s,f.Line(sx,sy,ex,ey))
+	l.Update([2]x{ex,ey})
+	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1} ,max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) }  
 }
 
 
-func (p Facetted) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
+func (f Facetted) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
 	var s []Pattern
-	maxx:=max2(max2(sx,sy),max2(ex,ey))
-	for l:=range(Divide(1<<(8-p.CurveDivision)).CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey)){
-		s= append(s,p.Line(sx,sy,l[0],l[1]))
-		sx,sy=l[0],l[1]
-		maxx=max2(maxx,max2(sx,sy))
+	l:=Limits{sx,sy,sx,sy}
+	for p:=range(Divide(1<<(8-f.CurveDivision)).CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey)){
+		s= append(s,f.Line(sx,sy,p[0],p[1]))
+		sx,sy=p[0],p[1]
+		l.Update(p)
 	}
-	s= append(s,p.Line(sx,sy,ex,ey))
-	return Limiter{NewComposite(s...),maxx+p.Width}  
-}
+	s= append(s,f.Line(sx,sy,ex,ey))
+	l.Update([2]x{ex,ey})
+	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } }
 
 
-func (p Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) LimitedPattern {
+func (f Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) LimitedPattern {
 	var s []Pattern
-	maxx:=max2(max2(sx,sy),max2(ex,ey))
-	for l:=range(Divide(1<<(8-p.CurveDivision)).QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x, c3y,ex, ey)){
-		s= append(s,p.Line(sx,sy,l[0],l[1]))
-		sx,sy=l[0],l[1]
-		maxx=max2(maxx,max2(sx,sy))
+	l:=Limits{sx,sy,sx,sy}
+	for p:=range(Divide(1<<(8-f.CurveDivision)).QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x, c3y,ex, ey)){
+		s= append(s,f.Line(sx,sy,p[0],p[1]))
+		sx,sy=p[0],p[1]
+		l.Update(p)
 	}
-	s= append(s,p.Line(sx,sy,ex,ey))
-	return Limiter{NewComposite(s...),maxx+p.Width}  
-}
+	s= append(s,f.Line(sx,sy,ex,ey))
+	l.Update([2]x{ex,ey})
+	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } }
 
 
-func (p Facetted) Arc(sx,sy,rx,ry x, a float64, large,sweep bool, ex,ey x) LimitedPattern {
+func (f Facetted) Arc(sx,sy,rx,ry x, a float64, large,sweep bool, ex,ey x) LimitedPattern {
 	var s []Pattern
-	maxx:=max2(max2(sx,sy),max2(ex,ey))
-	for l:=range(Divide(1<<(8-p.CurveDivision)).Arc(sx,sy,rx,ry, a, large,sweep, ex,ey)){
-		s= append(s,p.Line(sx,sy,l[0],l[1]))
-		sx,sy=l[0],l[1]
-		maxx=max2(maxx,max2(sx,sy))
+	l:=Limits{sx,sy,sx,sy}
+	for p:=range(Divide(1<<(8-f.CurveDivision)).Arc(sx,sy,rx,ry, a, large,sweep, ex,ey)){
+		s= append(s,f.Line(sx,sy,p[0],p[1]))
+		sx,sy=p[0],p[1]
+		l.Update(p)
 	}
-	s= append(s,p.Line(sx,sy,ex,ey))
-	return Limiter{NewComposite(s...),maxx+p.Width}  
+	s= append(s,f.Line(sx,sy,ex,ey))
+	l.Update([2]x{ex,ey})
+	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } }
+
+
+func (f Facetted) Box(x,y x) LimitedPattern {
+	return Limiter{Composite{f.Line(-x,y, x,y),f.Line(x,y,x,-y),f.Line(x,-y,-x,-y),f.Line(-x,-y,-x,y)},max(x+f.Width,y+f.Width)}
 }
 
-
-func (p Facetted) Box(x,y x) LimitedPattern {
-	return Limiter{Composite{p.Line(-x,y, x,y),p.Line(x,y,x,-y),p.Line(x,-y,-x,-y),p.Line(-x,-y,-x,y)},max2(x+p.Width,y+p.Width)}
-}
-
-func (p Facetted) Polygon(coords ...[2]x) LimitedPattern {
+func (f Facetted) Polygon(coords ...[2]x) LimitedPattern {
 	s := make([]Pattern, len(coords)) 
-	maxx:=max2(coords[0][0], coords[0][1])
+	l:=Limits{coords[0][0], coords[0][1],coords[0][0], coords[0][1]}
 	for i := 1; i < len(s); i++ {
-		s[i-1] = p.Line(coords[i-1][0], coords[i-1][1],coords[i][0], coords[i][1])
-		maxx=max2(maxx,max2(coords[i][0], coords[i][1]))
+		s[i-1] = f.Line(coords[i-1][0], coords[i-1][1],coords[i][0], coords[i][1])
+		l.Update([2]x{coords[i][0], coords[i][1]})
 	}
-	s[len(coords)-1] = p.Line(coords[len(coords)-1][0], coords[len(coords)-1][1],coords[0][0], coords[0][1])
-	return Limiter{NewComposite(s...),maxx+p.Width}
+	s[len(coords)-1] = f.Line(coords[len(coords)-1][0], coords[len(coords)-1][1],coords[0][0], coords[0][1])
+	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } }
+
+// max and min points
+type Limits struct{
+	MinX,MinY,MaxX,MaxY x
+}
+
+func (d *Limits) Update(p [2]x) {
+	if p[0]<d.MinX{
+		d.MinX=p[0]
+	}else{
+		if p[0]>d.MaxX{d.MaxX=p[0]}
+	}
+	if p[1]<d.MinY{
+		d.MinY=p[1]
+	}else{
+		if p[1]>d.MaxY{d.MaxY=p[1]}
+	}
 }
 

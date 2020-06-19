@@ -7,25 +7,25 @@ import "math"
 // a LimitedPattern translated
 type Translated struct {
 	LimitedPattern
-	dx, dy x
+	x, y x
 }
 
-func (p Translated) at(px, py x) y {
-	return p.LimitedPattern.at(px-p.dx, py-p.dy)
+func (p Translated) at(x, y x) y {
+	return p.LimitedPattern.at(x-p.x, y-p.y)
 }
 
 func (p Translated) MaxX() x {
-	return p.LimitedPattern.MaxX() + max4(p.dx, -p.dx, p.dy, -p.dy)
+	return p.LimitedPattern.MaxX() + max2(p.x,p.y)
 }
 
 // a Pattern shifted
 type UnlimitedTranslated struct {
 	Pattern
-	dx, dy x
+	x, y x
 }
 
-func (p UnlimitedTranslated) at(px, py x) y {
-	return p.Pattern.at(px-p.dx, py-p.dy)
+func (p UnlimitedTranslated) at(x, y x) y {
+	return p.Pattern.at(x-p.x, y-p.y)
 }
 
 func abs(a x) x {

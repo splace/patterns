@@ -163,7 +163,7 @@ type SmoothCubicBezierTo []x
 
 func (s SmoothCubicBezierTo) Draw(b *Brush)Pattern{
 	b.dqcx, b.dqcy = 0,0
-	p:=b.CubicBezierTo(b.dccx+b.x,b.dccy+b.y,s[0],s[1],s[2],s[3])
+	p:=b.CubicBezierTo(b.dccx+b.PenPath.Pen.x,b.dccy+b.PenPath.Pen.y,s[0],s[1],s[2],s[3])
 	b.dccx, b.dccy = s[2]-s[0], s[3]-s[1]
 	return p
 }
@@ -181,7 +181,7 @@ type SmoothCubicBezierToRelative []x
 
 func (s SmoothCubicBezierToRelative) Draw(b *Brush)Pattern{
 	b.dqcx, b.dqcy = 0,0
-	p:= b.CubicBezierTo(b.PenPath.Pen.x+b.dccx,b.PenPath.Pen.y+b.dccy,b.PenPath.Pen.x+s[0],b.PenPath.Pen.y+s[1],b.PenPath.Pen.x+s[2],b.PenPath.Pen.y+s[3])
+	p:= b.CubicBezierTo(b.dccx,b.dccy,b.PenPath.Pen.x+s[0],b.PenPath.Pen.y+s[1],b.PenPath.Pen.x+s[2],b.PenPath.Pen.y+s[3])
 	b.dccx, b.dccy = s[2]-s[0], s[3]-s[1]
 	return p
 }

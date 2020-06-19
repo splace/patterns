@@ -70,6 +70,7 @@ func TestImageRings(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
+	fmt.Println(p)
 	file, err := os.Create("./test output/rings.png")
 	if err != nil {
 		panic(err)
@@ -122,7 +123,6 @@ func TestImageArcCorneredTrapezoid(t *testing.T) {
 	c:=UnlimitedShrunk{p.Draw(b),0.5}
 	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c,50*unitX}, 2500, 1600, color.Opaque, color.Transparent)})
 }
-
 
 
 ////ds := NewDepiction(NewBox(38,2,Filling{unitY}), 400, 400, color.Opaque, color.Transparent)

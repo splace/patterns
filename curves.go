@@ -1,7 +1,7 @@
 package patterns
 
 import "math"
-
+//import "fmt"
 // Divide provides channels of a number of points along various curves (not including ends)
 type Divide uint8
 const dividerMax = math.MaxUint8

@@ -1,6 +1,6 @@
 package patterns
 
-// import "fmt"
+//import "fmt"
 //import "testing"
 
 func ExampleFacettedPolygon() {
@@ -33,6 +33,36 @@ Graph
        */
 }
 
+func ExampleFacettedQuadraticBezier() {
+	f:=Facetted{Width:unitX, In:unitY,CurveDivision:2}
+	p:=f.QuadraticBezier(-10*unitX,-10*unitX,0*unitX,10*unitX,10*unitX,-10*unitX)
+	Output(p,unitX)
+	// Output:
+	/*
+Graph
+      -10	---------------------
+       -9	---------------------
+       -8	---------------------
+       -7	---------------------
+       -6	---------------------
+       -5	---------------X-----
+       -4	--------------XX-----
+       -3	-------------X-X-----
+       -2	------------X--X-----
+       -1	-----------X---X-----
+        0	----------X----X-----
+        1	-----------X---X-----
+        2	------------X--X-----
+        3	-------------X-X-----
+        4	--------------XX-----
+        5	---------------X-----
+        6	---------------------
+        7	---------------------
+        8	---------------------
+        9	---------------------
+       10	---------------------
+       */
+}
 
 func ExampleFacettedCircleArcPrint() {
 	f:=Facetted{Width:.2*unitX, In:unitY,CurveDivision:2}
