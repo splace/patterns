@@ -88,7 +88,7 @@ func TestImageRoundedRectangle(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	p := RoundedRectangle(40*unitX,30*unitX, 15*unitX)
+	p := RoundedRectangle(20*unitX,15*unitX, 5*unitX)
 	fmt.Println(p)
 	b := NewBrush(Facetted{Width:1*unitX, In:unitY, CurveDivision:2})
 	c:=UnlimitedShrunk{p.Draw(b),0.3}
