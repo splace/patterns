@@ -121,7 +121,7 @@ func TestImageArcCorneredTrapezoid(t *testing.T) {
 	}
 	b := NewBrush(Facetted{Width: 2*unitX, In: unitY, CurveDivision:2})
 	c:=UnlimitedShrunk{p.Draw(b),0.5}
-	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c,50*unitX}, 2500, 1600, color.Opaque, color.Transparent)})
+	png.Encode(file, OpaqueTransparentPalettedImage{NewDepiction(Limiter{c,50*unitX}, 2500, 1600, color.Opaque, color.Transparent)})
 }
 
 

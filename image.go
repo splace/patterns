@@ -65,3 +65,19 @@ type WebSafePalettedImage struct {
 }
 
 func (i WebSafePalettedImage) ColorModel() color.Model { return color.Palette(palette.WebSafe) }
+
+
+// black/white paletted, depiction wrapper.
+type BlackAndWhitePalettedImage struct {
+	Depictor
+}
+
+func (i BlackAndWhitePalettedImage) ColorModel() color.Model { return color.Palette([]color.Color{color.Black, color.White}) }
+
+// black/white paletted, depiction wrapper.
+type OpaqueTransparentPalettedImage struct {
+	Depictor
+}
+
+func (i OpaqueTransparentPalettedImage) ColorModel() color.Model { return color.Palette([]color.Color{color.Opaque, color.Transparent}) }
+

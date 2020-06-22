@@ -6,10 +6,9 @@ type Drawer interface{
 	Draw(*Brush)Pattern
 }
 
-// a Path is a collection of Drawers.
-// it is itself a Drawer that Draw's its contained Drawers in order.
-// a Path can thus be an ordered collection of (sub) Paths.
-// Notice: sub-Paths will in general depend on the previous sub-Path, unless they start with a MoveTo.
+// a Path is a collection of Drawers that uses the same Brush to Draw its contained Drawers in order.
+// it is itself a Drawer so a Path can be an ordered collection of (sub) Paths.
+// Notice: sub-Paths are drawn with the same Brush so relative Drawers carry on from the end of the previous sub-Path.
 type Path []Drawer
 
 // draw a path using the provided brush
