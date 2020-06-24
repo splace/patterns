@@ -4,54 +4,57 @@ import "fmt"
 import "io"
 import "strings"
 
-// Path fmt.Stringer using one command per line
+// Path fmt.Stringer using one command per line.
+
 func (p Path) String()string {
 	b :=new(strings.Builder)
 	for _,s:=range(p){
 		switch st:=s.(type){
 		case MoveTo:
-			fmt.Fprintf(b,"\nM%v,%v",st[0],st[1])
+			fmt.Fprintf(b,"M%v,%v\n",st[0],st[1])
 		case MoveToRelative:
-			fmt.Fprintf(b,"\nm%v,%v",st[0],st[1])
+			fmt.Fprintf(b,"m%v,%v\n",st[0],st[1])
 		case LineTo:
-			fmt.Fprintf(b,"\nL%v,%v",st[0],st[1])
+			fmt.Fprintf(b,"L%v,%v\n",st[0],st[1])
 		case LineToRelative:
-			fmt.Fprintf(b,"\nl%v,%v",st[0],st[1])
+			fmt.Fprintf(b,"l%v,%v\n",st[0],st[1])
 		case VerticalLineTo:
-			fmt.Fprintf(b,"\nV%v",st[0])
+			fmt.Fprintf(b,"V%v\n",st[0])
 		case VerticalLineToRelative:
-			fmt.Fprintf(b,"\nv%v",st[0])
+			fmt.Fprintf(b,"v%v\n",st[0])
 		case HorizontalLineTo:
-			fmt.Fprintf(b,"\nH%v",st[0])
+			fmt.Fprintf(b,"H%v\n",st[0])
 		case HorizontalLineToRelative:
-			fmt.Fprintf(b,"\nh%v",st[0])
+			fmt.Fprintf(b,"h%v\n",st[0])
 		case CloseRelative:
-			fmt.Fprintf(b,"\nz")
+			fmt.Fprintf(b,"z\n")
 		case Close:
-			fmt.Fprintf(b,"\nZ")
+			fmt.Fprintf(b,"Z\n")
 		case QuadraticBezierTo:
-			fmt.Fprintf(b,"\nQ%v,%v %v,%v",st[0],st[1],st[2],st[3])
+			fmt.Fprintf(b,"Q%v,%v %v,%v\n",st[0],st[1],st[2],st[3])
 		case SmoothQuadraticBezierTo:
-			fmt.Fprintf(b,"\nT%v,%v",st[0],st[1])
+			fmt.Fprintf(b,"T%v,%v\n",st[0],st[1])
 		case QuadraticBezierToRelative:
-			fmt.Fprintf(b,"\nq%v,%v %v,%v",st[0],st[1],st[2],st[3])
+			fmt.Fprintf(b,"q%v,%v %v,%v\n",st[0],st[1],st[2],st[3])
 		case SmoothQuadraticBezierToRelative:
-			fmt.Fprintf(b,"\nt%v,%v",st[0],st[1])
+			fmt.Fprintf(b,"t%v,%v\n",st[0],st[1])
 		case CubicBezierTo:
-			fmt.Fprintf(b,"\nC%v,%v %v,%v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5])
+			fmt.Fprintf(b,"C%v,%v %v,%v %v,%v\n",st[0],st[1],st[2],st[3],st[4],st[5])
 		case SmoothCubicBezierTo:
-			fmt.Fprintf(b,"\nS%v,%v %v,%v",st[0],st[1],st[2],st[3])
+			fmt.Fprintf(b,"S%v,%v %v,%v\n",st[0],st[1],st[2],st[3])
 		case CubicBezierToRelative:
-			fmt.Fprintf(b,"\nc%v,%v %v,%v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5])
+			fmt.Fprintf(b,"c%v,%v %v,%v %v,%v\n",st[0],st[1],st[2],st[3],st[4],st[5])
 		case SmoothCubicBezierToRelative:
-			fmt.Fprintf(b,"\ns%v,%v %v,%v",st[0],st[1],st[2],st[3])
+			fmt.Fprintf(b,"s%v,%v %v,%v\n",st[0],st[1],st[2],st[3])
 		case ArcTo:
-			fmt.Fprintf(b,"\nA%v,%v %v %v %v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5],st[6])
+			fmt.Fprintf(b,"A%v,%v %v %v %v %v,%v\n",st[0],st[1],st[2],st[3],st[4],st[5],st[6])
 		case ArcToRelative:
-			fmt.Fprintf(b,"\na%v,%v %v %v %v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5],st[6])
+			fmt.Fprintf(b,"a%v,%v %v %v %v %v,%v\n",st[0],st[1],st[2],st[3],st[4],st[5],st[6])
+		case Path:
+			fmt.Fprintf(b,"%v\n",MaxCompactStringer(st))
 		}
 	}
-	return b.String()[1:]
+	return b.String()[:b.Len()-1]
 }
 
 // Scan a path into a slice of Drawers
@@ -235,7 +238,7 @@ func (p CompactStringer) String()string {
 		case HorizontalLineToRelative:
 			fmt.Fprintf(b,"\nh%v",st[0])
 		case CloseRelative:
-			fmt.Fprintf(b,"\nz")
+			fmt.Fprintf(b,"\nz\n")
 		case Close:
 			fmt.Fprintf(b,"\nZ")
 		case QuadraticBezierTo:
@@ -308,6 +311,8 @@ func (p CompactStringer) String()string {
 			default:
 				fmt.Fprintf(b,"\na%v,%v %v %v %v %v,%v",st[0],st[1],st[2],st[3],st[4],st[5],st[6])
 			}
+		case Path:
+			fmt.Fprintf(b,"\n%v",CompactStringer(st))
 		}
 		ls=s
 	}

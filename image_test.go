@@ -96,6 +96,22 @@ func TestImageRoundedRectangle(t *testing.T) {
 }
 
 
+func TestImageSmoothCorneredTrapezoid(t *testing.T) {
+	file, err := os.Create("./test output/SmoothCorneredTrapezoid.png")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	p:=Path{
+		SmoothCorneredTrapezoid(25*unitX, 1*unitX, 20*unitX, 8*unitX),
+		SmoothCorneredTrapezoid(30*unitX, 1.5*unitX, 25*unitX, 12*unitX),
+	}
+	b := NewBrush(Facetted{Width: unitX, In: unitY, CurveDivision:2})
+	c:=UnlimitedShrunk{p.Draw(b),0.5}
+	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c,50*unitX}, 2500, 1600, color.Opaque, color.Transparent)})
+}
+
+
 func TestImageBallCorneredRectangle(t *testing.T) {
 	file, err := os.Create("./test output/BallCorneredRectangle.png")
 	if err != nil {
