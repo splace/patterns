@@ -238,7 +238,7 @@ func (p CompactStringer) String()string {
 		case HorizontalLineToRelative:
 			fmt.Fprintf(b,"\nh%v",st[0])
 		case CloseRelative:
-			fmt.Fprintf(b,"\nz\n")
+			fmt.Fprintf(b,"\nz")
 		case Close:
 			fmt.Fprintf(b,"\nZ")
 		case QuadraticBezierTo:

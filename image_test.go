@@ -39,7 +39,7 @@ func TestImageLines(t *testing.T) {
 	defer file.Close()
 	p := Pen{Nib:Facetted{nil,2*unitX, unitY,3}}
 
-	png.Encode(file, Plan9PalettedImage{NewDepiction(p.Line(-100*unitX, 100*unitX, 100*unitX, -100*unitX), 400, 400, color.Opaque, color.Transparent)})
+	png.Encode(file, Plan9PalettedImage{NewDepiction(p.Straight(-100*unitX, 100*unitX, 100*unitX, -100*unitX), 400, 400, color.Opaque, color.Transparent)})
 }
 
 func TestImageBitCoin(t *testing.T) {

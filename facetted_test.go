@@ -68,10 +68,10 @@ func ExampleFacettedCircleArcPrint() {
 	f:=Facetted{Width:.2*unitX, In:unitY,CurveDivision:2}
 	Output(
 		LimitedComposite{
-			f.Arc(-1*unitX,0,2*unitX,2*unitX,0,true,false,1*unitX,0),
-			f.Arc(-1*unitX,0,2*unitX,2*unitX,0,false,false,1*unitX,0),
-			f.Arc(-1*unitX,0,2*unitX,2*unitX,0,false,true,1*unitX,0),
-			f.Arc(-1*unitX,0,2*unitX,2*unitX,0,true,true,1*unitX,0),
+			f.Conic(-1*unitX,0,2*unitX,2*unitX,0,true,false,1*unitX,0),
+			f.Conic(-1*unitX,0,2*unitX,2*unitX,0,false,false,1*unitX,0),
+			f.Conic(-1*unitX,0,2*unitX,2*unitX,0,false,true,1*unitX,0),
+			f.Conic(-1*unitX,0,2*unitX,2*unitX,0,true,true,1*unitX,0),
 		},
 		unitX*0.25,
 	)
@@ -106,10 +106,10 @@ func ExampleFacettedEllipseArcPrint() {
 	f:=Facetted{Width:.2*unitX, In:unitY,CurveDivision:2}
 	Output(
 		LimitedComposite{
-			f.Arc(-1*unitX,0,2*unitX,4*unitX,0,true,false,1*unitX,0),
-			f.Arc(-1*unitX,0,2*unitX,4*unitX,0,false,false,1*unitX,0),
-			f.Arc(-1*unitX,0,2*unitX,4*unitX,0,false,true,1*unitX,0),
-			f.Arc(-1*unitX,0,2*unitX,4*unitX,0,true,true,1*unitX,0),
+			f.Conic(-1*unitX,0,2*unitX,4*unitX,0,true,false,1*unitX,0),
+			f.Conic(-1*unitX,0,2*unitX,4*unitX,0,false,false,1*unitX,0),
+			f.Conic(-1*unitX,0,2*unitX,4*unitX,0,false,true,1*unitX,0),
+			f.Conic(-1*unitX,0,2*unitX,4*unitX,0,true,true,1*unitX,0),
 		},
 		unitX*0.25,
 	)
@@ -145,10 +145,10 @@ func ExampleFacettedEllipseRotatedArcPrint() {
 	f:=Facetted{Width:unitX, In:unitY,CurveDivision:3}
 	Output(
 		LimitedComposite{
-			f.Arc(-2*unitX,0,8*unitX,2*unitX,1,true,false,2*unitX,0),
-			f.Arc(-2*unitX,0,8*unitX,2*unitX,1,false,false,2*unitX,0),
-			f.Arc(-2*unitX,0,8*unitX,2*unitX,1,false,true,2*unitX,0),
-			f.Arc(-2*unitX,0,8*unitX,2*unitX,1,true,true,2*unitX,0),
+			f.Conic(-2*unitX,0,8*unitX,2*unitX,1,true,false,2*unitX,0),
+			f.Conic(-2*unitX,0,8*unitX,2*unitX,1,false,false,2*unitX,0),
+			f.Conic(-2*unitX,0,8*unitX,2*unitX,1,false,true,2*unitX,0),
+			f.Conic(-2*unitX,0,8*unitX,2*unitX,1,true,true,2*unitX,0),
 		},
 		unitX*.333,
 	)

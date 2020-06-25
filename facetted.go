@@ -15,25 +15,32 @@ type Facetted struct{
 //	Lwidth x // last width to make tappered lines
 }
 
-func (f Facetted) Line(x1, y1, x2, y2 x) LimitedPattern {
+func (f Facetted) Straight(x1, y1, x2, y2 x) LimitedPattern {
 	if f.Nib==nil{
 		ndx,dy:=float64(x1-x2),float64(y2-y1)
 		// NewRotated actually returns a LimitedPattern (as a Pattern) because NewLine returns one, so assert can never fail.
 		// TODO could reduce MaxX since we know better than worst case used by rotate.
 		return Translated{NewRotated(Rectangle(x(math.Hypot(ndx,dy)),f.Width, Filling(f.In)),math.Atan2(dy,ndx)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
 	}
-	return f.Nib.Line(x1, y1, x2, y2)
+	return f.Nib.Straight(x1, y1, x2, y2)
+}
+
+func (f Facetted) Curved(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
+	if c1x==c2x && c1y==c2y {
+		return  f.QuadraticBezier(sx, sy, c1x, c1y, ex, ey)
+	}
+	return f.CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey)
 }
 
 func (f Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
 	var s []Pattern
 	l:=Limits{sx,sy,sx,sy}
 	for p:=range(Divide(1<<(8-f.CurveDivision)).QuadraticBezier(sx, sy, cx, cy, ex, ey)){
-		s= append(s,f.Line(sx,sy,p[0],p[1]))
+		s= append(s,f.Straight(sx,sy,p[0],p[1]))
 		sx,sy=p[0],p[1]
 		l.Update(p)
 	}
-	s= append(s,f.Line(sx,sy,ex,ey))
+	s= append(s,f.Straight(sx,sy,ex,ey))
 	l.Update([2]x{ex,ey})
 	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1} ,max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) }  
 
@@ -45,11 +52,11 @@ func (f Facetted) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPatter
 	var s []Pattern
 	l:=Limits{sx,sy,sx,sy}
 	for p:=range(Divide(1<<(8-f.CurveDivision)).CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey)){
-		s= append(s,f.Line(sx,sy,p[0],p[1]))
+		s= append(s,f.Straight(sx,sy,p[0],p[1]))
 		sx,sy=p[0],p[1]
 		l.Update(p)
 	}
-	s= append(s,f.Line(sx,sy,ex,ey))
+	s= append(s,f.Straight(sx,sy,ex,ey))
 	l.Update([2]x{ex,ey})
 	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } }
 
@@ -58,40 +65,40 @@ func (f Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) Li
 	var s []Pattern
 	l:=Limits{sx,sy,sx,sy}
 	for p:=range(Divide(1<<(8-f.CurveDivision)).QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x, c3y,ex, ey)){
-		s= append(s,f.Line(sx,sy,p[0],p[1]))
+		s= append(s,f.Straight(sx,sy,p[0],p[1]))
 		sx,sy=p[0],p[1]
 		l.Update(p)
 	}
-	s= append(s,f.Line(sx,sy,ex,ey))
+	s= append(s,f.Straight(sx,sy,ex,ey))
 	l.Update([2]x{ex,ey})
 	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } }
 
 
-func (f Facetted) Arc(sx,sy,rx,ry x, a float64, large,sweep bool, ex,ey x) LimitedPattern {
+func (f Facetted) Conic(sx,sy,rx,ry x, a float64, large,sweep bool, ex,ey x) LimitedPattern {
 	var s []Pattern
 	l:=Limits{sx,sy,sx,sy}
 	for p:=range(Divide(1<<(8-f.CurveDivision)).Arc(sx,sy,rx,ry, a, large,sweep, ex,ey)){
-		s= append(s,f.Line(sx,sy,p[0],p[1]))
+		s= append(s,f.Straight(sx,sy,p[0],p[1]))
 		sx,sy=p[0],p[1]
 		l.Update(p)
 	}
-	s= append(s,f.Line(sx,sy,ex,ey))
+	s= append(s,f.Straight(sx,sy,ex,ey))
 	l.Update([2]x{ex,ey})
 	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } }
 
 
 func (f Facetted) Box(x,y x) LimitedPattern {
-	return Limiter{Composite{f.Line(-x,y, x,y),f.Line(x,y,x,-y),f.Line(x,-y,-x,-y),f.Line(-x,-y,-x,y)},max(x+f.Width,y+f.Width)}
+	return Limiter{Composite{f.Straight(-x,y, x,y),f.Straight(x,y,x,-y),f.Straight(x,-y,-x,-y),f.Straight(-x,-y,-x,y)},max(x+f.Width,y+f.Width)}
 }
 
 func (f Facetted) Polygon(coords ...[2]x) LimitedPattern {
 	s := make([]Pattern, len(coords)) 
 	l:=Limits{coords[0][0], coords[0][1],coords[0][0], coords[0][1]}
 	for i := 1; i < len(s); i++ {
-		s[i-1] = f.Line(coords[i-1][0], coords[i-1][1],coords[i][0], coords[i][1])
+		s[i-1] = f.Straight(coords[i-1][0], coords[i-1][1],coords[i][0], coords[i][1])
 		l.Update([2]x{coords[i][0], coords[i][1]})
 	}
-	s[len(coords)-1] = f.Line(coords[len(coords)-1][0], coords[len(coords)-1][1],coords[0][0], coords[0][1])
+	s[len(coords)-1] = f.Straight(coords[len(coords)-1][0], coords[len(coords)-1][1],coords[0][0], coords[0][1])
 	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } }
 
 // max and min points

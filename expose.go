@@ -1,6 +1,6 @@
 package patterns
 
-// with internal representation/scale of x vales hidden, need to be able to convert to it, 1 -> UnitX
+// with internal representation/scale of x values hidden, need to be able to convert to it, 1 -> UnitX
 func X(d interface{}) x {
 	return MultiplyX(d, unitX)
 }
