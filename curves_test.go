@@ -18,6 +18,20 @@ func ExampleCurvesPrint(){
 */
 }
 
+func ExampleCurvesLowResArcPrint(){
+	for p:=range(Divide(4).Arc(-2,0,0,0,0,false,false,2,0)){
+		fmt.Println(p)
+	}
+	// Output:
+	/*
+[-0.001 0.001]
+[0 0.002]
+[0.001 0.001]
+*/
+}
+
+
+
 func ExampleCurvesCirculerArcPrint(){
 	for p:=range(Divide(4).Arc(-1*unitX,0,2*unitX,2*unitX,0,false,false,1*unitX,0)){
 		fmt.Println(p)

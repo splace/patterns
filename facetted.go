@@ -16,13 +16,13 @@ type Facetted struct{
 }
 
 func (f Facetted) Straight(x1, y1, x2, y2 x) LimitedPattern {
-	if f.Nib==nil{
-		ndx,dy:=float64(x1-x2),float64(y2-y1)
-		// NewRotated actually returns a LimitedPattern (as a Pattern) because NewLine returns one, so assert can never fail.
-		// TODO could reduce MaxX since we know better than worst case used by rotate.
-		return Translated{NewRotated(Rectangle(x(math.Hypot(ndx,dy)),f.Width, Filling(f.In)),math.Atan2(dy,ndx)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
-	}
-	return f.Nib.Straight(x1, y1, x2, y2)
+	if f.Nib!=nil{
+		return f.Nib.Straight(x1, y1, x2, y2)
+	}	
+	ndx,dy:=float64(x1-x2),float64(y2-y1)
+	// NewRotated actually returns a LimitedPattern (as a Pattern) because NewLine returns one, so assert can never fail.
+	// TODO could reduce MaxX since we know better than the worst case produced by rotate.
+	return Translated{NewRotated(Rectangle(x(math.Hypot(ndx,dy)),f.Width, Filling(f.In)),math.Atan2(dy,ndx)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
 }
 
 func (f Facetted) Curved(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
