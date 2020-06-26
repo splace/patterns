@@ -33,59 +33,33 @@ func (f Facetted) Curved(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
 }
 
 func (f Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
-	var s []Pattern
-	l:=Limits{sx,sy,sx,sy}
-	for p:=range(Divide(1<<(8-f.CurveDivision)).QuadraticBezier(sx, sy, cx, cy, ex, ey)){
-		s= append(s,f.Straight(sx,sy,p[0],p[1]))
-		sx,sy=p[0],p[1]
-		l.Update(p)
-	}
-	s= append(s,f.Straight(sx,sy,ex,ey))
-	l.Update([2]x{ex,ey})
-	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1} ,max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) }  
-
-
+		return f.polygon(sx,sy,ex,ey,Divide(1<<(8-f.CurveDivision)).QuadraticBezier(sx, sy, cx, cy, ex, ey))
 }
 
-
 func (f Facetted) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
-	var s []Pattern
-	l:=Limits{sx,sy,sx,sy}
-	for p:=range(Divide(1<<(8-f.CurveDivision)).CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey)){
-		s= append(s,f.Straight(sx,sy,p[0],p[1]))
-		sx,sy=p[0],p[1]
-		l.Update(p)
-	}
-	s= append(s,f.Straight(sx,sy,ex,ey))
-	l.Update([2]x{ex,ey})
-	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } }
-
+	return f.polygon(sx,sy,ex,ey,Divide(1<<(8-f.CurveDivision)).CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey))
+}
 
 func (f Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) LimitedPattern {
-	var s []Pattern
-	l:=Limits{sx,sy,sx,sy}
-	for p:=range(Divide(1<<(8-f.CurveDivision)).QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x, c3y,ex, ey)){
-		s= append(s,f.Straight(sx,sy,p[0],p[1]))
-		sx,sy=p[0],p[1]
-		l.Update(p)
-	}
-	s= append(s,f.Straight(sx,sy,ex,ey))
-	l.Update([2]x{ex,ey})
-	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } }
-
+	return f.polygon(sx,sy,ex,ey,Divide(1<<(8-f.CurveDivision)).QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x, c3y,ex, ey))
+}
 
 func (f Facetted) Conic(sx,sy,rx,ry x, a float64, large,sweep bool, ex,ey x) LimitedPattern {
+	return f.polygon(sx,sy,ex,ey,Divide(1<<(8-f.CurveDivision)).Arc(sx,sy,rx,ry, a, large,sweep, ex,ey))
+}
+
+func (f Facetted) polygon(sx,sy,ex,ey x, pts <- chan [2]x) LimitedPattern {
 	var s []Pattern
 	l:=Limits{sx,sy,sx,sy}
-	for p:=range(Divide(1<<(8-f.CurveDivision)).Arc(sx,sy,rx,ry, a, large,sweep, ex,ey)){
+	for p:=range(pts){
 		s= append(s,f.Straight(sx,sy,p[0],p[1]))
 		sx,sy=p[0],p[1]
 		l.Update(p)
 	}
 	s= append(s,f.Straight(sx,sy,ex,ey))
 	l.Update([2]x{ex,ey})
-	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } }
-
+	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) }
+}
 
 func (f Facetted) Box(x,y x) LimitedPattern {
 	return Limiter{Composite{f.Straight(-x,y, x,y),f.Straight(x,y,x,-y),f.Straight(x,-y,-x,-y),f.Straight(-x,-y,-x,y)},max(x+f.Width,y+f.Width)}
@@ -99,7 +73,9 @@ func (f Facetted) Polygon(coords ...[2]x) LimitedPattern {
 		l.Update([2]x{coords[i][0], coords[i][1]})
 	}
 	s[len(coords)-1] = f.Straight(coords[len(coords)-1][0], coords[len(coords)-1][1],coords[0][0], coords[0][1])
-	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } }
+	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } 
+}
+
 
 // max and min points
 type Limits struct{

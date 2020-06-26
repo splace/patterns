@@ -1,7 +1,7 @@
 package patterns
 
 
-// Nibs can create LimitedPatterns using lines and curves.
+// Nibs return LimitedPatterns from being asked for lines and/or curves.
 type Nib interface{
 	Straight(x,x,x,x) LimitedPattern
 	Curved(x,x,x,x,x,x,x,x) LimitedPattern
