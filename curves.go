@@ -203,7 +203,7 @@ func xsquashers (s float64) (func(float64,float64)(float64,float64),func(float64
 	}
 }
 
-// returns a channel of all values from multiple channels, one at a time, in the order the chan's are provided.
+// returns a channel of all values from multiple channels, one from each at a time, in the order the chan's are provided.
 // if chans return different numbers of values, dont close simultaneously, then subsequent reordering of chans occures.
 func interleave(chs ... <- chan [2]x) <- chan[2]x {
 	ch:=make(chan [2]x)
@@ -231,6 +231,30 @@ func interleave(chs ... <- chan [2]x) <- chan[2]x {
 				}
 				ch <- p
 			}
+		}
+		close(ch)
+	}()
+	return ch
+}
+
+// returns a channel of slices of values from multiple channels, one item from each in a slice in the order the chan's are provided.
+func interleaved(chs ... <- chan [2]x) <- chan[2]x {
+	ch:=make(chan [2]x)
+	pts:=make([][2]x,len(chs))
+	var isOpen bool
+	go func(){
+		var anyClosed bool
+		for !anyClosed {
+			for i,c := range(chs){
+				pts[i],isOpen = <-c
+				if !isOpen{
+					anyClosed=true
+				}
+			}
+			if anyClosed {break}
+			for _,c := range(pts){
+				ch <- c
+			}		
 		}
 		close(ch)
 	}()

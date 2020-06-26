@@ -54,10 +54,10 @@ func (f Facetted) polygon(sx,sy,ex,ey x, pts <- chan [2]x) LimitedPattern {
 	for p:=range(pts){
 		s= append(s,f.Straight(sx,sy,p[0],p[1]))
 		sx,sy=p[0],p[1]
-		l.Update(p)
+		l.Include(p)
 	}
 	s= append(s,f.Straight(sx,sy,ex,ey))
-	l.Update([2]x{ex,ey})
+	l.Include([2]x{ex,ey})
 	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) }
 }
 
@@ -70,7 +70,7 @@ func (f Facetted) Polygon(coords ...[2]x) LimitedPattern {
 	l:=Limits{coords[0][0], coords[0][1],coords[0][0], coords[0][1]}
 	for i := 1; i < len(s); i++ {
 		s[i-1] = f.Straight(coords[i-1][0], coords[i-1][1],coords[i][0], coords[i][1])
-		l.Update([2]x{coords[i][0], coords[i][1]})
+		l.Include([2]x{coords[i][0], coords[i][1]})
 	}
 	s[len(coords)-1] = f.Straight(coords[len(coords)-1][0], coords[len(coords)-1][1],coords[0][0], coords[0][1])
 	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) } 
@@ -82,7 +82,7 @@ type Limits struct{
 	MinX,MinY,MaxX,MaxY x
 }
 
-func (d *Limits) Update(p [2]x) {
+func (d *Limits) Include(p [2]x) {
 	if p[0]<d.MinX{
 		d.MinX=p[0]
 	}else{
