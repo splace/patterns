@@ -12,7 +12,7 @@ func ExampleSVGpath() {
 
 func ExampleSVGDrawPath() {
 	p := Path{MoveTo{-5*unitX,-5*unitX},LineTo{5*unitX,5*unitX}}
-	b := NewBrush(Facetted{Width: 2*unitX, In: unitY, CurveDivision:2})
+	b := NewBrush(Facetted{LineNib:LineNib{2*unitX, unitY},CurveDivision:2})
 	PrintGraph(p.Draw(b),-10*unitX,10*unitX,-10*unitX,10*unitX,unitX)
 	/* Output:
 Graph
@@ -156,7 +156,7 @@ func ExampleSVGpathScanMissingCommands() {
 	if err!=nil{
 		fmt.Println(err)
 	}
-	b := NewBrush(Facetted{Width: unitX, In: unitY, CurveDivision:2})
+	b := NewBrush(Facetted{LineNib:LineNib{unitX, unitY},CurveDivision:2})
 	Output(Limiter{p.Draw(b),10*unitX},unitX)
 	/* Output:
 Graph
@@ -192,7 +192,7 @@ func ExampleSVGpathScanCubicOverlap() {
 	if err!=nil{
 		fmt.Println(err)
 	}
-	b := NewBrush(Facetted{Width: unitX, In: unitY, CurveDivision:2})
+	b := NewBrush(Facetted{LineNib:LineNib{unitX, unitY},CurveDivision:2})
 	Output(Limiter{p.Draw(b),20*unitX},unitX)
 	/* Output:
 Graph
@@ -249,7 +249,7 @@ func ExampleSVGpathScanSmoothQuadratic() {
 	if err!=nil{
 		fmt.Println(err)
 	}
-	b := NewBrush(Facetted{Width: unitX, In: unitY, CurveDivision:2})
+	b := NewBrush(Facetted{LineNib:LineNib{unitX, unitY},CurveDivision:2})
 	Output(Limiter{p.Draw(b),50*unitX},unitX)
 	/* Output:
 Graph
@@ -287,7 +287,7 @@ func ExampleSVGpathScanSmoothCubic() {
 	if err!=nil{
 		fmt.Println(err)
 	}
-	b := NewBrush(Facetted{Width: unitX, In: unitY, CurveDivision:3})
+	b := NewBrush(Facetted{LineNib:LineNib{unitX, unitY},CurveDivision:3})
 
 	Output(Reduced{Limiter{p.Draw(b),16*unitX},1,0.75},unitX)
 	/* Output:
@@ -396,7 +396,7 @@ z
 		fmt.Println(err)
 	}
 	fmt.Printf("%#v\n",p)
-	b := NewBrush(Facetted{Width: 16*unitX, In: unitY, CurveDivision:1})
+	b := NewBrush(Facetted{LineNib:LineNib{16*unitX, unitY},CurveDivision:1})
 	Output(Limiter{UnlimitedReduced{p.Draw(b),2.3,4.4},60*unitX},unitX)
 	/* Output:
 Graph

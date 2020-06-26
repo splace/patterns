@@ -4,7 +4,7 @@ package patterns
 //import "testing"
 
 func ExampleFacettedPolygon() {
-	f:=Facetted{Width:unitX, In:unitY}
+	f:=Facetted{LineNib:LineNib{unitX, unitY}}
 	PrintGraph(f.Polygon([][2]x{{0,0},{5*unitX,5*unitX},{5*unitX,-5*unitX}}...),-10*unitX,10*unitX,-10*unitX,10*unitX,unitX)
 	// Output:
 	/*
@@ -34,7 +34,7 @@ Graph
 }
 
 func ExampleFacettedQuadraticBezier() {
-	f:=Facetted{Width:unitX, In:unitY,CurveDivision:2}
+	f:=Facetted{LineNib:LineNib{unitX, unitY},CurveDivision:2}
 	p:=f.QuadraticBezier(-10*unitX,-10*unitX,0*unitX,10*unitX,10*unitX,-10*unitX)
 	Output(p,unitX)
 	// Output:
@@ -65,7 +65,7 @@ Graph
 }
 
 func ExampleFacettedCircleArcPrint() {
-	f:=Facetted{Width:.2*unitX, In:unitY,CurveDivision:2}
+	f:=Facetted{LineNib:LineNib{unitX, unitY},CurveDivision:2}
 	Output(
 		LimitedComposite{
 			f.Conic(-1*unitX,0,2*unitX,2*unitX,0,true,false,1*unitX,0),
@@ -103,7 +103,7 @@ Graph
 }
 
 func ExampleFacettedEllipseArcPrint() {
-	f:=Facetted{Width:.2*unitX, In:unitY,CurveDivision:2}
+	f:=Facetted{LineNib:LineNib{unitX, unitY},CurveDivision:2}
 	Output(
 		LimitedComposite{
 			f.Conic(-1*unitX,0,2*unitX,4*unitX,0,true,false,1*unitX,0),
@@ -142,7 +142,7 @@ Graph
 
 
 func ExampleFacettedEllipseRotatedArcPrint() {
-	f:=Facetted{Width:unitX, In:unitY,CurveDivision:3}
+	f:=Facetted{LineNib:LineNib{unitX, unitY},CurveDivision:3}
 	Output(
 		LimitedComposite{
 			f.Conic(-2*unitX,0,8*unitX,2*unitX,1,true,false,2*unitX,0),
