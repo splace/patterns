@@ -46,68 +46,6 @@ func PrintGraph(p Pattern, startx, endx, starty, endy, step x) {
 	}
 }
 
-func ExampleConstant() {
-	Output(Limiter{Constant(unitY),5*unitX},unitX)
-	/* Output:
-Graph
-       -6	XXXXXXXXXXXXX
-       -5	XXXXXXXXXXXXX
-       -4	XXXXXXXXXXXXX
-       -3	XXXXXXXXXXXXX
-       -2	XXXXXXXXXXXXX
-       -1	XXXXXXXXXXXXX
-        0	XXXXXXXXXXXXX
-        1	XXXXXXXXXXXXX
-        2	XXXXXXXXXXXXX
-        3	XXXXXXXXXXXXX
-        4	XXXXXXXXXXXXX
-        5	XXXXXXXXXXXXX
-        6	XXXXXXXXXXXXX
-	*/
-}
-
-func ExampleDisc() {
-	Output(Shrunk{Disc(unitY),0.1},unitX)
-	/* Output:
-Graph
-      -11	-----------------------
-      -10	-----------X-----------
-       -9	-------XXXXXXXXX-------
-       -8	-----XXXXXXXXXXXXX-----
-       -7	----XXXXXXXXXXXXXXX----
-       -6	---XXXXXXXXXXXXXXXXX---
-       -5	---XXXXXXXXXXXXXXXXX---
-       -4	--XXXXXXXXXXXXXXXXXXX--
-       -3	--XXXXXXXXXXXXXXXXXXX--
-       -2	--XXXXXXXXXXXXXXXXXXX--
-       -1	--XXXXXXXXXXXXXXXXXXX--
-        0	-XXXXXXXXXXXXXXXXXXXXX-
-        1	--XXXXXXXXXXXXXXXXXXX--
-        2	--XXXXXXXXXXXXXXXXXXX--
-        3	--XXXXXXXXXXXXXXXXXXX--
-        4	--XXXXXXXXXXXXXXXXXXX--
-        5	---XXXXXXXXXXXXXXXXX---
-        6	---XXXXXXXXXXXXXXXXX---
-        7	----XXXXXXXXXXXXXXX----
-        8	-----XXXXXXXXXXXXX-----
-        9	-------XXXXXXXXX-------
-       10	-----------X-----------
-       11	-----------------------
-	*/
-}
-
-func ExampleSquare() {
-	Output(Square(unitY),unitX)
-	/* Output:
-Graph
-       -2	-----
-       -1	-XX--
-        0	-XX--
-        1	-----
-        2	-----
-	*/
-}
-
 
 func BenchmarkPatternsSine(b *testing.B) {
 	b.StopTimer()

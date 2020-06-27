@@ -43,9 +43,11 @@ func (f Facetted) Conic(sx,sy,rx,ry x, a float64, large,sweep bool, ex,ey x) Lim
 
 func (f Facetted) polygon(sx,sy,ex,ey x, pts <- chan [2]x) LimitedPattern {
 	var s []Pattern
+	joiner:=Shrunk{Disc(Filling(f.In)),2*unitX/float32(f.Width) }
 	l:=Limits{sx,sy,sx,sy}
 	for p:=range(pts){
 		s= append(s,f.Straight(sx,sy,p[0],p[1]))
+		s= append(s,Translated{&joiner,p[0],p[1]})
 		sx,sy=p[0],p[1]
 		l.Include(p)
 	}

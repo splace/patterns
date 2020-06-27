@@ -1,7 +1,7 @@
 package patterns
 
 
-// Pens have methods to create LimitedPatterns from the previously created.
+// Pens have methods to create LimitedPatterns depending on, and maintaining, its current location.
 type Pen struct {
 	Nib
 	x, y     x
