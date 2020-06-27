@@ -5,6 +5,7 @@ package patterns
 type Composite []Pattern
 
 func (c Composite) at(px, py x) (total y) {
+	// XXX remember hit and try that one first
 	for _, p := range c {
 		if p==nil{continue}
 		if lp, ok := p.(LimitedPattern); ok {
@@ -15,6 +16,9 @@ func (c Composite) at(px, py x) (total y) {
 		}
 		total = compose(total, p.at(px, py))
 		if total.isOpaque() {
+//			if i!=0{
+//				c[0],c[i]=c[i],c[0]
+//			}
 			return
 		}
 	}

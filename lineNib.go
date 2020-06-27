@@ -17,7 +17,7 @@ func (p LineNib) Straight(x1, y1, x2, y2 x) LimitedPattern {
 //	return Translated{NewRotated(Rectangle(x(math.Hypot(ndx,dy)),p.Width, Filling(p.In)),math.Atan2(dy,ndx)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
 }
 
-func (p LineNib) Curved(sx, sy, cx, cy, ex, ey x) LimitedPattern{
+func (p LineNib) Curved(sx, sy,  c1x, c1y, c2x,c2y,  ex, ey x) LimitedPattern{
 	return p.Straight(sx,sy,ex,ey)
 }
 

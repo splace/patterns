@@ -30,25 +30,26 @@ type Brush struct {
 }
 
 func NewBrush(n Nib) *Brush{
+	if f,is:=n.(Facetted);is{
+		return &Brush{PenPath:PenPath{Pen:Pen{Nib:n,Marker:Shrunk{Disc(Filling(f.LineNib.In)),float32(2*unitX/f.LineNib.Width)}}}}
+	}
 	return &Brush{PenPath:PenPath{Pen:Pen{Nib:n}}}
 }
 
 type MoveTo []x
 
 func (s MoveTo) Draw(b *Brush)Pattern{
-	b.MoveTo(s[0],s[1])
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = 0,0
-	return nil
+	return 	b.MoveTo(s[0],s[1])
 }
 
 type MoveToRelative []x
 
 func (s MoveToRelative) Draw(b *Brush)Pattern{
-	b.MoveTo(b.PenPath.Pen.x+s[0],b.PenPath.Pen.y+s[1])
 	b.dqcx, b.dqcy = 0,0
 	b.dccx, b.dccy = 0,0
-	return nil
+	return 	b.MoveTo(b.PenPath.Pen.x+s[0],b.PenPath.Pen.y+s[1])
 }
 
 type LineTo []x
@@ -196,4 +197,3 @@ type ArcToRelative []x
 func (s ArcToRelative) Draw(b *Brush)Pattern{
 	return b.ArcTo(s[0],s[1],float64(s[2])/unitX*math.Pi/180,s[3]!=0,s[4]!=0,b.PenPath.Pen.x+s[5],b.PenPath.Pen.y+s[6])
 }
-
