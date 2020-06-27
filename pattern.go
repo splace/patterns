@@ -15,7 +15,7 @@ type x int64
 //const xBits = 64
 const unitX = 1000
 
-const scaleX = 1/float64(unitX)
+const scaleX = 0.001
 
 
 //  x scaled to unitX

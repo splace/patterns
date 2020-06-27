@@ -20,12 +20,13 @@ func (p Constant) at(px, py x) y {
 
 type Disc Filling
 
-const unitX2 = int64(unitX)*int64(unitX)
-
 func (p Disc) at(px, py x) (v y) {
+	if px>unitX || py>unitX{
+		return 
+	}
 	x2:=int64(px)
 	y2:=int64(py)
-	if x2*x2+y2*y2 <= unitX2 {
+	if x2*x2+y2*y2 <= unitX*unitX {
 		return y(p)
 	}
 	return

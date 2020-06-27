@@ -67,14 +67,32 @@ Graph
 }
 
 func ExampleDisc() {
-	Output(Disc(unitY),unitX)
+	Output(Shrunk{Disc(unitY),0.1},unitX)
 	/* Output:
 Graph
-       -2	-----
-       -1	--X--
-        0	-XXX-
-        1	--X--
-        2	-----
+      -11	-----------------------
+      -10	-----------X-----------
+       -9	-------XXXXXXXXX-------
+       -8	-----XXXXXXXXXXXXX-----
+       -7	----XXXXXXXXXXXXXXX----
+       -6	---XXXXXXXXXXXXXXXXX---
+       -5	---XXXXXXXXXXXXXXXXX---
+       -4	--XXXXXXXXXXXXXXXXXXX--
+       -3	--XXXXXXXXXXXXXXXXXXX--
+       -2	--XXXXXXXXXXXXXXXXXXX--
+       -1	--XXXXXXXXXXXXXXXXXXX--
+        0	-XXXXXXXXXXXXXXXXXXXXX-
+        1	--XXXXXXXXXXXXXXXXXXX--
+        2	--XXXXXXXXXXXXXXXXXXX--
+        3	--XXXXXXXXXXXXXXXXXXX--
+        4	--XXXXXXXXXXXXXXXXXXX--
+        5	---XXXXXXXXXXXXXXXXX---
+        6	---XXXXXXXXXXXXXXXXX---
+        7	----XXXXXXXXXXXXXXX----
+        8	-----XXXXXXXXXXXXX-----
+        9	-------XXXXXXXXX-------
+       10	-----------X-----------
+       11	-----------------------
 	*/
 }
 
