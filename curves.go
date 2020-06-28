@@ -13,7 +13,6 @@ func (d Divide) Curve(xfn, yfn func(Divide)x)  <-chan [2]x {
 	var li Divide
 	go func(){
 		for i := step-1; li<i ; li,i=i,i+step {
-			fmt.Println(i)
 			ch <- [2]x{xfn(i),yfn(i)}
 		}
 		close(ch)
