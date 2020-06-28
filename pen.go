@@ -10,9 +10,9 @@ type Pen struct {
 }
 
 
-func (p *Pen) MoveTo(px, py x) LimitedPattern{
+func (p *Pen) MoveTo(px, py x) {
 	p.x, p.y= px, py
-	return Translated{p.Marker,p.x,p.y}
+	return
 }
 
 func (p *Pen) LineTo(px, py x) LimitedPattern {
@@ -72,21 +72,24 @@ func (p *Pen) CubicBezierTo(c1x,c1y,c2x,c2y,px,py x) LimitedPattern {
 }
 
 
-
-// PenPath have methods to create LimitedPatterns using a Pen and an origin point.
+// PenPath's have methods to create LimitedPatterns depending on a Pen and a start location.
+// Optionally it includes a LimitedPattern's for the start and/or end.
 type PenPath struct{
 	Pen
+	StartMarker,EndMarker LimitedPattern
 	x,y x
 }
 
 func (p *PenPath) MoveTo(px, py x) LimitedPattern{
-	s:=p.Pen.MoveTo(px,py)
 	p.x, p.y= px, py
-	return s
-}
-
-func (p *PenPath) StartLine(x1, y1, x2, y2 x) LimitedPattern {
-	return LimitedComposite{p.MoveTo(x1,y1),p.LineTo(x2, y2)}
+	p.Pen.MoveTo(px,py)
+	if p.StartMarker!=nil{
+		return Translated{p.StartMarker,p.x,p.y}
+	}
+	if p.Marker!=nil{
+		return Translated{p.Marker,p.x,p.y}
+	}
+	return nil
 }
 
 func (p *PenPath) LineClose() LimitedPattern {

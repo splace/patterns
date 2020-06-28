@@ -135,7 +135,7 @@ func TestImageArcCorneredTrapezoid(t *testing.T) {
 		ArcCorneredTrapezoid(25*unitX,5*unitX,20*unitX,8*unitX,4*unitX,0,45*unitX, true,true),
 		ArcCorneredTrapezoid(30*unitX,5*unitX,24*unitX,8*unitX,4*unitX,0,45*unitX, true,false),
 	}
-	b := NewBrush(Facetted{LineNib:LineNib{2*unitX, unitY},CurveDivision:2})
+	b := NewFacettedBrush(2*unitX, Filling(unitY),2)
 	c:=UnlimitedShrunk{p.Draw(b),0.5}
 	png.Encode(file, OpaqueTransparentPalettedImage{NewDepiction(Limiter{c,50*unitX}, 2500, 1600, color.Opaque, color.Transparent)})
 }
@@ -175,6 +175,4 @@ func TestImageArcCorneredTrapezoid(t *testing.T) {
 //func (i *composable) drawOverOffset(isrc image.Image, pt image.Point) {
 //	draw.Draw(i, i.Bounds(), isrc, isrc.Bounds().Min.Add(pt), draw.Over)
 //}
-/* run: args="" Thu 18 Jun 01:39:19 BST 2020 go version go1.14.3 linux/amd64
-Thu 18 Jun 01:39:19 BST 2020
-*/
+

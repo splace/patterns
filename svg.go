@@ -30,11 +30,13 @@ type Brush struct {
 }
 
 func NewBrush(n Nib) *Brush{
-	if f,is:=n.(Facetted);is{
-		return &Brush{PenPath:PenPath{Pen:Pen{Nib:n,Marker:Shrunk{Disc(Filling(f.LineNib.In)),float32(2*unitX/f.LineNib.Width)}}}}
-	}
 	return &Brush{PenPath:PenPath{Pen:Pen{Nib:n}}}
 }
+
+func NewFacettedBrush(width x,f filler, d uint8) *Brush{
+	return &Brush{PenPath:PenPath{Pen:Pen{Nib:Facetted{LineNib:LineNib{width,f.fill()},CurveDivision:d},Marker:Shrunk{Disc(Filling(f.fill())),float32(2*unitX/width)}}}}
+}
+
 
 type MoveTo []x
 
