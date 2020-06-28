@@ -135,9 +135,9 @@ func TestImageArcCorneredTrapezoid(t *testing.T) {
 		ArcCorneredTrapezoid(25*unitX,5*unitX,20*unitX,8*unitX,4*unitX,0,45*unitX, true,true),
 		ArcCorneredTrapezoid(30*unitX,5*unitX,24*unitX,8*unitX,4*unitX,0,45*unitX, true,false),
 	}
-	b := NewFacettedBrush(2*unitX, Filling(unitY),2)
-	c:=UnlimitedShrunk{p.Draw(b),0.5}
-	png.Encode(file, OpaqueTransparentPalettedImage{NewDepiction(Limiter{c,50*unitX}, 2500, 1600, color.Opaque, color.Transparent)})
+	b := NewFacettedBrush(3*unitX, Filling(unitY),2)
+	//c:=UnlimitedShrunk{p.Draw(b),0.5}
+	png.Encode(file, OpaqueTransparentPalettedImage{NewDepiction(Limiter{p.Draw(b),50*unitX}, 2500, 1600, color.Opaque, color.Transparent)})
 }
 
 

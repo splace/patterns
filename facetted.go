@@ -1,5 +1,7 @@
 package patterns
 
+import "fmt"
+
 // Facetted is a Nib producing curves using a number of straight lines.
 // curves are divided according to CurveDivision:  (power of 2 number of divisions.)
 // default 0 - no division, all curves are a single straight line
@@ -26,19 +28,19 @@ func (f Facetted) Curved(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
 }
 
 func (f Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
-		return f.polygon(sx,sy,ex,ey,Divide(1<<(8-f.CurveDivision)).QuadraticBezier(sx, sy, cx, cy, ex, ey))
+		return f.polygon(sx,sy,ex,ey,Divide(1<<f.CurveDivision).QuadraticBezier(sx, sy, cx, cy, ex, ey))
 }
 
 func (f Facetted) CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey x) LimitedPattern {
-	return f.polygon(sx,sy,ex,ey,Divide(1<<(8-f.CurveDivision)).CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey))
+	return f.polygon(sx,sy,ex,ey,Divide(1<<f.CurveDivision).CubicBezier(sx, sy, c1x, c1y, c2x,c2y, ex, ey))
 }
 
 func (f Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x,c3y, ex, ey x) LimitedPattern {
-	return f.polygon(sx,sy,ex,ey,Divide(1<<(8-f.CurveDivision)).QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x, c3y,ex, ey))
+	return f.polygon(sx,sy,ex,ey,Divide(1<<f.CurveDivision).QuinticBezier(sx, sy, c1x, c1y, c2x,c2y, c3x, c3y,ex, ey))
 }
 
 func (f Facetted) Conic(sx,sy,rx,ry x, a float64, large,sweep bool, ex,ey x) LimitedPattern {
-	return f.polygon(sx,sy,ex,ey,Divide(1<<(8-f.CurveDivision)).Arc(sx,sy,rx,ry, a, large,sweep, ex,ey))
+	return f.polygon(sx,sy,ex,ey,Divide(1<<f.CurveDivision).Arc(sx,sy,rx,ry, a, large,sweep, ex,ey))
 }
 
 func (f Facetted) polygon(sx,sy,ex,ey x, pts <- chan [2]x) LimitedPattern {
@@ -52,6 +54,7 @@ func (f Facetted) polygon(sx,sy,ex,ey x, pts <- chan [2]x) LimitedPattern {
 		l.Include(p)
 	}
 	s= append(s,f.Straight(sx,sy,ex,ey))
+	fmt.Println("Poly:",len(s))
 	l.Include([2]x{ex,ey})
 	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) }
 }

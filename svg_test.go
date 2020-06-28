@@ -40,35 +40,7 @@ Graph
 	*/
 }
 
-//func ExampleSVGDrawPathCubicBezierToRelative() {
-//	b := Brush{LineBrush:LineBrush{Width: 2000, In: unitY}}
-//	p := Path{MoveTo{217021, 167042}, CubicBezierToRelative{18631, -9483, 30288, -26184, 27565, -54007}}
-//	PrintGraph(p.Draw(&b),210*unitX,300*unitX,110*unitX,200*unitX,1*unitX)
-//	/* Output:
-//Graph
-//      -10	---------------------
-//       -9	---------------------
-//       -8	---------------------
-//       -7	---------------------
-//       -6	---------------------
-//       -5	---------------------
-//       -4	---------------------
-//       -3	---------------------
-//       -2	---------------------
-//       -1	---------------------
-//        0	----------X----------
-//        1	-----------X---------
-//        2	------------X--------
-//        3	-------------X-------
-//        4	--------------X------
-//        5	---------------X-----
-//        6	----------------X----
-//        7	-----------------X---
-//        8	------------------X--
-//        9	-------------------X-
-//       10	--------------------X
-//	*/
-//}
+
 
 
 
@@ -137,6 +109,7 @@ func TestSVGcompactPathTextRoundtrip(t *testing.T) {
 		t.Errorf("%q != %q (%v)",cpt,fmt.Sprint(MaxCompactStringer(p2)),p2)
 	}
 }
+
 
 
 // XXX no right
@@ -396,7 +369,7 @@ z
 		fmt.Println(err)
 	}
 	fmt.Printf("%#v\n",p)
-	b := NewBrush(Facetted{LineNib:LineNib{16*unitX, unitY},CurveDivision:1})
+	b := NewBrush(Facetted{LineNib:LineNib{16*unitX, unitY},CurveDivision:2})
 	Output(Limiter{UnlimitedReduced{p.Draw(b),2.3,4.4},60*unitX},unitX)
 	/* Output:
 Graph
