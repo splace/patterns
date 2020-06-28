@@ -1,7 +1,5 @@
 package patterns
 
-import "fmt"
-
 // Facetted is a Nib producing curves using a number of straight lines.
 // curves are divided according to CurveDivision:  (power of 2 number of divisions.)
 // default 0 - no division, all curves are a single straight line
@@ -54,7 +52,6 @@ func (f Facetted) polygon(sx,sy,ex,ey x, pts <- chan [2]x) LimitedPattern {
 		l.Include(p)
 	}
 	s= append(s,f.Straight(sx,sy,ex,ey))
-	fmt.Println("Poly:",len(s))
 	l.Include([2]x{ex,ey})
 	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...),(l.MaxX+l.MinX)>>1,(l.MaxY+l.MinY)>>1},max((l.MaxX-l.MinX)>>1,(l.MaxY-l.MinY)>>1)+f.Width},-((l.MaxX+l.MinX)>>1),-((l.MaxY+l.MinY)>>1) }
 }

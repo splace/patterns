@@ -1,7 +1,6 @@
 package patterns
 
 import "math"
-import "fmt"
 
 // Divide provides channels of a number of points along various curves (not including ends)
 type Divide uint8
@@ -9,7 +8,6 @@ const dividerMax = math.MaxUint8
 
 // Curve provides variable numbers of intermediate points from two independent axis functions.
 func (d Divide) Curve(xfn, yfn func(Divide)x)  <-chan [2]x {
-	fmt.Println(d)
 	ch:=make(chan [2]x,d)
 	step:=dividerMax/d
 	var li Divide
@@ -110,8 +108,6 @@ func  (d Divide) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-cha
 // Sector provides points along a sector of a circle that intersects two points.
 // if the radius provided is smaller than half the separation of the two provided points, then that is used for the radius. (in which case the large flag is redundant) 
 func  (d Divide) Sector(x1,y1,r x, large,sweep bool, x2,y2 x)  <-chan [2]x{
-	fmt.Println(d)
-
 	var cx,cy float64
 	// two possible centres for short sweep
 	if large != sweep {
