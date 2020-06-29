@@ -6,6 +6,14 @@ import (
 	"image/color/palette"
 )
 
+// a Depictor is like an image.Image but without a colormodel, so is more general.
+// embedded in one of the helper wrappers gets you an image.Image.
+type Depictor interface {
+	Bounds() image.Rectangle
+	At(x, y int) color.Color
+}
+
+
 // simple visual Depiction of a Pattern, implements Depictor
 type Depiction struct {
 	Pattern
@@ -30,13 +38,6 @@ func (i Depiction) At(xp, yp int) color.Color {
 	return i.out
 }
 
-// a Depictor is like an image.Image but without a colormodel, so is more general.
-// embedded in one of the helper wrappers gets you an image.Image.
-// (this and the wrappers might be moved, in a later version of this package, to their own package.)
-type Depictor interface {
-	Bounds() image.Rectangle
-	At(x, y int) color.Color
-}
 
 // RGBA depiction wrapper
 type RGBAImage struct {

@@ -18,7 +18,7 @@ func (p Translated) MaxX() x {
 	return p.LimitedPattern.MaxX() + max2(p.x,p.y)
 }
 
-// a Pattern shifted
+// a Pattern translated
 type UnlimitedTranslated struct {
 	Pattern
 	x, y x

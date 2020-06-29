@@ -1,6 +1,6 @@
 package patterns
 
-// Pens have methods to create LimitedPatterns depending on, and maintaining, its current location.
+// Pens have methods to create LimitedPatterns depending on, and maintaining, a current location.
 // Optionally it adds a LimitedPattern at the joins between segments.
 type Pen struct {
 	Nib
@@ -59,7 +59,7 @@ func (p *Pen) CubicBezierTo(c1x,c1y,c2x,c2y,x,y x) (l LimitedPattern) {
 	return
 }
 
-// PenPath's have methods to create LimitedPatterns depending on a Pen and if that pen is continuously drawing without moves, or not.
+// PenPath's have methods to create LimitedPatterns depending on a Pen and if that pen is continuously drawing without gaps, or not.
 type PenPath struct{
 	Pen
 	x,y x
@@ -75,7 +75,3 @@ func (p *PenPath) LineClose() (l LimitedPattern) {
 	l = p.AddMark(p.LineTo(p.x, p.y))
 	return
 }
-
-/* run: args="" Mon 29 Jun 01:39:22 BST 2020 go version go1.14.3 linux/amd64
-Mon 29 Jun 01:39:23 BST 2020
-*/

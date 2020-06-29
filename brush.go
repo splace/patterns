@@ -2,7 +2,8 @@ package patterns
 
 import "math"
 
-// a brush is a Pen that stores control points to allow generation of smoothed bezier segments
+// a brush is a Pen with, optional, Start and end markers.
+// it also holds data on what it has drawn to allow generation of smoothed (shorthand) curved segments
 type Brush struct {
 	PenPath
 	StartMarker,EndMarker LimitedPattern 
@@ -15,8 +16,8 @@ func NewBrush(n Nib) *Brush{
 }
 
 
-func NewFacettedBrush(width x,f filler, d uint8) *Brush{
-	return &Brush{PenPath:PenPath{Pen:Pen{Nib:Facetted{LineNib:LineNib{width,f.fill()},CurveDivision:d},Joiner:Shrunk{Disc(Filling(f.fill())),2*unitX/float32(width)}}}}
+func NewFacettedBrush(width x,f filler, facets uint8) *Brush{
+	return &Brush{PenPath:PenPath{Pen:Pen{Nib:Facetted{LineNib:LineNib{width,f.fill()},CurveDivision:facets},Joiner:Shrunk{Disc(Filling(f.fill())),2*unitX/float32(width)}}}}
 }
 
 
@@ -185,7 +186,3 @@ func (s ArcToRelative) Draw(b *Brush)Pattern{
 	b.dccx, b.dccy = 0,0
 	return b.ArcTo(s[0],s[1],float64(s[2])/unitX*math.Pi/180,s[3]!=0,s[4]!=0,b.PenPath.Pen.x+s[5],b.PenPath.Pen.y+s[6])
 }
-
-/* run: args="" Mon 29 Jun 00:55:14 BST 2020 go version go1.14.3 linux/amd64
-Mon 29 Jun 00:55:14 BST 2020
-*/

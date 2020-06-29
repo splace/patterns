@@ -3,12 +3,11 @@ package patterns
 // Facetted is a Nib producing curves using a number of straight lines.
 // curves are divided according to CurveDivision:  (power of 2 number of divisions.)
 // default 0 - no division, all curves are a single straight line
-// if a Nib is provided its Straight method is used to draw the straight lines.
+// lines are actually drawn by the Straight method of the embedded LineNib, except if a type of Nib interface is also embedded then its Straight method is used instead.
 type Facetted struct{
-	Nib
 	LineNib
+	Nib
 	CurveDivision uint8
-//	Lwidth x // last width to make tappered lines
 }
 
 func (f Facetted) Straight(x1, y1, x2, y2 x) LimitedPattern {
@@ -72,11 +71,12 @@ func (f Facetted) Polygon(coords ...[2]x) LimitedPattern {
 }
 
 
-// max and min points
+// Limits hold max and min points
 type Limits struct{
 	MinX,MinY,MaxX,MaxY x
 }
 
+//  expanded Limits to include new points.
 func (d *Limits) Include(p [2]x) {
 	if p[0]<d.MinX{
 		d.MinX=p[0]

@@ -2,11 +2,11 @@ package patterns
 
 import "math"
 
-// Divide provides channels of a number of points along various curves (not including ends)
+// Divides method return channels of Divide.(uint8) number of points along various curves (not including ends)
 type Divide uint8
 const dividerMax = math.MaxUint8
 
-// Curve provides variable numbers of intermediate points from two independent axis functions.
+// Curve from two independent axis functions.
 func (d Divide) Curve(xfn, yfn func(Divide)x)  <-chan [2]x {
 	ch:=make(chan [2]x,d)
 	step:=dividerMax/d
@@ -66,8 +66,9 @@ func quadroupleDivision(s,c1,c2,c3,e x) (func (Divide) x ){
 	}
 }
 
-// Arc provides points along a SVG style Arc by rotating and/or squashing points provided by the Sector method
+// Arc returna curve defined by SVG Path style Arc segment.
 func  (d Divide) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-chan [2]x{
+	// rotating and/or squashing points provided by the Sector method
 	if rx!=ry{
 		// for rx!=ry use squash and/or rotate transforms, then do Circle Sector and reverse transform on points returned. 
 		if a!=0 {
@@ -104,7 +105,7 @@ func  (d Divide) Arc(x1,y1,rx,ry x, a float64, large,sweep bool, x2,y2 x)  <-cha
 }
 
 
-// Sector provides points along a sector of a circle that intersects two points.
+// Sector returns points along a sector of a circle that intersects two points.
 // if the radius provided is smaller than half the separation of the two provided points, then that is used for the radius. (in which case the large flag is redundant) 
 func  (d Divide) Sector(x1,y1,r x, large,sweep bool, x2,y2 x)  <-chan [2]x{
 	var cx,cy float64
@@ -148,9 +149,7 @@ func  (d Divide) Sector(x1,y1,r x, large,sweep bool, x2,y2 x)  <-chan [2]x{
 	return ch
 }
 
-
-
-// find centre of a circle given two points on rim and radius.
+// find centre of a circle given two points on rim and a radius.
 func centreOfCircle(sx, sy, r, ex, ey x) (x,y float64){
 	// midpoint
 	mx,my:=(ex+sx)>>1,(ey+sy)>>1

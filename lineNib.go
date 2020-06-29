@@ -2,7 +2,7 @@ package patterns
 
 import "math"
 
-// Nib with unit width where curves are just returned as straight lines
+// Nib where curves are returned as straight lines
 type LineNib struct{
 	Width x
 	In y
