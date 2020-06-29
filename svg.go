@@ -1,8 +1,7 @@
 package patterns
 
-
-type Drawer interface{
-	Draw(*Brush)Pattern
+type Drawer interface {
+	Draw(*Brush) Pattern
 }
 
 // a Path is a collection of Drawers that uses the same Brush to Draw its contained Drawers in order.
@@ -13,12 +12,16 @@ type Path []Drawer
 // draw a path using the provided brush
 func (p Path) Draw(b *Brush) Pattern {
 	var c Composite
-	if b.StartMarker!=nil{c=append(c,Translated{b.StartMarker,b.PenPath.Pen.x,b.PenPath.Pen.y})}
-	for _,s:=range(p){
-		if d:=s.Draw(b);d!=nil{
-			c=append(c,d)
+	if b.StartMarker != nil {
+		c = append(c, Translated{b.StartMarker, b.PenPath.Pen.x, b.PenPath.Pen.y})
+	}
+	for _, s := range p {
+		if d := s.Draw(b); d != nil {
+			c = append(c, d)
 		}
 	}
-	if b.EndMarker!=nil{c=append(c,Translated{b.EndMarker,b.PenPath.Pen.x,b.PenPath.Pen.y})}
+	if b.EndMarker != nil {
+		c = append(c, Translated{b.EndMarker, b.PenPath.Pen.x, b.PenPath.Pen.y})
+	}
 	return c
 }

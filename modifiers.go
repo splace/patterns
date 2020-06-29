@@ -1,8 +1,6 @@
 package patterns
 
 import "math"
-//import "fmt"
-
 
 // a LimitedPattern translated
 type Translated struct {
@@ -15,7 +13,7 @@ func (p Translated) at(x, y x) y {
 }
 
 func (p Translated) MaxX() x {
-	return p.LimitedPattern.MaxX() + max2(p.x,p.y)
+	return p.LimitedPattern.MaxX() + max2(p.x, p.y)
 }
 
 // a Pattern translated
@@ -29,32 +27,36 @@ func (p UnlimitedTranslated) at(x, y x) y {
 }
 
 func abs(a x) x {
-	if a < 0 {return -a}
+	if a < 0 {
+		return -a
+	}
 	return a
 }
 func max(a, b x) x {
-	if b>a {a = b}
+	if b > a {
+		a = b
+	}
 	return a
 }
 
 func max2(a, b x) x {
-	return max(abs(a),abs(b))
+	return max(abs(a), abs(b))
 }
 
 func max4(a, b, c, d x) x {
-	return max2(max2(a,b),max2(c,d))
+	return max2(max2(a, b), max2(c, d))
 }
 
-func max6(a, b, c, d, e, f  x) x {
-	return max2(max4(a,b,c,d),max2(e,f))
+func max6(a, b, c, d, e, f x) x {
+	return max2(max4(a, b, c, d), max2(e, f))
 }
 
-func max8(a, b, c, d, e, f,g,h  x) x {
-	return max2(max4(a,b,c,d),max4(e,f,g,h))
+func max8(a, b, c, d, e, f, g, h x) x {
+	return max2(max4(a, b, c, d), max4(e, f, g, h))
 }
 
-func max10(a, b, c, d, e, f,g,h,i,j  x) x {
-	return max2(max8(a,b,c,d,e,f,g,h),max2(i,j))
+func max10(a, b, c, d, e, f, g, h, i, j x) x {
+	return max2(max8(a, b, c, d, e, f, g, h), max2(i, j))
 }
 
 // a LimitedPattern Scaled
@@ -68,12 +70,11 @@ func (p Reduced) at(px, py x) y {
 }
 
 func (p Reduced) MaxX() x {
-	if p.y>p.x{
-		return x(float32(p.LimitedPattern.MaxX())/p.x)
+	if p.y > p.x {
+		return x(float32(p.LimitedPattern.MaxX()) / p.x)
 	}
 	return x(float32(p.LimitedPattern.MaxX()) / p.y)
 }
-
 
 // a Pattern Scaled
 type UnlimitedReduced struct {
@@ -120,9 +121,8 @@ func (p Rotated) at(px, py x) y {
 }
 
 func (p Rotated) MaxX() x {
-	return p.LimitedPattern.MaxX()*x(math.Abs(p.sinA)+ math.Abs(p.cosA))
+	return p.LimitedPattern.MaxX() * x(math.Abs(p.sinA)+math.Abs(p.cosA))
 }
-
 
 // a Pattern Rotated
 type UnlimitedRotated struct {
@@ -134,15 +134,13 @@ func (p UnlimitedRotated) at(px, py x) y {
 	return p.Pattern.at(x(float64(px)*p.cosA-float64(py)*p.sinA), x(float64(px)*p.sinA+float64(py)*p.cosA))
 }
 
-
 func NewRotated(p Pattern, a float64) Pattern {
-	s,c:=math.Sincos(a)
-	if lp,ok:=p.(LimitedPattern);ok{
+	s, c := math.Sincos(a)
+	if lp, ok := p.(LimitedPattern); ok {
 		return Rotated{lp, s, c}
 	}
-	return UnlimitedRotated{p, s,c}
+	return UnlimitedRotated{p, s, c}
 }
-
 
 // a LimitedPattern reversed
 type Inverted struct {
@@ -176,5 +174,3 @@ type Limiter struct {
 func (p Limiter) MaxX() x {
 	return p.Max
 }
-
-

@@ -1,8 +1,6 @@
 package patterns
 
-import (
-	"fmt"
-)
+import "fmt"
 
 // satisfying the Pattern interface means a type represents a 2D pattern, where a y property varies with two x parameters.
 type Pattern interface {
@@ -17,14 +15,13 @@ const unitX = 1000
 
 const scaleX = 0.001
 
-
 //  x scaled to unitX
 //func (p x) String() string {
 //	return fmt.Sprintf("%9.2f", float32(p)/float32(unitX))
 //}
 
 func (p x) String() string {
-	return fmt.Sprint(float32(p)/float32(unitX))
+	return fmt.Sprint(float32(p) / float32(unitX))
 }
 
 // x is scaled as required on scan
@@ -32,16 +29,20 @@ func (p x) String() string {
 func (p *x) Scan(state fmt.ScanState, v rune) (err error) {
 	var xscan float32
 	state.SkipSpace()
-	r,_,err:=state.ReadRune()
-	if err!=nil{return}
-	if r==','{
+	r, _, err := state.ReadRune()
+	if err != nil {
+		return
+	}
+	if r == ',' {
 		state.SkipSpace()
-		}else{
+	} else {
 		state.UnreadRune()
-		}
-	_,err=fmt.Fscan(state,&xscan)
-	if err!=nil{return}
-	*p=x(xscan*unitX)	
+	}
+	_, err = fmt.Fscan(state, &xscan)
+	if err != nil {
+		return
+	}
+	*p = x(xscan * unitX)
 	return
 }
 

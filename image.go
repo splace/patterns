@@ -13,7 +13,6 @@ type Depictor interface {
 	At(x, y int) color.Color
 }
 
-
 // simple visual Depiction of a Pattern, implements Depictor
 type Depiction struct {
 	Pattern
@@ -37,7 +36,6 @@ func (i Depiction) At(xp, yp int) color.Color {
 	}
 	return i.out
 }
-
 
 // RGBA depiction wrapper
 type RGBAImage struct {
@@ -67,18 +65,20 @@ type WebSafePalettedImage struct {
 
 func (i WebSafePalettedImage) ColorModel() color.Model { return color.Palette(palette.WebSafe) }
 
-
 // black/white paletted, depiction wrapper.
 type BlackAndWhitePalettedImage struct {
 	Depictor
 }
 
-func (i BlackAndWhitePalettedImage) ColorModel() color.Model { return color.Palette([]color.Color{color.Black, color.White}) }
+func (i BlackAndWhitePalettedImage) ColorModel() color.Model {
+	return color.Palette([]color.Color{color.Black, color.White})
+}
 
 // black/white paletted, depiction wrapper.
 type OpaqueTransparentPalettedImage struct {
 	Depictor
 }
 
-func (i OpaqueTransparentPalettedImage) ColorModel() color.Model { return color.Palette([]color.Color{color.Opaque, color.Transparent}) }
-
+func (i OpaqueTransparentPalettedImage) ColorModel() color.Model {
+	return color.Palette([]color.Color{color.Opaque, color.Transparent})
+}
