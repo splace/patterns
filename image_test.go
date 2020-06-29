@@ -53,7 +53,7 @@ func TestImageBitCoin(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	b := NewBrush(Facetted{LineNib:LineNib{20*unitX, unitY},CurveDivision:2})
+	b := NewFacettedBrush(20*unitX, Filling(unitY),2)
 	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{UnlimitedShrunk{p.Draw(b),6},50*unitX}, 400, 400, color.Opaque, color.Transparent)})
 }
 
@@ -76,8 +76,8 @@ func TestImageRings(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	b := NewBrush(Facetted{LineNib:LineNib{2*unitX, unitY},CurveDivision:4})
-	b1 := NewBrush(Facetted{LineNib:LineNib{2*unitX, unitY},CurveDivision:3})
+	b := NewFacettedBrush(2*unitX, Filling(unitY),4)
+	b1 := NewFacettedBrush(2*unitX, Filling(unitY),3)
 	c:=Composite{UnlimitedShrunk{p.Draw(b),0.2},UnlimitedShrunk{p.Draw(b1),0.5}}
 	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c,50*unitX}, 1600, 1600, color.Opaque, color.Transparent)})
 }
@@ -90,7 +90,7 @@ func TestImageRoundedRectangle(t *testing.T) {
 	defer file.Close()
 	p := RoundedRectangle(20*unitX,15*unitX, 5*unitX)
 	fmt.Println(p)
-	b := NewBrush(Facetted{LineNib:LineNib{unitX, unitY},CurveDivision:2})
+	b := NewFacettedBrush(unitX, Filling(unitY),2)
 	c:=UnlimitedShrunk{p.Draw(b),0.3}
 	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c,50*unitX}, 2500, 1600, color.Opaque, color.Transparent)})
 }
@@ -106,7 +106,7 @@ func TestImageSmoothCorneredTrapezoid(t *testing.T) {
 		SmoothCorneredTrapezoid(25*unitX, 1*unitX, 20*unitX, 8*unitX),
 		SmoothCorneredTrapezoid(30*unitX, 1.5*unitX, 25*unitX, 12*unitX),
 	}
-	b := NewBrush(Facetted{LineNib:LineNib{unitX, unitY},CurveDivision:2})
+	b := NewFacettedBrush(unitX, Filling(unitY),2)
 	c:=UnlimitedShrunk{p.Draw(b),0.5}
 	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c,50*unitX}, 2500, 1600, color.Opaque, color.Transparent)})
 }
@@ -120,7 +120,7 @@ func TestImageBallCorneredRectangle(t *testing.T) {
 	defer file.Close()
 	p := BallCorneredRectangle(25*unitX,20*unitX, 8*unitX)
 	fmt.Println(p)
-	b := NewBrush(Facetted{LineNib:LineNib{unitX, unitY},CurveDivision:2})
+	b := NewFacettedBrush(unitX, Filling(unitY),3)
 	c:=UnlimitedShrunk{p.Draw(b),0.5}
 	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c,50*unitX}, 2500, 1600, color.Opaque, color.Transparent)})
 }

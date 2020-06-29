@@ -14,30 +14,30 @@ func (p *Pen) AddMark(l LimitedPattern) LimitedPattern {
 		p.previousWasMove=false
 		return l
 	}
-	return LimitedComposite{l,Translated{p.Joiner,p.x,p.y}}
+	return Limiter{Composite{l,Translated{p.Joiner,p.x,p.y}},l.MaxX()+p.Joiner.MaxX()*10 }
 }
 
-func (p *Pen) MoveTo(px, py x) {
-	p.x, p.y= px, py
+func (p *Pen) MoveTo(x, y x) {
+	p.x, p.y= x, y
 	p.previousWasMove=true
 	return
 }
 
-func (p *Pen) LineTo(px, py x) (l LimitedPattern) {
-	l= p.AddMark(p.Straight(p.x, p.y, px, py))
-	p.x, p.y = px, py
+func (p *Pen) LineTo(x, y x) (l LimitedPattern) {
+	l= p.AddMark(p.Straight(p.x, p.y, x, y))
+	p.x, p.y = x, y
 	return
 }
 
-func (p *Pen) LineToVertical(py x) (l LimitedPattern) {
-	l=p.AddMark(p.Straight(p.x, p.y, p.x, py))
-	p.y = py
+func (p *Pen) LineToVertical(y x) (l LimitedPattern) {
+	l=p.AddMark(p.Straight(p.x, p.y, p.x, y))
+	p.y = y
 	return
 }
 
-func (p *Pen) LineToHorizontal(px x) (l LimitedPattern) {
-	l =p.AddMark(p.Straight(p.x, p.y, px, p.y))
-	p.x = px
+func (p *Pen) LineToHorizontal(x x) (l LimitedPattern) {
+	l =p.AddMark(p.Straight(p.x, p.y, x, p.y))
+	p.x = x
 	return
 }
 
@@ -47,15 +47,15 @@ func (p *Pen) ArcTo(rx,ry x, a float64, large,sweep bool,x,y x) (l LimitedPatter
 	return
 }
 
-func (p *Pen) QuadraticBezierTo(cx,cy,px,py x) (l LimitedPattern) {
-	l = p.AddMark(p.Curved(p.x,p.y,cx,cy,cx,cy,px, py))
-	p.x, p.y=px,py
+func (p *Pen) QuadraticBezierTo(cx,cy,x,y x) (l LimitedPattern) {
+	l = p.AddMark(p.Curved(p.x,p.y,cx,cy,cx,cy,x, y))
+	p.x, p.y=x,y
 	return
 }
 
-func (p *Pen) CubicBezierTo(c1x,c1y,c2x,c2y,px,py x) (l LimitedPattern) {
-	l= p.AddMark(p.Curved(p.x,p.y,c1x,c1y,c2x,c2y,px, py))
-	p.x, p.y=px,py
+func (p *Pen) CubicBezierTo(c1x,c1y,c2x,c2y,x,y x) (l LimitedPattern) {
+	l= p.AddMark(p.Curved(p.x,p.y,c1x,c1y,c2x,c2y,x, y))
+	p.x, p.y=x,y
 	return
 }
 
@@ -76,3 +76,6 @@ func (p *PenPath) LineClose() (l LimitedPattern) {
 	return
 }
 
+/* run: args="" Mon 29 Jun 01:39:22 BST 2020 go version go1.14.3 linux/amd64
+Mon 29 Jun 01:39:23 BST 2020
+*/
