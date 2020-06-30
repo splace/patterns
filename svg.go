@@ -20,19 +20,15 @@ func (p Path) Draw(b *Brush) Pattern {
 		}
 		return c
 	}
-	// add markers before first thing drawn and/or after last thing drawn  
+	// add markers before first non-nil Draw and/or after last non-nil Draw
 	var sx,sy,ex,ey x
-	var notFirst bool
 	for _, s := range p {
-		if !notFirst{
+		if len(c)==0 {
 			sx,sy= b.PenPath.Pen.x, b.PenPath.Pen.y
 		}
 		if d := s.Draw(b); d != nil {
-			if !notFirst {
-				if b.StartMarker!=nil{
-					c = append(c, Translated{b.StartMarker, sx, sy})
-				}
-				notFirst=true			
+			if len(c)==0 && b.StartMarker!=nil{
+				c = append(c, Translated{b.StartMarker, sx, sy})
 			}
 			c = append(c, d)
 			ex,ey=b.PenPath.Pen.x, b.PenPath.Pen.y
