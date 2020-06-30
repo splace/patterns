@@ -28,8 +28,10 @@ func (p Path) Draw(b *Brush) Pattern {
 			sx,sy= b.PenPath.Pen.x, b.PenPath.Pen.y
 		}
 		if d := s.Draw(b); d != nil {
-			if !notFirst && b.StartMarker!=nil{
-				c = append(c, Translated{b.StartMarker, sx, sy})
+			if !notFirst {
+				if b.StartMarker!=nil{
+					c = append(c, Translated{b.StartMarker, sx, sy})
+				}
 				notFirst=true			
 			}
 			c = append(c, d)
