@@ -14,7 +14,7 @@ func (p *Pen) AddMark(l LimitedPattern) LimitedPattern {
 		p.previousWasMove = false
 		return l
 	}
-	return Limiter{Composite{l, Translated{p.Joiner, p.x, p.y}}, l.MaxX() + p.Joiner.MaxX()*10}
+	return Limiter{Composite{l, Translated{p.Joiner, p.x, p.y}}, l.MaxX() + p.Joiner.MaxX()}
 }
 
 func (p *Pen) MoveTo(x, y x) {
@@ -72,6 +72,7 @@ func (p *PenPath) MoveTo(px, py x) (l LimitedPattern) {
 }
 
 func (p *PenPath) LineClose() (l LimitedPattern) {
+	//if p.Pen.x==p.x && p.Pen.y==p.y {return}
 	l = p.AddMark(p.LineTo(p.x, p.y))
 	return
 }

@@ -1,6 +1,6 @@
 package patterns
 
-// a Path, implementing Nib, that when used appends to itself Drawers such that when calling its Draw method returns the Pattern.
+// a Path, implementing Nib, that when used appends to itself Drawers such that when, later, calling its Draw method returns the Pattern.
 type SimpleSvgPathNib Path
 
 func (p *SimpleSvgPathNib) Straight(x1, y1, x2, y2 x) LimitedPattern {

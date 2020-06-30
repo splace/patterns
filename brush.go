@@ -86,7 +86,6 @@ func (s HorizontalLineToRelative) Draw(b *Brush) Pattern {
 type Close struct{}
 
 func (s Close) Draw(b *Brush) Pattern {
-	//if b.x==b.sx && b.y==b.sy {return nil}
 	b.dqcx, b.dqcy = 0, 0
 	b.dccx, b.dccy = 0, 0
 	return b.LineClose()
