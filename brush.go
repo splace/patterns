@@ -3,7 +3,7 @@ package patterns
 import "math"
 
 // a brush is a Pen with, optional, Start and end markers.
-// it also holds data on what it has drawn to allow generation of smoothed (shorthand) curved segments
+// it also holds information on what it has previously drawn to allow making smoothed (shorthand) curved segments
 type Brush struct {
 	PenPath
 	StartMarker, EndMarker LimitedPattern
