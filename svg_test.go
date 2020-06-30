@@ -382,3 +382,83 @@ func ExampleSVGpathScanMulti() {
 	        8	-----------------
 	*/
 }
+
+
+
+func ExampleSVGPathMarker() {
+	p := Path{
+		MoveTo{-5 * unitX, -5 * unitX},
+		LineTo{5 * unitX, 5 * unitX},
+		LineTo{5 * unitX, 5 * unitX},
+	}
+	b := NewBrush(Facetted{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
+	b.StartMarker= Shrunk{Square(unitY), .33}
+	b.EndMarker= Shrunk{Disc(unitY), .33}
+	PrintGraph(p.Draw(b), -10*unitX, 10*unitX, -10*unitX, 10*unitX, unitX)
+	/* Output:
+	Graph
+	      -10	---------------------
+	       -9	---------------------
+	       -8	---------------------
+	       -7	---------------------
+	       -6	---------------------
+	       -5	------X--------------
+	       -4	-----XXX-------------
+	       -3	------XXX------------
+	       -2	-------XXX-----------
+	       -1	--------XXX----------
+	        0	---------XXX---------
+	        1	----------XXX--------
+	        2	-----------XXX-------
+	        3	------------XXX------
+	        4	-------------XXX-----
+	        5	--------------XX-----
+	        6	---------------------
+	        7	---------------------
+	        8	---------------------
+	        9	---------------------
+	       10	---------------------
+	*/
+}
+
+
+
+func ExampleSVGPathMarkerGaps() {
+	p := Path{
+		MoveTo{0 * unitX, -5 * unitX},
+		MoveTo{-15 * unitX, 5 * unitX},
+		LineTo{-5 * unitX, 5 * unitX},
+		MoveTo{5 * unitX, -5 * unitX},
+		LineTo{15 * unitX, 5 * unitX},
+		MoveTo{0 * unitX, -5 * unitX},
+		MoveTo{0 * unitX, -5 * unitX},
+	}
+	b := NewBrush(Facetted{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
+	b.StartMarker= Shrunk{Square(unitY), .33}
+	b.EndMarker= Shrunk{Disc(unitY), .33}
+	PrintGraph(p.Draw(b), -20*unitX, 20*unitX, -10*unitX, 10*unitX, unitX)
+	/* Output:
+	Graph
+	      -10	---------------------
+	       -9	---------------------
+	       -8	---------------------
+	       -7	---------------------
+	       -6	---------------------
+	       -5	------X--------------
+	       -4	-----XXX-------------
+	       -3	------XXX------------
+	       -2	-------XXX-----------
+	       -1	--------XXX----------
+	        0	---------XXX---------
+	        1	----------XXX--------
+	        2	-----------XXX-------
+	        3	------------XXX------
+	        4	-------------XXX-----
+	        5	--------------XX-----
+	        6	---------------------
+	        7	---------------------
+	        8	---------------------
+	        9	---------------------
+	       10	---------------------
+	*/
+}

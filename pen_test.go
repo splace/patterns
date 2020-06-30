@@ -139,15 +139,15 @@ func ExamplePenPolygon() {
 	*/
 }
 
-func ExamplePenJoinedPolygon() {
-	p := Pen{Nib: LineNib{4 * unitX, unitY}, Joiner: Shrunk{Disc(unitY), .5}}
+func ExamplePenJoinedPath() {
+	p := Pen{Nib: LineNib{4 * unitX, unitY}, Joiner: Shrunk{Disc(unitY), .2}}
 
-	p.MoveTo(0, 0)
+	p.MoveTo(-15*unitX, -5*unitX)
 	Output(
 		Limiter{
 			Composite{
-				p.LineTo(10*unitX, 10*unitX),
-				p.LineTo(10*unitX, -10*unitX),
+				p.LineTo(0,5*unitX),
+				p.LineTo(15*unitX, -5*unitX),
 			},
 			unitX * 15,
 		},

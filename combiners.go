@@ -16,7 +16,7 @@ func (c Composite) at(px, py x) (total y) {
 		}
 		total = compose(total, p.at(px, py))
 		if total.isOpaque() {
-			// optimisation: put this success as first in search for next time
+			// XXX optimisation for bool y: put this success as first in search for next time
 			if i != 0 {
 				c[0], c[i] = c[i], c[0]
 			}
@@ -46,7 +46,7 @@ func (c LimitedComposite) at(px, py x) (total y) {
 		}
 		total = compose(total, p.at(px, py))
 		if total.isOpaque() {
-			// optimisation: put this success as SECOND, so limit kept. in search for next time
+			// XXX optimisation for bool y: put this success as SECOND in search for next time
 			if i > 1 {
 				c[1], c[i] = c[i], c[1]
 			}

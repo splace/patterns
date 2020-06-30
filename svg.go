@@ -12,16 +12,32 @@ type Path []Drawer
 // draw a path using the provided brush
 func (p Path) Draw(b *Brush) Pattern {
 	var c Composite
-	if b.StartMarker != nil {
-		c = append(c, Translated{b.StartMarker, b.PenPath.Pen.x, b.PenPath.Pen.y})
+	if b.StartMarker == nil && b.EndMarker == nil  {
+		for _, s := range p {
+			if d := s.Draw(b); d != nil {
+				c = append(c, d)
+			}
+		}
+		return c
 	}
+	// add markers before first thing drawn and/or after last thing drawn  
+	var sx,sy,ex,ey x
+	var notFirst bool
 	for _, s := range p {
+		if !notFirst{
+			sx,sy= b.PenPath.Pen.x, b.PenPath.Pen.y
+		}
 		if d := s.Draw(b); d != nil {
+			if !notFirst && b.StartMarker!=nil{
+				c = append(c, Translated{b.StartMarker, sx, sy})
+				notFirst=true			
+			}
 			c = append(c, d)
+			ex,ey=b.PenPath.Pen.x, b.PenPath.Pen.y
 		}
 	}
 	if b.EndMarker != nil {
-		c = append(c, Translated{b.EndMarker, b.PenPath.Pen.x, b.PenPath.Pen.y})
+		c = append(c, Translated{b.EndMarker, ex, ey})
 	}
 	return c
 }

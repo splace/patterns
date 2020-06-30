@@ -112,7 +112,7 @@ func ExampleBrushStraight() {
 //	*/
 //}/
 
-func ExampleBrushStraightMarker() {
+func ExampleBrushStraightJoiner() {
 	b := NewFacettedBrush(4*unitX, Filling(unitY), 2)
 	MoveTo{-8 * unitX, 5 * unitX}.Draw(b)
 	PrintGraph(LineTo{8 * unitX, -5 * unitX}.Draw(b), -10*unitX, 10*unitX, -10*unitX, 10*unitX, unitX)
