@@ -200,25 +200,23 @@ func (p *Path) Scan(state fmt.ScanState, r rune) (err error) {
 				}
 				*p = append(*p, SmoothCubicBezierToRelative(xs[len(xs)-4:]))
 			case 'A': // elliptical Arc
-				return fmt.Errorf("Not supported")
 				xs = append(xs, 0, 0, 0, 0, 0, 0, 0)
 				_, err = fmt.Fscan(state, &xs[len(xs)-7], &xs[len(xs)-6], &xs[len(xs)-5], &xs[len(xs)-4], &xs[len(xs)-3], &xs[len(xs)-2], &xs[len(xs)-1])
-				if xs[len(xs)-3] != 0 && xs[len(xs)-3] != 1 || xs[len(xs)-4] != 0 && xs[len(xs)-4] != 1 {
-					return fmt.Errorf("Arc flags not 0 or 1")
+				if xs[len(xs)-3] != 0 && xs[len(xs)-3] != unitX || xs[len(xs)-4] != 0 && xs[len(xs)-4] != unitX{
+					return fmt.Errorf("Arc flags not 0 or 1: %v %v",xs[len(xs)-3],xs[len(xs)-4])
 				}
 				if err != nil {
 					return err
 				}
 				*p = append(*p, ArcTo(xs[len(xs)-7:]))
 			case 'a': // elliptical Arc relative
-				return fmt.Errorf("Not supported")
 				xs = append(xs, 0, 0, 0, 0, 0, 0, 0)
 				_, err = fmt.Fscan(state, &xs[len(xs)-7], &xs[len(xs)-6], &xs[len(xs)-5], &xs[len(xs)-4], &xs[len(xs)-3], &xs[len(xs)-2], &xs[len(xs)-1])
 				if err != nil {
 					return err
 				}
-				if xs[len(xs)-3] != 0 && xs[len(xs)-3] != 1 || xs[len(xs)-4] != 0 && xs[len(xs)-4] != 1 {
-					return fmt.Errorf("Arc flags not 0 or 1")
+				if xs[len(xs)-3] != 0 && xs[len(xs)-3] != unitX || xs[len(xs)-4] != 0 && xs[len(xs)-4] != unitX{
+					return fmt.Errorf("Arc flags not 0 or 1: %v %v",xs[len(xs)-3],xs[len(xs)-4])
 				}
 				*p = append(*p, ArcToRelative(xs[len(xs)-7:]))
 			case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-', '+':

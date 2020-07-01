@@ -91,8 +91,12 @@ func (s Close) Draw(b *Brush) Pattern {
 	return b.LineClose()
 }
 
-type CloseRelative struct {
-	Close
+type CloseRelative struct {}
+	
+func (s CloseRelative) Draw(b *Brush) Pattern {
+	b.dqcx, b.dqcy = 0, 0
+	b.dccx, b.dccy = 0, 0
+	return b.LineClose()
 }
 
 type QuadraticBezierTo []x
