@@ -5,25 +5,25 @@ import "math"
 // a LimitedPattern translated
 type Translated struct {
 	LimitedPattern
-	x, y x
+	X, Y x
 }
 
 func (p Translated) at(x, y x) y {
-	return p.LimitedPattern.at(x-p.x, y-p.y)
+	return p.LimitedPattern.at(x-p.X, y-p.Y)
 }
 
 func (p Translated) MaxX() x {
-	return p.LimitedPattern.MaxX() + max2(p.x, p.y)
+	return p.LimitedPattern.MaxX() + max2(p.X, p.Y)
 }
 
 // a Pattern translated
 type UnlimitedTranslated struct {
 	Pattern
-	x, y x
+	X, Y x
 }
 
 func (p UnlimitedTranslated) at(x, y x) y {
-	return p.Pattern.at(x-p.x, y-p.y)
+	return p.Pattern.at(x-p.X, y-p.Y)
 }
 
 func abs(a x) x {
@@ -62,52 +62,52 @@ func max10(a, b, c, d, e, f, g, h, i, j x) x {
 // a LimitedPattern Scaled
 type Reduced struct {
 	LimitedPattern
-	x, y float32
+	X, Y float32
 }
 
 func (p Reduced) at(px, py x) y {
-	return p.LimitedPattern.at(x(float32(px)*p.x), x(float32(py)*p.y))
+	return p.LimitedPattern.at(x(float32(px)*p.X), x(float32(py)*p.Y))
 }
 
 func (p Reduced) MaxX() x {
-	if p.y > p.x {
-		return x(float32(p.LimitedPattern.MaxX()) / p.x)
+	if p.Y > p.X {
+		return x(float32(p.LimitedPattern.MaxX()) / p.X)
 	}
-	return x(float32(p.LimitedPattern.MaxX()) / p.y)
+	return x(float32(p.LimitedPattern.MaxX()) / p.Y)
 }
 
 // a Pattern Scaled
 type UnlimitedReduced struct {
 	Pattern
-	x, y float32
+	X, Y float32
 }
 
 func (p UnlimitedReduced) at(px, py x) y {
-	return p.Pattern.at(x(float32(px)*p.x), x(float32(py)*p.y))
+	return p.Pattern.at(x(float32(px)*p.X), x(float32(py)*p.Y))
 }
 
 // a LimitedPattern Zoomed
 type Shrunk struct {
 	LimitedPattern
-	float32
+	Factor float32
 }
 
 func (p Shrunk) at(px, py x) y {
-	return p.LimitedPattern.at(x(float32(px)*p.float32), x(float32(py)*p.float32))
+	return p.LimitedPattern.at(x(float32(px)*p.Factor), x(float32(py)*p.Factor))
 }
 
 func (p Shrunk) MaxX() x {
-	return x(float32(p.LimitedPattern.MaxX()) / p.float32)
+	return x(float32(p.LimitedPattern.MaxX()) / p.Factor)
 }
 
 // a Pattern Zoomed
 type UnlimitedShrunk struct {
 	Pattern
-	float32
+	Factor float32
 }
 
 func (p UnlimitedShrunk) at(px, py x) y {
-	return p.Pattern.at(x(float32(px)*p.float32), x(float32(py)*p.float32))
+	return p.Pattern.at(x(float32(px)*p.Factor), x(float32(py)*p.Factor))
 }
 
 // a LimitedPattern Rotated
@@ -174,3 +174,6 @@ type Limiter struct {
 func (p Limiter) MaxX() x {
 	return p.Max
 }
+/* run: args="" Fri 3 Jul 00:26:46 BST 2020 go version go1.14.3 linux/amd64
+Fri 3 Jul 00:26:46 BST 2020
+*/
