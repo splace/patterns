@@ -19,7 +19,9 @@ func NewFacettedBrush(width x, f filler, facets uint8) *Brush {
 	return &Brush{PenPath: PenPath{Pen: Pen{Nib: Facetted{LineNib: LineNib{width, f.fill()}, CurveDivision: facets}, Joiner: Shrunk{Disc(Filling(f.fill())), 2 * unitX / float32(width)}}}}
 }
 
-type MoveTo []x
+type Segment []x
+
+type MoveTo Segment
 
 func (s MoveTo) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0
@@ -27,7 +29,7 @@ func (s MoveTo) Draw(b *Brush) Pattern {
 	return b.MoveTo(s[0], s[1])
 }
 
-type MoveToRelative []x
+type MoveToRelative Segment
 
 func (s MoveToRelative) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0
@@ -35,7 +37,7 @@ func (s MoveToRelative) Draw(b *Brush) Pattern {
 	return b.MoveTo(b.PenPath.Pen.x+s[0], b.PenPath.Pen.y+s[1])
 }
 
-type LineTo []x
+type LineTo Segment
 
 func (s LineTo) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0
@@ -43,7 +45,7 @@ func (s LineTo) Draw(b *Brush) Pattern {
 	return b.LineTo(s[0], s[1])
 }
 
-type LineToRelative []x
+type LineToRelative Segment
 
 func (s LineToRelative) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0
@@ -51,7 +53,7 @@ func (s LineToRelative) Draw(b *Brush) Pattern {
 	return b.LineTo(b.PenPath.Pen.x+s[0], b.PenPath.Pen.y+s[1])
 }
 
-type VerticalLineTo []x
+type VerticalLineTo Segment
 
 func (s VerticalLineTo) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0
@@ -59,7 +61,7 @@ func (s VerticalLineTo) Draw(b *Brush) Pattern {
 	return b.LineToVertical(s[0])
 }
 
-type VerticalLineToRelative []x
+type VerticalLineToRelative Segment
 
 func (s VerticalLineToRelative) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0
@@ -67,7 +69,7 @@ func (s VerticalLineToRelative) Draw(b *Brush) Pattern {
 	return b.LineToVertical(b.PenPath.Pen.y + s[0])
 }
 
-type HorizontalLineTo []x
+type HorizontalLineTo Segment
 
 func (s HorizontalLineTo) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0
@@ -75,7 +77,7 @@ func (s HorizontalLineTo) Draw(b *Brush) Pattern {
 	return b.LineToHorizontal(s[0])
 }
 
-type HorizontalLineToRelative []x
+type HorizontalLineToRelative Segment
 
 func (s HorizontalLineToRelative) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0
@@ -99,7 +101,7 @@ func (s CloseRelative) Draw(b *Brush) Pattern {
 	return b.LineClose()
 }
 
-type QuadraticBezierTo []x
+type QuadraticBezierTo Segment
 
 func (s QuadraticBezierTo) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = s[2]-s[0], s[3]-s[1]
@@ -107,7 +109,7 @@ func (s QuadraticBezierTo) Draw(b *Brush) Pattern {
 	return b.QuadraticBezierTo(s[0], s[1], s[2], s[3])
 }
 
-type SmoothQuadraticBezierTo []x
+type SmoothQuadraticBezierTo Segment
 
 func (s SmoothQuadraticBezierTo) Draw(b *Brush) Pattern {
 	b.dccx, b.dccy = 0, 0
@@ -118,7 +120,7 @@ func (s SmoothQuadraticBezierTo) Draw(b *Brush) Pattern {
 	return p
 }
 
-type QuadraticBezierToRelative []x
+type QuadraticBezierToRelative Segment
 
 func (s QuadraticBezierToRelative) Draw(b *Brush) Pattern {
 	b.dccx, b.dccy = 0, 0
@@ -126,7 +128,7 @@ func (s QuadraticBezierToRelative) Draw(b *Brush) Pattern {
 	return b.QuadraticBezierTo(b.PenPath.Pen.x+s[0], b.PenPath.Pen.y+s[1], b.PenPath.Pen.x+s[2], b.PenPath.Pen.y+s[3])
 }
 
-type SmoothQuadraticBezierToRelative []x
+type SmoothQuadraticBezierToRelative Segment
 
 func (s SmoothQuadraticBezierToRelative) Draw(b *Brush) Pattern {
 	b.dccx, b.dccy = 0, 0
@@ -135,7 +137,7 @@ func (s SmoothQuadraticBezierToRelative) Draw(b *Brush) Pattern {
 	return p
 }
 
-type CubicBezierTo []x
+type CubicBezierTo Segment
 
 func (s CubicBezierTo) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0
@@ -143,7 +145,7 @@ func (s CubicBezierTo) Draw(b *Brush) Pattern {
 	return b.CubicBezierTo(s[0], s[1], s[2], s[3], s[4], s[5])
 }
 
-type SmoothCubicBezierTo []x
+type SmoothCubicBezierTo Segment
 
 func (s SmoothCubicBezierTo) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0
@@ -152,7 +154,7 @@ func (s SmoothCubicBezierTo) Draw(b *Brush) Pattern {
 	return p
 }
 
-type CubicBezierToRelative []x
+type CubicBezierToRelative Segment
 
 func (s CubicBezierToRelative) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0
@@ -160,7 +162,7 @@ func (s CubicBezierToRelative) Draw(b *Brush) Pattern {
 	return b.CubicBezierTo(b.PenPath.Pen.x+s[0], b.PenPath.Pen.y+s[1], b.PenPath.Pen.x+s[2], b.PenPath.Pen.y+s[3], b.PenPath.Pen.x+s[4], b.PenPath.Pen.y+s[5])
 }
 
-type SmoothCubicBezierToRelative []x
+type SmoothCubicBezierToRelative Segment
 
 func (s SmoothCubicBezierToRelative) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0
@@ -169,7 +171,7 @@ func (s SmoothCubicBezierToRelative) Draw(b *Brush) Pattern {
 	return p
 }
 
-type ArcTo []x
+type ArcTo Segment
 
 func (s ArcTo) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0
@@ -177,7 +179,7 @@ func (s ArcTo) Draw(b *Brush) Pattern {
 	return b.ArcTo(s[0], s[1], float64(s[2])/unitX*math.Pi/180, s[3] != 0, s[4] != 0, s[5], s[6])
 }
 
-type ArcToRelative []x
+type ArcToRelative Segment
 
 func (s ArcToRelative) Draw(b *Brush) Pattern {
 	b.dqcx, b.dqcy = 0, 0

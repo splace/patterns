@@ -5,7 +5,6 @@ import "io"
 import "strings"
 
 // Path fmt.Stringer using one command per line.
-
 func (p Path) String() string {
 	b := new(strings.Builder)
 	for _, s := range p {
@@ -357,7 +356,8 @@ func (p CompactStringer) String() string {
 	return b.String()[1:]
 }
 
-// Path fmt.Stringer in compact form. skips repeated command letters/leading zeros/spaces/commas (if number starts with point or neg. sign)
+// derives from Path and is a fmt.Stringer in compact form.
+// skips repeated command letters/leading zeros/spaces/commas (if number starts with point or neg. sign)
 type MaxCompactStringer Path
 
 type presep x
