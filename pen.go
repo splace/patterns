@@ -1,17 +1,17 @@
 package patterns
 
 // Pens have methods to create LimitedPatterns depending on, and maintaining, a current location.
-// Optionally it adds a LimitedPattern at the joins between segments.
+// Optionally it adds a LimitedPattern at the joins between drawn, not just moved, segments.
 type Pen struct {
 	Nib
 	x, y            x
 	Joiner          LimitedPattern
-	JoinerNotNeeded bool
+	joinerNotNeeded bool
 }
 
 func (p *Pen) AddMark(l LimitedPattern) LimitedPattern {
-	if p.JoinerNotNeeded || p.Joiner == nil {
-		p.JoinerNotNeeded = false
+	if p.joinerNotNeeded || p.Joiner == nil {
+		p.joinerNotNeeded = false
 		return l
 	}
 	return Limiter{Composite{l, Translated{p.Joiner, p.x, p.y}}, l.MaxX() + p.Joiner.MaxX()}
@@ -19,7 +19,7 @@ func (p *Pen) AddMark(l LimitedPattern) LimitedPattern {
 
 func (p *Pen) MoveTo(x, y x) {
 	p.x, p.y = x, y
-	p.JoinerNotNeeded = true
+	p.joinerNotNeeded = true
 	return
 }
 
