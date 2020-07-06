@@ -109,16 +109,6 @@ func (s QuadraticBezierTo) Draw(b *Brush) Pattern {
 	return b.QuadraticBezierTo(s[0], s[1], s[2], s[3])
 }
 
-type SmoothQuadraticBezierTo Segment
-
-func (s SmoothQuadraticBezierTo) Draw(b *Brush) Pattern {
-	b.dccx, b.dccy = 0, 0
-	b.dqcx += b.PenPath.Pen.x
-	b.dqcy += b.PenPath.Pen.y
-	p := b.QuadraticBezierTo(b.dqcx, b.dqcy, s[0], s[1])
-	b.dqcx, b.dqcy = s[0]-b.dqcx, s[1]-b.dqcy
-	return p
-}
 
 type QuadraticBezierToRelative Segment
 
@@ -126,15 +116,6 @@ func (s QuadraticBezierToRelative) Draw(b *Brush) Pattern {
 	b.dccx, b.dccy = 0, 0
 	b.dqcx, b.dqcy = s[2]-s[0], s[3]-s[1]
 	return b.QuadraticBezierTo(b.PenPath.Pen.x+s[0], b.PenPath.Pen.y+s[1], b.PenPath.Pen.x+s[2], b.PenPath.Pen.y+s[3])
-}
-
-type SmoothQuadraticBezierToRelative Segment
-
-func (s SmoothQuadraticBezierToRelative) Draw(b *Brush) Pattern {
-	b.dccx, b.dccy = 0, 0
-	p := b.QuadraticBezierTo(b.PenPath.Pen.x+b.dqcx, b.PenPath.Pen.y+b.dqcy, b.PenPath.Pen.x+s[0], b.PenPath.Pen.y+s[1])
-	b.dqcx, b.dqcy = s[0]-b.dqcx, s[1]-b.dqcy
-	return p
 }
 
 type CubicBezierTo Segment
@@ -145,6 +126,36 @@ func (s CubicBezierTo) Draw(b *Brush) Pattern {
 	return b.CubicBezierTo(s[0], s[1], s[2], s[3], s[4], s[5])
 }
 
+type CubicBezierToRelative Segment
+
+func (s CubicBezierToRelative) Draw(b *Brush) Pattern {
+	b.dqcx, b.dqcy = 0, 0
+	b.dccx, b.dccy = s[4]-s[2], s[5]-s[3]
+	return b.CubicBezierTo(b.PenPath.Pen.x+s[0], b.PenPath.Pen.y+s[1], b.PenPath.Pen.x+s[2], b.PenPath.Pen.y+s[3], b.PenPath.Pen.x+s[4], b.PenPath.Pen.y+s[5])
+}
+
+// segment types not in svg (tiny) 1.2
+
+type SmoothQuadraticBezierTo Segment
+
+func (s SmoothQuadraticBezierTo) Draw(b *Brush) Pattern {
+	b.dccx, b.dccy = 0, 0
+	b.dqcx += b.PenPath.Pen.x
+	b.dqcy += b.PenPath.Pen.y
+	p := b.QuadraticBezierTo(b.dqcx, b.dqcy, s[0], s[1])
+	b.dqcx, b.dqcy = s[0]-b.dqcx, s[1]-b.dqcy
+	return p
+}
+type SmoothQuadraticBezierToRelative Segment
+
+func (s SmoothQuadraticBezierToRelative) Draw(b *Brush) Pattern {
+	b.dccx, b.dccy = 0, 0
+	p := b.QuadraticBezierTo(b.PenPath.Pen.x+b.dqcx, b.PenPath.Pen.y+b.dqcy, b.PenPath.Pen.x+s[0], b.PenPath.Pen.y+s[1])
+	b.dqcx, b.dqcy = s[0]-b.dqcx, s[1]-b.dqcy
+	return p
+}
+
+
 type SmoothCubicBezierTo Segment
 
 func (s SmoothCubicBezierTo) Draw(b *Brush) Pattern {
@@ -152,14 +163,6 @@ func (s SmoothCubicBezierTo) Draw(b *Brush) Pattern {
 	p := b.CubicBezierTo(b.dccx+b.PenPath.Pen.x, b.dccy+b.PenPath.Pen.y, s[0], s[1], s[2], s[3])
 	b.dccx, b.dccy = s[2]-s[0], s[3]-s[1]
 	return p
-}
-
-type CubicBezierToRelative Segment
-
-func (s CubicBezierToRelative) Draw(b *Brush) Pattern {
-	b.dqcx, b.dqcy = 0, 0
-	b.dccx, b.dccy = s[4]-s[2], s[5]-s[3]
-	return b.CubicBezierTo(b.PenPath.Pen.x+s[0], b.PenPath.Pen.y+s[1], b.PenPath.Pen.x+s[2], b.PenPath.Pen.y+s[3], b.PenPath.Pen.x+s[4], b.PenPath.Pen.y+s[5])
 }
 
 type SmoothCubicBezierToRelative Segment
