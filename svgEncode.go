@@ -56,7 +56,8 @@ func (p Path) String() string {
 	return b.String()[:b.Len()-1]
 }
 
-// Scan in a Path
+// Scan in a Path.
+// accepts SVG path format options/compression.
 func (p *Path) Scan(state fmt.ScanState, r rune) (err error) {
 	var d []x 	// all Drawer's returned are slices into the same underlying x-typed array
 	var lc, c rune
@@ -240,7 +241,7 @@ func (p *Path) Scan(state fmt.ScanState, r rune) (err error) {
 	return nil
 }
 
-// a derivative of Path with a fmt.Stringer producing one command type per line 
+// a derivative of Path with a fmt.Stringer producing skipped repeat command letters and one command type per line.
 type CompactStringer Path
 
 func (p CompactStringer) String() string {
@@ -357,7 +358,7 @@ func (p CompactStringer) String() string {
 }
 
 
-// a derivative of Path with a fmt.Stringer producing compact form.
+// a derivative of Path with a fmt.Stringer producing SVG path compact form.
 // skips repeated command letters/leading zeros/spaces/commas (if number starts with point or neg. sign)
 type MaxCompactStringer Path
 
