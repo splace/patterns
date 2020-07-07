@@ -8,10 +8,10 @@ type Pattern interface {
 }
 
 // the x represents a value from -infinity to +infinity, but is actually limited by its type.
-type x int64
+type x int32
 
 //const xBits = 64
-const unitX = 1000
+const unitX = 1024
 
 //  x scaled to unitX
 //func (p x) String() string {

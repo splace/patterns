@@ -149,7 +149,7 @@ func ExampleFacettedEllipseRotatedArcPrint() {
 			f.Conic(-2*unitX, 0, 8*unitX, 2*unitX, 1, false, true, 2*unitX, 0),
 			f.Conic(-2*unitX, 0, 8*unitX, 2*unitX, 1, true, true, 2*unitX, 0),
 		},
-		unitX*.333,
+		unitX/3,
 	)
 	// Output:
 	/*
