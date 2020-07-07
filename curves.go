@@ -11,11 +11,11 @@ const dividerMax = math.MaxUint8
 func (d Divide) Curve(xfn, yfn func(Divide) x) <-chan [2]x {
 	ch := make(chan [2]x, d)
 	step := dividerMax / d
-	var li Divide
 	go func() {
 		// XXX better way? not exactly symmetrical
-		for i := step +2; li < i; li, i = i, i+step {
-			ch <- [2]x{xfn(i), yfn(i)}
+		for i := Divide(1); i<d ;i++{  // step +2; li < i; li, i = i, i+step {
+			si:=step*i
+			ch <- [2]x{xfn(si), yfn(si)}
 		}
 		close(ch)
 	}()
