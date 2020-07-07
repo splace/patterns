@@ -54,10 +54,10 @@ func TestImageBitCoin(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	b := NewFacettedBrush(20*unitX, Filling(unitY), 1)
+	b := NewFacettedBrush(10*unitX, Filling(unitY), 1)
 //	b.Joiner=nil
 //	b.Nib=LineNib{b.Nib.(Facetted).Width,b.Nib.(Facetted).In}
-	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{UnlimitedShrunk{p.Draw(b), 6}, 60 * unitX}, 600, 600, color.Opaque, color.Transparent)})
+	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{UnlimitedShrunk{p.Draw(b), 6}, 30 * unitX}, 600, 600, color.Opaque, color.Transparent)})
 }
 
 func TestImageRings(t *testing.T) {

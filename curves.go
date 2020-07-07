@@ -12,8 +12,7 @@ func (d Divide) Curve(xfn, yfn func(Divide) x) <-chan [2]x {
 	ch := make(chan [2]x, d)
 	step := dividerMax / d
 	go func() {
-		// XXX better way? not exactly symmetrical
-		for i := Divide(1); i<d ;i++{  // step +2; li < i; li, i = i, i+step {
+		for i := Divide(1); i<d ;i++{  
 			si:=step*i
 			ch <- [2]x{xfn(si), yfn(si)}
 		}

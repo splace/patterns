@@ -1,6 +1,7 @@
 package patterns
 
 import "math"
+//import "fmt"
 
 // Nib where curves are returned as straight lines
 type LineNib struct {
@@ -9,6 +10,7 @@ type LineNib struct {
 }
 
 func (p LineNib) Straight(x1, y1, x2, y2 x) LimitedPattern {
+	if x1==x2 && y1==y2 {return nil}
 	ndx, dy := float64(x1-x2), float64(y2-y1)
 	// NewRotated actually returns a LimitedPattern (as a Pattern) because NewLine returns one, so assert can never fail.
 	// TODO internally using Reduced results in a smaller MaxX.

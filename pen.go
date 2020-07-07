@@ -9,10 +9,13 @@ type Pen struct {
 	joinerNotNeeded bool
 }
 
-func (p *Pen) AddMark(l LimitedPattern) LimitedPattern {
+func (p *Pen) ComposeJoiner(l LimitedPattern) LimitedPattern {
 	if p.joinerNotNeeded || p.Joiner == nil {
 		p.joinerNotNeeded = false
 		return l
+	}
+	if l==nil{
+		return Translated{p.Joiner, p.x, p.y}
 	}
 	return Limiter{Composite{l, Translated{p.Joiner, p.x, p.y}}, l.MaxX() + p.Joiner.MaxX()}
 }
@@ -24,37 +27,37 @@ func (p *Pen) MoveTo(x, y x) {
 }
 
 func (p *Pen) LineTo(x, y x) (l LimitedPattern) {
-	l = p.AddMark(p.Straight(p.x, p.y, x, y))
+	l = p.ComposeJoiner(p.Straight(p.x, p.y, x, y))
 	p.x, p.y = x, y
 	return
 }
 
 func (p *Pen) LineToVertical(y x) (l LimitedPattern) {
-	l = p.AddMark(p.Straight(p.x, p.y, p.x, y))
+	l = p.ComposeJoiner(p.Straight(p.x, p.y, p.x, y))
 	p.y = y
 	return
 }
 
 func (p *Pen) LineToHorizontal(x x) (l LimitedPattern) {
-	l = p.AddMark(p.Straight(p.x, p.y, x, p.y))
+	l = p.ComposeJoiner(p.Straight(p.x, p.y, x, p.y))
 	p.x = x
 	return
 }
 
 func (p *Pen) ArcTo(rx, ry x, a float64, large, sweep bool, x, y x) (l LimitedPattern) {
-	l = p.AddMark(p.Conic(p.x, p.y, rx, ry, a, large, sweep, x, y))
+	l = p.ComposeJoiner(p.Conic(p.x, p.y, rx, ry, a, large, sweep, x, y))
 	p.x, p.y = x, y
 	return
 }
 
 func (p *Pen) QuadraticBezierTo(cx, cy, x, y x) (l LimitedPattern) {
-	l = p.AddMark(p.Curved(p.x, p.y, cx, cy, cx, cy, x, y))
+	l = p.ComposeJoiner(p.Curved(p.x, p.y, cx, cy, cx, cy, x, y))
 	p.x, p.y = x, y
 	return
 }
 
 func (p *Pen) CubicBezierTo(c1x, c1y, c2x, c2y, x, y x) (l LimitedPattern) {
-	l = p.AddMark(p.Curved(p.x, p.y, c1x, c1y, c2x, c2y, x, y))
+	l = p.ComposeJoiner(p.Curved(p.x, p.y, c1x, c1y, c2x, c2y, x, y))
 	p.x, p.y = x, y
 	return
 }
@@ -73,6 +76,6 @@ func (p *PenPath) MoveTo(px, py x) (l LimitedPattern) {
 
 func (p *PenPath) LineClose() (l LimitedPattern) {
 	//if p.Pen.x==p.x && p.Pen.y==p.y {return}
-	l = p.AddMark(p.LineTo(p.x, p.y))
+	l = p.ComposeJoiner(p.LineTo(p.x, p.y))
 	return
 }
