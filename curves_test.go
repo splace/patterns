@@ -2,6 +2,15 @@ package patterns
 
 import "fmt"
 
+
+//func ExampleCurvesPrint2() {
+//	for p := range Divide(8).CubicBezier(0,0,19*unitX, -9*unitX, 30*unitX, -26*unitX, 20*unitX,-54*unitX) {
+//		fmt.Println(p)
+//	}
+//	// Output:
+//	// 
+//}
+
 func ExampleCurvesPrint() {
 	for p := range Divide(8).QuadraticBezier(0, 0, 1*unitX, 1*unitX, 2*unitX, 0) {
 		fmt.Println(p)
