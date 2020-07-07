@@ -56,10 +56,9 @@ func (p Path) String() string {
 	return b.String()[:b.Len()-1]
 }
 
-// Scan a path into a slice of Drawers
+// Scan in a Path
 func (p *Path) Scan(state fmt.ScanState, r rune) (err error) {
-	// all segment data is retained in the same underlying array
-	var d []x
+	var d []x 	// all Drawer's returned are slices into the same underlying x-typed array
 	var lc, c rune
 	for {
 		state.SkipSpace()
@@ -241,7 +240,7 @@ func (p *Path) Scan(state fmt.ScanState, r rune) (err error) {
 	return nil
 }
 
-// Path fmt.Stringer with one command type per line
+// a derivative of Path with a fmt.Stringer producing one command type per line 
 type CompactStringer Path
 
 func (p CompactStringer) String() string {
@@ -357,13 +356,14 @@ func (p CompactStringer) String() string {
 	return b.String()[1:]
 }
 
-// derives from Path and is a fmt.Stringer in compact form.
+
+// a derivative of Path with a fmt.Stringer producing compact form.
 // skips repeated command letters/leading zeros/spaces/commas (if number starts with point or neg. sign)
 type MaxCompactStringer Path
 
-type presep x
+type addPrefixCommaWhenNecessery x
 
-func (cx presep) String() (s string) {
+func (cx addPrefixCommaWhenNecessery) String() (s string) {
 	s = fmt.Sprint(x(cx))
 	switch s[0] {
 	case '0':
@@ -377,9 +377,9 @@ func (cx presep) String() (s string) {
 	return
 }
 
-type compactx x
+type noLeadingZerox x
 
-func (cx compactx) String() (s string) {
+func (cx noLeadingZerox) String() (s string) {
 	s = fmt.Sprint(x(cx))
 	if len(s) > 1 && s[0] == '0' {
 		return s[1:]
@@ -393,31 +393,31 @@ func (p MaxCompactStringer) String() string {
 	for _, s := range p {
 		switch ts := s.(type) {
 		case MoveTo:
-			fmt.Fprintf(b, "M%v%v", compactx(ts[0]), presep(ts[1]))
+			fmt.Fprintf(b, "M%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]))
 		case MoveToRelative:
-			fmt.Fprintf(b, "m%v%v", compactx(ts[0]), presep(ts[1]))
+			fmt.Fprintf(b, "m%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]))
 		case LineTo:
 			switch ls.(type) {
 			case LineTo, MoveTo:
-				fmt.Fprintf(b, "%v%v", presep(ts[0]), presep(ts[1]))
+				fmt.Fprintf(b, "%v%v", addPrefixCommaWhenNecessery(ts[0]), addPrefixCommaWhenNecessery(ts[1]))
 			default:
-				fmt.Fprintf(b, "L%v%v", compactx(ts[0]), presep(ts[1]))
+				fmt.Fprintf(b, "L%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]))
 			}
 		case LineToRelative:
 			switch ls.(type) {
 			case LineToRelative, MoveToRelative:
-				fmt.Fprintf(b, "%v%v", presep(ts[0]), presep(ts[1]))
+				fmt.Fprintf(b, "%v%v", addPrefixCommaWhenNecessery(ts[0]), addPrefixCommaWhenNecessery(ts[1]))
 			default:
-				fmt.Fprintf(b, "l%v%v", compactx(ts[0]), presep(ts[1]))
+				fmt.Fprintf(b, "l%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]))
 			}
 		case VerticalLineTo:
-			fmt.Fprintf(b, "V%v", compactx(ts[0]))
+			fmt.Fprintf(b, "V%v", noLeadingZerox(ts[0]))
 		case VerticalLineToRelative:
-			fmt.Fprintf(b, "v%v", compactx(ts[0]))
+			fmt.Fprintf(b, "v%v", noLeadingZerox(ts[0]))
 		case HorizontalLineTo:
-			fmt.Fprintf(b, "H%v", compactx(ts[0]))
+			fmt.Fprintf(b, "H%v", noLeadingZerox(ts[0]))
 		case HorizontalLineToRelative:
-			fmt.Fprintf(b, "h%v", compactx(ts[0]))
+			fmt.Fprintf(b, "h%v", noLeadingZerox(ts[0]))
 		case CloseRelative:
 			fmt.Fprintf(b, "z")
 		case Close:
@@ -425,72 +425,72 @@ func (p MaxCompactStringer) String() string {
 		case QuadraticBezierTo:
 			switch ls.(type) {
 			case QuadraticBezierTo:
-				fmt.Fprintf(b, "%v%v%v%v", presep(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]))
+				fmt.Fprintf(b, "%v%v%v%v", addPrefixCommaWhenNecessery(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]))
 			default:
-				fmt.Fprintf(b, "Q%v%v%v%v", compactx(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]))
+				fmt.Fprintf(b, "Q%v%v%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]))
 			}
 		case SmoothQuadraticBezierTo:
 			switch ls.(type) {
 			case SmoothQuadraticBezierTo:
-				fmt.Fprintf(b, "%v%v", presep(ts[0]), presep(ts[1]))
+				fmt.Fprintf(b, "%v%v", addPrefixCommaWhenNecessery(ts[0]), addPrefixCommaWhenNecessery(ts[1]))
 			default:
-				fmt.Fprintf(b, "T%v%v", compactx(ts[0]), presep(ts[1]))
+				fmt.Fprintf(b, "T%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]))
 			}
 		case QuadraticBezierToRelative:
 			switch ls.(type) {
 			case QuadraticBezierToRelative:
-				fmt.Fprintf(b, "%v%v%v%v", presep(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]))
+				fmt.Fprintf(b, "%v%v%v%v", addPrefixCommaWhenNecessery(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]))
 			default:
-				fmt.Fprintf(b, "q%v%v%v%v", compactx(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]))
+				fmt.Fprintf(b, "q%v%v%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]))
 			}
 		case SmoothQuadraticBezierToRelative:
 			switch ls.(type) {
 			case SmoothQuadraticBezierToRelative:
-				fmt.Fprintf(b, "%v%v", presep(ts[0]), presep(ts[1]))
+				fmt.Fprintf(b, "%v%v", addPrefixCommaWhenNecessery(ts[0]), addPrefixCommaWhenNecessery(ts[1]))
 			default:
-				fmt.Fprintf(b, "t%v%v", compactx(ts[0]), presep(ts[1]))
+				fmt.Fprintf(b, "t%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]))
 			}
 		case CubicBezierTo:
 			switch ls.(type) {
 			case CubicBezierTo:
-				fmt.Fprintf(b, "%v%v%v%v%v%v", presep(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]), presep(ts[4]), presep(ts[5]))
+				fmt.Fprintf(b, "%v%v%v%v%v%v", addPrefixCommaWhenNecessery(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]), addPrefixCommaWhenNecessery(ts[4]), addPrefixCommaWhenNecessery(ts[5]))
 			default:
-				fmt.Fprintf(b, "C%v%v%v%v%v%v", compactx(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]), presep(ts[4]), presep(ts[5]))
+				fmt.Fprintf(b, "C%v%v%v%v%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]), addPrefixCommaWhenNecessery(ts[4]), addPrefixCommaWhenNecessery(ts[5]))
 			}
 		case SmoothCubicBezierTo:
 			switch ls.(type) {
 			case CubicBezierTo:
-				fmt.Fprintf(b, "%v%v%v%v", presep(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]))
+				fmt.Fprintf(b, "%v%v%v%v", addPrefixCommaWhenNecessery(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]))
 			default:
-				fmt.Fprintf(b, "S%v%v%v%v", compactx(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]))
+				fmt.Fprintf(b, "S%v%v%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]))
 			}
 		case CubicBezierToRelative:
 			switch ls.(type) {
 			case CubicBezierToRelative:
-				fmt.Fprintf(b, "%v%v%v%v%v%v", presep(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]), presep(ts[4]), presep(ts[5]))
+				fmt.Fprintf(b, "%v%v%v%v%v%v", addPrefixCommaWhenNecessery(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]), addPrefixCommaWhenNecessery(ts[4]), addPrefixCommaWhenNecessery(ts[5]))
 			default:
-				fmt.Fprintf(b, "c%v%v%v%v%v%v", compactx(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]), presep(ts[4]), presep(ts[5]))
+				fmt.Fprintf(b, "c%v%v%v%v%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]), addPrefixCommaWhenNecessery(ts[4]), addPrefixCommaWhenNecessery(ts[5]))
 			}
 		case SmoothCubicBezierToRelative:
 			switch ls.(type) {
 			case SmoothCubicBezierToRelative:
-				fmt.Fprintf(b, "%v%v%v%v", presep(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]))
+				fmt.Fprintf(b, "%v%v%v%v", addPrefixCommaWhenNecessery(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]))
 			default:
-				fmt.Fprintf(b, "s%v%v%v%v", compactx(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]))
+				fmt.Fprintf(b, "s%v%v%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]))
 			}
 		case ArcTo:
 			switch ls.(type) {
 			case ArcTo:
-				fmt.Fprintf(b, "%v%v%v%v%v%v%v", presep(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]), presep(ts[4]), presep(ts[5]), presep(ts[6]))
+				fmt.Fprintf(b, "%v%v%v%v%v%v%v", addPrefixCommaWhenNecessery(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]), addPrefixCommaWhenNecessery(ts[4]), addPrefixCommaWhenNecessery(ts[5]), addPrefixCommaWhenNecessery(ts[6]))
 			default:
-				fmt.Fprintf(b, "A%v%v%v%v%v%v%v", compactx(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]), presep(ts[4]), presep(ts[5]), presep(ts[6]))
+				fmt.Fprintf(b, "A%v%v%v%v%v%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]), addPrefixCommaWhenNecessery(ts[4]), addPrefixCommaWhenNecessery(ts[5]), addPrefixCommaWhenNecessery(ts[6]))
 			}
 		case ArcToRelative:
 			switch ls.(type) {
 			case ArcToRelative:
-				fmt.Fprintf(b, "%v%v%v%v%v%v%v", presep(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]), presep(ts[4]), presep(ts[5]), presep(ts[6]))
+				fmt.Fprintf(b, "%v%v%v%v%v%v%v", addPrefixCommaWhenNecessery(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]), addPrefixCommaWhenNecessery(ts[4]), addPrefixCommaWhenNecessery(ts[5]), addPrefixCommaWhenNecessery(ts[6]))
 			default:
-				fmt.Fprintf(b, "a%v%v%v%v%v%v%v", compactx(ts[0]), presep(ts[1]), presep(ts[2]), presep(ts[3]), presep(ts[4]), presep(ts[5]), presep(ts[6]))
+				fmt.Fprintf(b, "a%v%v%v%v%v%v%v", noLeadingZerox(ts[0]), addPrefixCommaWhenNecessery(ts[1]), addPrefixCommaWhenNecessery(ts[2]), addPrefixCommaWhenNecessery(ts[3]), addPrefixCommaWhenNecessery(ts[4]), addPrefixCommaWhenNecessery(ts[5]), addPrefixCommaWhenNecessery(ts[6]))
 			}
 		}
 		ls = s
