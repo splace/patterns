@@ -10,11 +10,11 @@ type Facetted struct {
 	CurveDivision uint8
 }
 
-func (f Facetted) Straight(x1, y1, x2, y2 x) LimitedPattern {
+func (f Facetted) Straight(sx, sy, ex, ey x) LimitedPattern {
 	if f.Nib != nil {
-		return f.Nib.Straight(x1, y1, x2, y2)
+		return f.Nib.Straight(sx, sy, ex, ey)
 	}
-	return f.LineNib.Straight(x1, y1, x2, y2)
+	return f.LineNib.Straight(sx, sy, ex, ey)
 }
 
 func (f Facetted) Curved(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) LimitedPattern {

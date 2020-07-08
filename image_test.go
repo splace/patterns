@@ -49,7 +49,7 @@ func TestImageBitCoin(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	file, err := os.Create("./test output/Bitcoin2.png")
+	file, err := os.Create("./test output/Bitcoin.png")
 	if err != nil {
 		panic(err)
 	}
