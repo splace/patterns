@@ -3,7 +3,7 @@ package patterns
 // Facetted is a Nib producing curves using a number of straight lines.
 // curves are divided according to CurveDivision:  (power of 2 number of divisions.)
 // default 0 - no division, all curves are a single straight line
-// lines are actually drawn by the Straight method of the embedded LineNib, except if a type of Nib interface is also embedded then its Straight method is used instead.
+// lines are actually drawn by the Straight method of the embedded LineNib, except if a Nib is also embedded then its Straight method is used instead.
 type Facetted struct {
 	LineNib
 	Nib
