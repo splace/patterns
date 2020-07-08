@@ -22,6 +22,10 @@ func (p LineNib) Curved(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) LimitedPattern {
 	return p.Straight(sx, sy, ex, ey)
 }
 
+func (p LineNib) SimpleCurved(sx, sy, c1x, c1y, ex, ey x) LimitedPattern {
+	return p.Straight(sx, sy, ex, ey)
+}
+
 func (p LineNib) Conic(sx, sy, rx, ry x, a float64, large, sweep bool, ex, ey x) LimitedPattern {
 	return p.Straight(sx, sy, ex, ey)
 }

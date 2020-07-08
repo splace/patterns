@@ -17,12 +17,12 @@ func (f Facetted) Straight(sx, sy, ex, ey x) LimitedPattern {
 	return f.LineNib.Straight(sx, sy, ex, ey)
 }
 
-// TODO this excludes some cubics! 
 func (f Facetted) Curved(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) LimitedPattern {
-	if c1x == c2x && c1y == c2y {
-		return f.QuadraticBezier(sx, sy, c1x, c1y, ex, ey)
-	}
 	return f.CubicBezier(sx, sy, c1x, c1y, c2x, c2y, ex, ey)
+}
+
+func (f Facetted) SimpleCurved(sx, sy, c1x, c1y, ex, ey x) LimitedPattern {
+		return f.QuadraticBezier(sx, sy, c1x, c1y, ex, ey)
 }
 
 func (f Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {

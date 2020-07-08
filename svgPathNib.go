@@ -9,10 +9,11 @@ func (p *SimpleSvgPathNib) Straight(x1, y1, x2, y2 x) LimitedPattern {
 }
 
 func (f *SimpleSvgPathNib) Curved(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) LimitedPattern {
-	if c1x == c2x && c1y == c2y {
-		return f.QuadraticBezier(sx, sy, c1x, c1y, ex, ey)
-	}
 	return f.CubicBezier(sx, sy, c1x, c1y, c2x, c2y, ex, ey)
+}
+
+func (f *SimpleSvgPathNib) SimpleCurved(sx, sy, c1x, c1y, ex, ey x) LimitedPattern {
+	return f.QuadraticBezier(sx, sy, c1x, c1y, ex, ey)
 }
 
 func (p *SimpleSvgPathNib) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
