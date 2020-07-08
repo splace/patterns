@@ -2,6 +2,14 @@ package patterns
 
 //import "fmt"
 
+func ExamplePenLineZeroLength() {
+	p := Pen{Nib: Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 3}}
+	Output(p.Straight(0, 0, 0, 0), unitX)
+	/* Output:
+	*/
+}
+
+
 func ExamplePenLine() {
 	p := Pen{Nib: Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 3}}
 	Output(p.Straight(0, 0, 5*unitX, 5*unitX), unitX)

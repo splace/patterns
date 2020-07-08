@@ -11,7 +11,7 @@ type Pattern interface {
 type x int32
 
 //const xBits = 64
-const unitX = 1024
+const unitX = 1000
 
 //  x scaled to unitX
 //func (p x) String() string {

@@ -31,7 +31,9 @@ func ExampleXscanMuilti() {
 
 // one step margin
 func Output(p LimitedPattern, step x) {
-	PrintGraph(p, -p.MaxX()-step, p.MaxX()+step, -p.MaxX()-step, p.MaxX()+step, step)
+	if p!=nil{
+		PrintGraph(p, -p.MaxX()-step, p.MaxX()+step, -p.MaxX()-step, p.MaxX()+step, step)
+	}
 }
 
 func PrintGraph(p Pattern, startx, endx, starty, endy, step x) {
