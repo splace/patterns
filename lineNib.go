@@ -18,32 +18,33 @@ func (p LineNib) Straight(x1, y1, x2, y2 x) LimitedPattern {
 	//	return Translated{NewRotated(Rectangle(x(math.Hypot(ndx,dy)),p.Width, Filling(p.In)),math.Atan2(dy,ndx)).(LimitedPattern),(x1+x2)>>1, (y1+y2)>>1}
 }
 
-func (p LineNib) Curved(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) LimitedPattern {
-	return p.Straight(sx, sy, ex, ey)
+func (l LineNib) Curved(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) LimitedPattern {
+	return l.Straight(sx, sy, ex, ey)
 }
 
-func (p LineNib) SimpleCurved(sx, sy, c1x, c1y, ex, ey x) LimitedPattern {
-	return p.Straight(sx, sy, ex, ey)
+func (l LineNib) SimpleCurved(sx, sy, c1x, c1y, ex, ey x) LimitedPattern {
+	return l.Straight(sx, sy, ex, ey)
 }
 
-func (p LineNib) Conic(sx, sy, rx, ry x, a float64, large, sweep bool, ex, ey x) LimitedPattern {
-	return p.Straight(sx, sy, ex, ey)
+func (l LineNib) Conic(sx, sy, rx, ry x, a float64, large, sweep bool, ex, ey x) LimitedPattern {
+	return l.Straight(sx, sy, ex, ey)
 }
 
 
-func (f LineNib) Box(x, y x) LimitedPattern {
-	return Limiter{Composite{f.Straight(-x, y, x, y), f.Straight(x, y, x, -y), f.Straight(x, -y, -x, -y), f.Straight(-x, -y, -x, y)}, max(x+f.Width, y+f.Width)}
+func (l LineNib) Box(x, y x) LimitedPattern {
+	return Limiter{Composite{l.Straight(-x, y, x, y), l.Straight(x, y, x, -y), l.Straight(x, -y, -x, -y), l.Straight(-x, -y, -x, y)}, max(x+l.Width, y+l.Width)}
 }
 
-func (f LineNib) Polygon(coords ...[2]x) LimitedPattern {
+func (l LineNib) Polygon(coords ...[2]x) LimitedPattern {
 	s := make([]Pattern, len(coords))
-	l := Limits{coords[0][0], coords[0][1], coords[0][0], coords[0][1]}
+	m := Limits{coords[0][0], coords[0][1], coords[0][0], coords[0][1]}
 	for i := 1; i < len(s); i++ {
-		s[i-1] = f.Straight(coords[i-1][0], coords[i-1][1], coords[i][0], coords[i][1])
-		l.Include([2]x{coords[i][0], coords[i][1]})
+		s[i-1] = l.Straight(coords[i-1][0], coords[i-1][1], coords[i][0], coords[i][1])
+		m.Include([2]x{coords[i][0], coords[i][1]})
 	}
-	s[len(coords)-1] = f.Straight(coords[len(coords)-1][0], coords[len(coords)-1][1], coords[0][0], coords[0][1])
-	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...), (l.MaxX + l.MinX) >> 1, (l.MaxY + l.MinY) >> 1}, max((l.MaxX-l.MinX)>>1, (l.MaxY-l.MinY)>>1) + f.Width}, -((l.MaxX + l.MinX) >> 1), -((l.MaxY + l.MinY) >> 1)}
+	s[len(coords)-1] = l.Straight(coords[len(coords)-1][0], coords[len(coords)-1][1], coords[0][0], coords[0][1])
+	// translate - limit - untranslate
+	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...), (m.MaxX + m.MinX) >> 1, (m.MaxY + m.MinY) >> 1}, max((m.MaxX-m.MinX)>>1, (m.MaxY-m.MinY)>>1) + l.Width}, -((m.MaxX + m.MinX) >> 1), -((m.MaxY + m.MinY) >> 1)}
 }
 
 // Limits hold max and min points
