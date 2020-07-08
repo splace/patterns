@@ -3,7 +3,7 @@ package patterns
 //import "fmt"
 
 func ExamplePenLineZeroLength() {
-	p := Pen{Nib: Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 3}}
+	p := Pen{Nib: LineNib{unitX, unitY}}
 	Output(p.Straight(0, 0, 0, 0), unitX)
 	/* Output:
 	*/
@@ -11,7 +11,7 @@ func ExamplePenLineZeroLength() {
 
 
 func ExamplePenLine() {
-	p := Pen{Nib: Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 3}}
+	p := Pen{Nib: LineNib{unitX, unitY}}
 	Output(p.Straight(0, 0, 5*unitX, 5*unitX), unitX)
 	/* Output:
 	Graph
@@ -34,7 +34,7 @@ func ExamplePenLine() {
 }
 
 func ExamplePenLineNonZeroStart() {
-	p := Pen{Nib: Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 3}}
+	p := Pen{Nib: LineNib{unitX, unitY}}
 	Output(p.Straight(5*unitX, -5*unitX, -10*unitX, 10*unitX), unitX)
 	/* Output:
 	Graph
@@ -71,7 +71,7 @@ func ExamplePenLineNonZeroStart() {
 }
 
 func ExamplePenLineCross() {
-	p := Pen{Nib: Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 3}}
+	p := Pen{Nib: LineNib{unitX, unitY}}
 	Output(
 		Limiter{
 			Composite{
@@ -117,8 +117,8 @@ func ExamplePenLineCross() {
 }
 
 func ExamplePenPolygon() {
-	p := Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 3}
-	Output(Limiter{p.Polygon([2]x{0, 5 * unitX}, [2]x{7 * unitX, -7 * unitX}, [2]x{-10 * unitX, 5 * unitX}), 10 * unitX}, unitX)
+	p := Pen{Nib: LineNib{unitX, unitY}}
+	Output(Limiter{p.Nib.(LineNib).Polygon([2]x{0, 5 * unitX}, [2]x{7 * unitX, -7 * unitX}, [2]x{-10 * unitX, 5 * unitX}), 10 * unitX}, unitX)
 	/* Output:
 	Graph
 	      -11	-----------------------
