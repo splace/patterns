@@ -108,7 +108,7 @@ func (d Divide) Arc(x1, y1, rx, ry x, a float64, large, sweep bool, x2, y2 x) <-
 // if the radius provided is smaller than half the separation of the two provided points, then that is used for the radius. (in which case the large flag is redundant)
 func (d Divide) Sector(x1, y1, r x, large, sweep bool, x2, y2 x) <-chan [2]x {
 	var cx, cy float64
-	// two possible centres for short sweep
+	// two possible centres 
 	if large != sweep {
 		cx, cy = centreOfCircle(x1, y1, r, x2, y2)
 	} else {
@@ -116,9 +116,10 @@ func (d Divide) Sector(x1, y1, r x, large, sweep bool, x2, y2 x) <-chan [2]x {
 	}
 	// find angles from centre to start and end points
 	a1, a2 := math.Atan2(float64(y1)-cy, float64(x1)-cx), math.Atan2(float64(y2)-cy, float64(x2)-cx)
-	// delta angle from start to end, calculation issues due to float64 type at odds with modula of angles
+	// delta angle from start to end.
+	// XXX calculation issues of float64 type at odds with modulo of angles
 	da := a2 - a1
-	// a1 and a2 can only be +-Pi, but da can be +-2Pi
+	// NOTE a1 and a2 can only be +-Pi, but da can be +-2Pi
 	if large {
 		if da < 0 && da >= -math.Pi {
 			da += 2 * math.Pi
@@ -140,7 +141,7 @@ func (d Divide) Sector(x1, y1, r x, large, sweep bool, x2, y2 x) <-chan [2]x {
 	if sweep == (da < 0) {
 		da = -da
 	}
-	// atan2 produces angles counter-clockwise from +ve x-axis
+	// NOTE atan2 produces angles counter-clockwise from +ve x-axis
 	_, occwr := offsetRotaters(cx, cy, da/float64(d))
 	ch := make(chan [2]x, d-1)
 	dx, dy := float64(x1), float64(y1)
@@ -162,8 +163,8 @@ func centreOfCircle(sx, sy, r, ex, ey x) (x, y float64) {
 	vmx, vmy := sy-ey, ex-sx
 	// distance apart squared
 	d2 := vmx*vmx + vmy*vmy
-	//
 	r2 := r * r
+	// return midpoint when radius too small
 	if d2 > 4*r2 {
 		return float64(mx), float64(my)
 	}
