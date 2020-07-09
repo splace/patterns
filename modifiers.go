@@ -2,6 +2,10 @@ package patterns
 
 import "math"
 
+type Modifier interface{
+	modify(x,y x)(x,x)
+}
+
 // a LimitedPattern translated
 type Translated struct {
 	LimitedPattern
@@ -9,7 +13,11 @@ type Translated struct {
 }
 
 func (p Translated) at(x, y x) y {
-	return p.LimitedPattern.at(x-p.X, y-p.Y)
+	return p.LimitedPattern.at(p.modify(x,y))
+}
+
+func (p Translated) modify(x, y x) (x,x) {
+	return x-p.X, y-p.Y
 }
 
 func (p Translated) MaxX() x {
@@ -23,7 +31,11 @@ type UnlimitedTranslated struct {
 }
 
 func (p UnlimitedTranslated) at(x, y x) y {
-	return p.Pattern.at(x-p.X, y-p.Y)
+	return p.Pattern.at(p.modify(x,y))
+}
+
+func (p UnlimitedTranslated) modify(x, y x) (x,x) {
+	return x-p.X, y-p.Y
 }
 
 func abs(a x) x {
@@ -65,8 +77,12 @@ type Reduced struct {
 	X, Y float32
 }
 
-func (p Reduced) at(px, py x) y {
-	return p.LimitedPattern.at(x(float32(px)*p.X), x(float32(py)*p.Y))
+func (p Reduced) at(x, y x) y {
+	return p.LimitedPattern.at(p.modify(x,y))
+}
+
+func (p Reduced) modify(px, py x) (x,x) {
+	return x(float32(px)*p.X), x(float32(py)*p.Y)
 }
 
 func (p Reduced) MaxX() x {
@@ -83,7 +99,11 @@ type UnlimitedReduced struct {
 }
 
 func (p UnlimitedReduced) at(px, py x) y {
-	return p.Pattern.at(x(float32(px)*p.X), x(float32(py)*p.Y))
+	return p.Pattern.at(p.modify(px,py))
+}
+
+func (p UnlimitedReduced) modify(px, py x) (x,x) {
+	return x(float32(px)*p.X), x(float32(py)*p.Y)
 }
 
 // a LimitedPattern Zoomed
@@ -93,7 +113,11 @@ type Shrunk struct {
 }
 
 func (p Shrunk) at(px, py x) y {
-	return p.LimitedPattern.at(x(float32(px)*p.Factor), x(float32(py)*p.Factor))
+	return p.LimitedPattern.at(p.modify(px,py))
+}
+
+func (p Shrunk) modify(px, py x) (x,x) {
+	return x(float32(px)*p.Factor), x(float32(py)*p.Factor)
 }
 
 func (p Shrunk) MaxX() x {
@@ -107,7 +131,11 @@ type UnlimitedShrunk struct {
 }
 
 func (p UnlimitedShrunk) at(px, py x) y {
-	return p.Pattern.at(x(float32(px)*p.Factor), x(float32(py)*p.Factor))
+	return p.Pattern.at(p.modify(px,py))
+}
+
+func (p UnlimitedShrunk) modify(px, py x) (x,x) {
+	return x(float32(px)*p.Factor), x(float32(py)*p.Factor)
 }
 
 // a LimitedPattern Rotated
@@ -117,7 +145,11 @@ type Rotated struct {
 }
 
 func (p Rotated) at(px, py x) y {
-	return p.LimitedPattern.at(x(float64(px)*p.cosA-float64(py)*p.sinA), x(float64(px)*p.sinA+float64(py)*p.cosA))
+	return p.LimitedPattern.at(p.modify(px,py))
+}
+
+func (p Rotated) modify(px, py x) (x,x) {
+	return x(float64(px)*p.cosA-float64(py)*p.sinA), x(float64(px)*p.sinA+float64(py)*p.cosA)
 }
 
 func (p Rotated) MaxX() x {
@@ -131,7 +163,11 @@ type UnlimitedRotated struct {
 }
 
 func (p UnlimitedRotated) at(px, py x) y {
-	return p.Pattern.at(x(float64(px)*p.cosA-float64(py)*p.sinA), x(float64(px)*p.sinA+float64(py)*p.cosA))
+	return p.Pattern.at(p.modify(px,py))
+}
+
+func (p UnlimitedRotated) modify(px, py x) (x,x) {
+	return x(float64(px)*p.cosA-float64(py)*p.sinA), x(float64(px)*p.sinA+float64(py)*p.cosA)
 }
 
 func NewRotated(p Pattern, a float64) Pattern {
