@@ -5,8 +5,8 @@ type Drawer interface {
 	Draw(*Brush) Pattern
 }
 
-// a Path is a ordered collection of Drawers.
-// they are Drawer themselves, whose Pattern is a Composite of its Drawers Draw(n) in order using the same Brush.
+// Paths are ordered collections of Drawers.
+// they are also themselves a Drawer whose Pattern is a Composite of its Drawers Draw(n) Patterns in order using the same Brush.
 // a Path can so be an ordered collection of (sub) Paths.
 type Path []Drawer
 
