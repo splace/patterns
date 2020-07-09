@@ -69,3 +69,9 @@ type LimitedPattern interface {
 	Pattern
 	MaxX() x
 }
+
+// copy a LimitedPattern, recursively, leaving out LimitedPatterns that are entirely outside a parents limits.
+func OptimisedPattern(p LimitedPattern) LimitedPattern{
+
+	return nil
+}

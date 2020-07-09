@@ -1,12 +1,13 @@
 package patterns
 
+// Draw(er)'s return a Pattern because a Brush can have different Nibs which can effect the Limits of the Pattern
 type Drawer interface {
 	Draw(*Brush) Pattern
 }
 
-// a Path is a collection of Drawers that uses the same Brush to Draw its contained Drawers in order.
-// it is itself a Drawer so a Path can be an ordered collection of (sub) Paths.
-// Notice: sub-Paths are drawn with the same Brush so relative Drawers carry on from the end of the previous sub-Path.
+// a Path is a ordered collection of Drawers.
+// they are Drawer themselves, whose Pattern is a Composite of its Drawers Draw(n) in order using the same Brush.
+// a Path can so be an ordered collection of (sub) Paths.
 type Path []Drawer
 
 // draw a path using the provided brush
@@ -20,7 +21,7 @@ func (p Path) Draw(b *Brush) Pattern {
 		}
 		return c
 	}
-	// add markers before first non-nil Draw and/or after last non-nil Draw
+	// same as above but with markers before first non-nil Draw and/or after last non-nil Draw
 	var sx,sy,ex,ey x
 	for _, s := range p {
 		if len(c)==0 {
