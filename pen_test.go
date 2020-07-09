@@ -1,12 +1,13 @@
 package patterns
 
-//import "fmt"
+import "fmt"
 
 func ExamplePenLineZeroLength() {
 	p := Pen{Nib: LineNib{unitX, unitY}}
-	Output(p.Straight(0, 0, 0, 0), unitX)
-	/* Output:
-	*/
+	l:=p.Straight(0, 0, 0, 0)
+	fmt.Printf("%v\n",l)
+	// Output:
+	// {{{true +Inf 2} 0 1} 0 0}
 }
 
 

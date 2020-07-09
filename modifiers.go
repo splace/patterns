@@ -174,6 +174,4 @@ type Limiter struct {
 func (p Limiter) MaxX() x {
 	return p.Max
 }
-/* run: args="" Fri 3 Jul 00:26:46 BST 2020 go version go1.14.3 linux/amd64
-Fri 3 Jul 00:26:46 BST 2020
-*/
+
