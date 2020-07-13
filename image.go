@@ -2,6 +2,7 @@ package patterns
 
 import (
 	"image"
+	"image/draw"
 	"image/color"
 	"image/color/palette"
 )
@@ -82,3 +83,33 @@ type OpaqueTransparentPalettedImage struct {
 func (i OpaqueTransparentPalettedImage) ColorModel() color.Model {
 	return color.Palette([]color.Color{color.Opaque, color.Transparent})
 }
+
+
+// composable simplifies draw.Draw for incremental composition of images
+type Drawable struct{
+	draw.Image
+}
+
+func (i Drawable) draw(isrc image.Image) {
+	draw.Draw(i, i.Bounds(), isrc, isrc.Bounds().Min, draw.Src)
+}
+
+func (i Drawable) drawAt(isrc image.Image, pt image.Point) {
+	draw.Draw(i, i.Bounds(), isrc, pt, draw.Src)
+}
+
+func (i Drawable) drawOffset(isrc image.Image, pt image.Point) {
+	draw.Draw(i, i.Bounds(), isrc, isrc.Bounds().Min.Add(pt), draw.Src)
+}
+
+func (i Drawable) drawOver(isrc image.Image) {
+	draw.Draw(i, i.Bounds(), isrc, isrc.Bounds().Min, draw.Over)
+}
+
+func (i Drawable) drawOverAt(isrc image.Image, pt image.Point) {
+	draw.Draw(i, i.Bounds(), isrc, pt, draw.Over)
+}
+
+func (i Drawable) drawOverOffset(isrc image.Image, pt image.Point) {
+	draw.Draw(i, i.Bounds(), isrc, isrc.Bounds().Min.Add(pt), draw.Over)
+} 

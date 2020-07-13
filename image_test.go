@@ -140,38 +140,3 @@ func TestImageArcCorneredTrapezoid(t *testing.T) {
 	//c:=UnlimitedShrunk{p.Draw(b),0.5}
 	png.Encode(file, OpaqueTransparentPalettedImage{NewDepiction(Limiter{p.Draw(b), 30 * unitX}, 5000, 3200, color.Opaque, color.Transparent)})
 }
-
-////ds := NewDepiction(NewBox(38,2,Filling{unitY}), 400, 400, color.Opaque, color.Transparent)
-
-////m := &composable{image.NewPaletted(image.Rect(0, -150, 800, 150), palette.WebSafe)}
-////m.draw(WebSafePalettedImage{ds})
-////jpeg.Encode(file, m, nil)
-
-//// composable is a draw.Image that comes with helper functions to simplify Draw function.
-//type composable struct {
-//	draw.Image
-//}
-
-//func (i *composable) draw(isrc image.Image) {
-//	draw.Draw(i, i.Bounds(), isrc, isrc.Bounds().Min, draw.Src)
-//}
-
-//func (i *composable) drawAt(isrc image.Image, pt image.Point) {
-//	draw.Draw(i, i.Bounds(), isrc, pt, draw.Src)
-//}
-
-//func (i *composable) drawOffset(isrc image.Image, pt image.Point) {
-//	draw.Draw(i, i.Bounds(), isrc, isrc.Bounds().Min.Add(pt), draw.Src)
-//}
-
-//func (i *composable) drawOver(isrc image.Image) {
-//	draw.Draw(i, i.Bounds(), isrc, isrc.Bounds().Min, draw.Over)
-//}
-
-//func (i *composable) drawOverAt(isrc image.Image, pt image.Point) {
-//	draw.Draw(i, i.Bounds(), isrc, pt, draw.Over)
-//}
-
-//func (i *composable) drawOverOffset(isrc image.Image, pt image.Point) {
-//	draw.Draw(i, i.Bounds(), isrc, isrc.Bounds().Min.Add(pt), draw.Over)
-//}
