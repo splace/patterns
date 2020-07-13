@@ -41,16 +41,16 @@ func (f Facetted) Conic(sx, sy, rx, ry x, a float64, large, sweep bool, ex, ey x
 }
 
 func (f Facetted) polygon(sx, sy, ex, ey x, pts <-chan [2]x) LimitedPattern {
-	var s []Pattern
+	var c Composite
 	joiner := Shrunk{Disc(Filling(f.In)), 2 * unitX / float32(f.Width)}
 	l := Limits{sx, sy, sx, sy}
 	for p := range pts {
-		s = append(s, f.Straight(sx, sy, p[0], p[1]))
-		s = append(s, Translated{&joiner, p[0], p[1]})
+		c = append(c, f.Straight(sx, sy, p[0], p[1]))
+		c = append(c, Translated{&joiner, p[0], p[1]})
 		sx, sy = p[0], p[1]
 		l.Include(p)
 	}
-	s = append(s, f.Straight(sx, sy, ex, ey))
+	c = append(c, f.Straight(sx, sy, ex, ey))
 	l.Include([2]x{ex, ey})
-	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...), (l.MaxX + l.MinX) >> 1, (l.MaxY + l.MinY) >> 1}, max((l.MaxX-l.MinX)>>1, (l.MaxY-l.MinY)>>1) + f.Width}, -((l.MaxX + l.MinX) >> 1), -((l.MaxY + l.MinY) >> 1)}
+	return Translated{Limiter{UnlimitedTranslated{c, (l.MaxX + l.MinX) >> 1, (l.MaxY + l.MinY) >> 1}, max((l.MaxX-l.MinX)>>1, (l.MaxY-l.MinY)>>1) + f.Width}, -((l.MaxX + l.MinX) >> 1), -((l.MaxY + l.MinY) >> 1)}
 }

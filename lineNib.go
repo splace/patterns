@@ -36,15 +36,15 @@ func (l LineNib) Box(x, y x) LimitedPattern {
 }
 
 func (l LineNib) Polygon(coords ...[2]x) LimitedPattern {
-	s := make([]Pattern, len(coords))
+	c := Composite(make([]Pattern, len(coords)))
 	m := Limits{coords[0][0], coords[0][1], coords[0][0], coords[0][1]}
-	for i := 1; i < len(s); i++ {
-		s[i-1] = l.Straight(coords[i-1][0], coords[i-1][1], coords[i][0], coords[i][1])
+	for i := 1; i < len(c); i++ {
+		c[i-1] = l.Straight(coords[i-1][0], coords[i-1][1], coords[i][0], coords[i][1])
 		m.Include([2]x{coords[i][0], coords[i][1]})
 	}
-	s[len(coords)-1] = l.Straight(coords[len(coords)-1][0], coords[len(coords)-1][1], coords[0][0], coords[0][1])
+	c[len(coords)-1] = l.Straight(coords[len(coords)-1][0], coords[len(coords)-1][1], coords[0][0], coords[0][1])
 	// translate - limit - untranslate
-	return Translated{Limiter{UnlimitedTranslated{NewComposite(s...), (m.MaxX + m.MinX) >> 1, (m.MaxY + m.MinY) >> 1}, max((m.MaxX-m.MinX)>>1, (m.MaxY-m.MinY)>>1) + l.Width}, -((m.MaxX + m.MinX) >> 1), -((m.MaxY + m.MinY) >> 1)}
+	return Translated{Limiter{UnlimitedTranslated{c, (m.MaxX + m.MinX) >> 1, (m.MaxY + m.MinY) >> 1}, max((m.MaxX-m.MinX)>>1, (m.MaxY-m.MinY)>>1) + l.Width}, -((m.MaxX + m.MinX) >> 1), -((m.MaxY + m.MinY) >> 1)}
 }
 
 // Limits hold max and min points

@@ -67,7 +67,7 @@ func ExampleFacettedQuadraticBezier() {
 func ExampleFacettedCircleArcPrint() {
 	f := Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 2}
 	Output(
-		LimitedComposite{
+		Composite{
 			f.Conic(-1*unitX, 0, 2*unitX, 2*unitX, 0, true, false, 1*unitX, 0),
 			f.Conic(-1*unitX, 0, 2*unitX, 2*unitX, 0, false, false, 1*unitX, 0),
 			f.Conic(-1*unitX, 0, 2*unitX, 2*unitX, 0, false, true, 1*unitX, 0),
@@ -105,7 +105,7 @@ func ExampleFacettedCircleArcPrint() {
 func ExampleFacettedEllipseArcPrint() {
 	f := Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 2}
 	Output(
-		LimitedComposite{
+		Composite{
 			f.Conic(-1*unitX, 0, 2*unitX, 4*unitX, 0, true, false, 1*unitX, 0),
 			f.Conic(-1*unitX, 0, 2*unitX, 4*unitX, 0, false, false, 1*unitX, 0),
 			f.Conic(-1*unitX, 0, 2*unitX, 4*unitX, 0, false, true, 1*unitX, 0),
@@ -143,7 +143,7 @@ func ExampleFacettedEllipseArcPrint() {
 func ExampleFacettedEllipseRotatedArcPrint() {
 	f := Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 3}
 	Output(
-		LimitedComposite{
+		Composite{
 			f.Conic(-2*unitX, 0, 8*unitX, 2*unitX, 1, true, false, 2*unitX, 0),
 			f.Conic(-2*unitX, 0, 8*unitX, 2*unitX, 1, false, false, 2*unitX, 0),
 			f.Conic(-2*unitX, 0, 8*unitX, 2*unitX, 1, false, true, 2*unitX, 0),
