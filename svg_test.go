@@ -112,6 +112,7 @@ func ExampleSVGcompactPathHard() {
 		fmt.Println(err)
 	}
 	fmt.Println(p)
+	// Output:
 
 }
 

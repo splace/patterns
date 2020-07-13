@@ -26,6 +26,15 @@ func (c Composite) at(px, py x) (total y) {
 	return
 }
 
+func (c Composite) MaxX() (max x) {
+	for _,p:=range(c){
+		if lp, is := p.(LimitedPattern); is {
+			if m:=lp.MaxX();m>max {max=m}
+		}
+	}
+	return
+}
+
 // helper to enable generation from another slice.
 func NewComposite(ps ...Pattern) Composite {
 	return Composite(ps)
