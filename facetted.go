@@ -45,8 +45,7 @@ func (f Facetted) polygon(sx, sy, ex, ey x, pts <-chan [2]x) LimitedPattern {
 	joiner := Shrunk{Disc(Filling(f.In)), 2 * unitX / float32(f.Width)}
 	l := Limits{sx, sy, sx, sy}
 	for p := range pts {
-		c = append(c, f.Straight(sx, sy, p[0], p[1]))
-		c = append(c, Translated{&joiner, p[0], p[1]})
+		c = append(c, f.Straight(sx, sy, p[0], p[1]), Translated{&joiner, p[0], p[1]})
 		sx, sy = p[0], p[1]
 		l.Include(p)
 	}

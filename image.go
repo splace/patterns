@@ -23,9 +23,17 @@ type Depiction struct {
 }
 
 // makes a Depiction of a LimitedPattern, scaled to pxMaxx by pxMaxy pixels and sets the colours for above and below the value.
+// zero centred
 func NewDepiction(s LimitedPattern, pxMaxX, pxMaxY int, in, out color.Color) Depiction {
 	return Depiction{s, image.Rect(-pxMaxX/2, -pxMaxY/2, pxMaxX/2, pxMaxY/2), in, out, unitX/x(int(int64(pxMaxX)*int64(unitX)/int64(s.MaxX())/4 + 1))}
 }
+
+// makes a Depiction of a LimitedPattern, scaled to pxMaxx by pxMaxy pixels and sets the colours for above and below the value.
+// zero top left corner
+func NewFlowDepiction(s LimitedPattern, pxMaxX, pxMaxY int, in, out color.Color) Depiction {
+	return Depiction{s, image.Rect(0, 0, pxMaxX, pxMaxY), in, out, unitX/x(int(int64(pxMaxX)*int64(unitX)/int64(s.MaxX())/4 + 1))}
+}
+
 
 func (i Depiction) Bounds() image.Rectangle {
 	return i.size
