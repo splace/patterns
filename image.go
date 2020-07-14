@@ -7,8 +7,8 @@ import (
 	"image/color/palette"
 )
 
-// a Depictor is part of an image.Image, missing a colormodel, so is more general.
-// simply embed in one of the helper wrappers gets you an image.Image.
+// a Depictor is an image.Image, missing a colormodel, it is thus more general.
+// embedded in one of the helper wrappers gets you an image.Image.
 type Depictor interface {
 	Bounds() image.Rectangle
 	At(x, y int) color.Color
@@ -22,18 +22,34 @@ type Depiction struct {
 	xsperpixel x
 }
 
-// makes a Depiction of a LimitedPattern, scaled to pxMaxx by pxMaxy pixels and sets the colours for above and below the value.
-// zero centred
-func NewDepiction(s LimitedPattern, pxMaxX, pxMaxY int, in, out color.Color) Depiction {
-	return Depiction{s, image.Rect(-pxMaxX/2, -pxMaxY/2, pxMaxX/2, pxMaxY/2), in, out, unitX/x(int(int64(pxMaxX)*int64(unitX)/int64(s.MaxX())/4 + 1))}
+// makes a Depiction of a LimitedPattern, scaled to dxX by dxY pixels and sets the colours for above and below the value.
+func NewDepiction(s LimitedPattern, dxX, dxY int, in, out color.Color) Depiction {
+	return NewCentredDepiction(s,dxX,dxY,in,out)
 }
 
-// makes a Depiction of a LimitedPattern, scaled to pxMaxx by pxMaxy pixels and sets the colours for above and below the value.
-// zero top left corner
-func NewFlowDepiction(s LimitedPattern, pxMaxX, pxMaxY int, in, out color.Color) Depiction {
-	return Depiction{s, image.Rect(0, 0, pxMaxX, pxMaxY), in, out, unitX/x(int(int64(pxMaxX)*int64(unitX)/int64(s.MaxX())/4 + 1))}
+// makes a Depiction of a LimitedPattern, scaled to dxX by dxY pixels and sets the colours for above and below the value.
+// zero centred, width fitted
+func NewCentredDepiction(s LimitedPattern, dxX, dxY int, in, out color.Color) Depiction {
+	return Depiction{s, image.Rect(-dxX/2, -dxY/2, dxX/2, dxY/2), in, out, unitX/x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4 + 1))}
 }
 
+// makes a Depiction of a LimitedPattern, scaled to dxX by dxY pixels and sets the colours for above and below the value.
+// zero top left corner, width fitted
+func NewFlowDepiction(s LimitedPattern, dxX, dxY int, in, out color.Color) Depiction {
+	return Depiction{s, image.Rect(0, 0, dxX, dxY), in, out, unitX/x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4 + 1))}
+}
+
+// makes a Depiction of a LimitedPattern, scaled to dxX by dxY pixels and sets the colours for above and below the value.
+// zero top left corner, width fitted
+func NewCentredBelowDepiction(s LimitedPattern, dxX, dxY int, in, out color.Color) Depiction {
+	return Depiction{s, image.Rect(-dxX/2, 0, dxX/2, dxY), in, out, unitX/x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4 + 1))}
+}
+
+// makes a Depiction of a LimitedPattern, scaled to dxX by dxY pixels and sets the colours for above and below the value.
+// zero top left corner, width fitted
+func NewCentredRightDepiction(s LimitedPattern, dxX, dxY int, in, out color.Color) Depiction {
+	return Depiction{s, image.Rect(0, -dxY/2, dxX, dxY/2), in, out, unitX/x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4 + 1))}
+}
 
 func (i Depiction) Bounds() image.Rectangle {
 	return i.size
