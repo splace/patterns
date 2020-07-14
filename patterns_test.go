@@ -1,4 +1,4 @@
-package patterns
+package pattern
 
 import (
 	"fmt"
@@ -30,13 +30,13 @@ func ExampleXscanMuilti() {
 }
 
 // one step margin
-func Output(p LimitedPattern, step x) {
-	if p!=nil{
+func Output(p Limited, step x) {
+	if p != nil {
 		PrintGraph(p, -p.MaxX()-step, p.MaxX()+step, -p.MaxX()-step, p.MaxX()+step, step)
 	}
 }
 
-func PrintGraph(p Pattern, startx, endx, starty, endy, step x) {
+func PrintGraph(p Unlimited, startx, endx, starty, endy, step x) {
 	fmt.Println("Graph")
 	row := make([]byte, int((endx-startx)/step)+1)
 	for py := starty; py <= endy; py += step {

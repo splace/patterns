@@ -1,9 +1,9 @@
-package patterns
+package pattern
 
 import "fmt"
 
-// satisfying the Pattern interface means a type represents a 2D pattern, where a y property varies with two x parameters.
-type Pattern interface {
+// satisfying the Unlimited interface means a type represents a 2D pattern, where a y property varies with two x parameters.
+type Unlimited interface {
 	at(x, x) y
 }
 
@@ -65,14 +65,13 @@ func compose(y1, y2 y) y {
 	return y1 || y2
 }
 
-type LimitedPattern interface {
-	Pattern
+type Limited interface {
+	Unlimited
 	MaxX() x
 }
 
-
-// copy a LimitedPattern, recursively, leaving out LimitedPatterns that are entirely outside a parents limits.
-func OptimisedPattern(p LimitedPattern) LimitedPattern{
+// copy a Limited, recursively, leaving out Limited that are entirely outside a parents limits.
+func Optimise(p Limited) Limited {
 
 	return nil
 }

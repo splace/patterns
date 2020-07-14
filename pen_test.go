@@ -1,15 +1,14 @@
-package patterns
+package pattern
 
 import "fmt"
 
 func ExamplePenLineZeroLength() {
 	p := Pen{Nib: LineNib{unitX, unitY}}
-	l:=p.Straight(0, 0, 0, 0)
-	fmt.Printf("%v\n",l)
+	l := p.Straight(0, 0, 0, 0)
+	fmt.Printf("%v\n", l)
 	// Output:
 	// {{{true +Inf 2} 0 1} 0 0}
 }
-
 
 func ExamplePenLine() {
 	p := Pen{Nib: LineNib{unitX, unitY}}
@@ -155,7 +154,7 @@ func ExamplePenJoinedPath() {
 	Output(
 		Limiter{
 			Composite{
-				p.LineTo(0,5*unitX),
+				p.LineTo(0, 5*unitX),
 				p.LineTo(15*unitX, -5*unitX),
 			},
 			unitX * 15,

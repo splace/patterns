@@ -1,4 +1,4 @@
-package patterns
+package pattern
 
 import "math"
 
@@ -12,8 +12,8 @@ func (d Divide) Curve(xfn, yfn func(Divide) x) <-chan [2]x {
 	ch := make(chan [2]x, d)
 	step := dividerMax / d
 	go func() {
-		for i := Divide(1); i<d ;i++{  
-			si:=step*i
+		for i := Divide(1); i < d; i++ {
+			si := step * i
 			ch <- [2]x{xfn(si), yfn(si)}
 		}
 		close(ch)
@@ -108,7 +108,7 @@ func (d Divide) Arc(x1, y1, rx, ry x, a float64, large, sweep bool, x2, y2 x) <-
 // if the radius provided is smaller than half the separation of the two provided points, then that is used for the radius. (in which case the large flag is redundant)
 func (d Divide) Sector(x1, y1, r x, large, sweep bool, x2, y2 x) <-chan [2]x {
 	var cx, cy float64
-	// two possible centres 
+	// two possible centres
 	if large != sweep {
 		cx, cy = centreOfCircle(x1, y1, r, x2, y2)
 	} else {

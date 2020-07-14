@@ -1,4 +1,4 @@
-package patterns
+package pattern
 
 // Facetted is a Nib producing curves using a number of straight lines.
 // curves are divided according to CurveDivision:  (power of 2 number of divisions.)
@@ -9,38 +9,38 @@ type Facetted struct {
 	CurveDivision uint8
 }
 
-func (f Facetted) Straight(sx, sy, ex, ey x) LimitedPattern {
+func (f Facetted) Straight(sx, sy, ex, ey x) Limited {
 	if f.Nib != nil {
 		return f.Nib.Straight(sx, sy, ex, ey)
 	}
 	return f.LineNib.Straight(sx, sy, ex, ey)
 }
 
-func (f Facetted) Curved(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) LimitedPattern {
+func (f Facetted) Curved(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) Limited {
 	return f.CubicBezier(sx, sy, c1x, c1y, c2x, c2y, ex, ey)
 }
 
-func (f Facetted) SimpleCurved(sx, sy, c1x, c1y, ex, ey x) LimitedPattern {
-		return f.QuadraticBezier(sx, sy, c1x, c1y, ex, ey)
+func (f Facetted) SimpleCurved(sx, sy, c1x, c1y, ex, ey x) Limited {
+	return f.QuadraticBezier(sx, sy, c1x, c1y, ex, ey)
 }
 
-func (f Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) LimitedPattern {
+func (f Facetted) QuadraticBezier(sx, sy, cx, cy, ex, ey x) Limited {
 	return f.polygon(sx, sy, ex, ey, Divide(1<<f.CurveDivision).QuadraticBezier(sx, sy, cx, cy, ex, ey))
 }
 
-func (f Facetted) CubicBezier(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) LimitedPattern {
+func (f Facetted) CubicBezier(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) Limited {
 	return f.polygon(sx, sy, ex, ey, Divide(1<<f.CurveDivision).CubicBezier(sx, sy, c1x, c1y, c2x, c2y, ex, ey))
 }
 
-func (f Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x, c2y, c3x, c3y, ex, ey x) LimitedPattern {
+func (f Facetted) QuinticBezier(sx, sy, c1x, c1y, c2x, c2y, c3x, c3y, ex, ey x) Limited {
 	return f.polygon(sx, sy, ex, ey, Divide(1<<f.CurveDivision).QuinticBezier(sx, sy, c1x, c1y, c2x, c2y, c3x, c3y, ex, ey))
 }
 
-func (f Facetted) Conic(sx, sy, rx, ry x, a float64, large, sweep bool, ex, ey x) LimitedPattern {
+func (f Facetted) Conic(sx, sy, rx, ry x, a float64, large, sweep bool, ex, ey x) Limited {
 	return f.polygon(sx, sy, ex, ey, Divide(1<<f.CurveDivision).Arc(sx, sy, rx, ry, a, large, sweep, ex, ey))
 }
 
-func (f Facetted) polygon(sx, sy, ex, ey x, pts <-chan [2]x) LimitedPattern {
+func (f Facetted) polygon(sx, sy, ex, ey x, pts <-chan [2]x) Limited {
 	var c Composite
 	joiner := Shrunk{Disc(Filling(f.In)), 2 * unitX / float32(f.Width)}
 	l := Limits{sx, sy, sx, sy}

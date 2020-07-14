@@ -1,4 +1,4 @@
-package patterns
+package pattern
 
 import "fmt"
 import "io"
@@ -59,7 +59,7 @@ func (p Path) String() string {
 // Scan in a Path.
 // accepts SVG path format options/compression.
 func (p *Path) Scan(state fmt.ScanState, r rune) (err error) {
-	var d []x 	// all Drawer's returned are slices into the same underlying x-typed array
+	var d []x // all Drawer's returned are slices into the same underlying x-typed array
 	var lc, c rune
 	for {
 		state.SkipSpace()
@@ -202,8 +202,8 @@ func (p *Path) Scan(state fmt.ScanState, r rune) (err error) {
 			case 'A': // elliptical Arc
 				d = append(d, 0, 0, 0, 0, 0, 0, 0)
 				_, err = fmt.Fscan(state, &d[len(d)-7], &d[len(d)-6], &d[len(d)-5], &d[len(d)-4], &d[len(d)-3], &d[len(d)-2], &d[len(d)-1])
-				if d[len(d)-3] != 0 && d[len(d)-3] != unitX || d[len(d)-4] != 0 && d[len(d)-4] != unitX{
-					return fmt.Errorf("Arc flags not 0 or 1: %v %v",d[len(d)-3],d[len(d)-4])
+				if d[len(d)-3] != 0 && d[len(d)-3] != unitX || d[len(d)-4] != 0 && d[len(d)-4] != unitX {
+					return fmt.Errorf("Arc flags not 0 or 1: %v %v", d[len(d)-3], d[len(d)-4])
 				}
 				if err != nil {
 					return err
@@ -215,8 +215,8 @@ func (p *Path) Scan(state fmt.ScanState, r rune) (err error) {
 				if err != nil {
 					return err
 				}
-				if d[len(d)-3] != 0 && d[len(d)-3] != unitX || d[len(d)-4] != 0 && d[len(d)-4] != unitX{
-					return fmt.Errorf("Arc flags not 0 or 1: %v %v",d[len(d)-3],d[len(d)-4])
+				if d[len(d)-3] != 0 && d[len(d)-3] != unitX || d[len(d)-4] != 0 && d[len(d)-4] != unitX {
+					return fmt.Errorf("Arc flags not 0 or 1: %v %v", d[len(d)-3], d[len(d)-4])
 				}
 				*p = append(*p, ArcToRelative(d[len(d)-7:]))
 			case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.', '-', '+':
@@ -356,7 +356,6 @@ func (p CompactStringer) String() string {
 	}
 	return b.String()[1:]
 }
-
 
 // a derivative of Path with a fmt.Stringer producing SVG path compact form.
 // skips repeated command letters/leading zeros/spaces/commas (if number starts with point or neg. sign)

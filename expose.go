@@ -1,4 +1,4 @@
-package patterns
+package pattern
 
 import "math"
 import "fmt"
@@ -32,13 +32,13 @@ func MultiplyX(m interface{}, d x) x {
 	case uint64:
 		return d * x(mt)
 	case float32:
-		if math.IsNaN(float64(mt)) || math.IsInf(float64(mt),0) {
-			panic("Unable to convert:"+fmt.Sprint(mt))
+		if math.IsNaN(float64(mt)) || math.IsInf(float64(mt), 0) {
+			panic("Unable to convert:" + fmt.Sprint(mt))
 		}
 		return x(float32(d)*mt + .5)
 	case float64:
-		if math.IsNaN(mt) || math.IsInf(mt,0) {
-			panic("Unable to convert:"+fmt.Sprint(mt))
+		if math.IsNaN(mt) || math.IsInf(mt, 0) {
+			panic("Unable to convert:" + fmt.Sprint(mt))
 		}
 		return x(float64(d)*mt + .5)
 	default:

@@ -1,4 +1,4 @@
-package patterns
+package pattern
 
 func ChamferedRectangle(hw, hh, r x) Path {
 	owr, ohr := hw-r, hh-r

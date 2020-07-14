@@ -1,4 +1,4 @@
-package patterns
+package pattern
 
 type filler interface {
 	fill() y
@@ -10,7 +10,7 @@ func (f Filling) fill() y {
 	return y(f)
 }
 
-// a Pattern with constant value
+// a Unlimited with constant value
 type Constant Filling
 
 func (p Constant) at(px, py x) y {

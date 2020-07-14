@@ -1,4 +1,4 @@
-package patterns
+package pattern
 
 import "fmt"
 

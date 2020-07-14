@@ -1,4 +1,4 @@
-package patterns
+package pattern
 
 import (
 	"image"
@@ -18,7 +18,7 @@ func TestImageSquare(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	png.Encode(file, Plan9PalettedImage{Depiction{Shrunk{Square(unitY), .10}, image.Rect(-40, -40, 40, 40), color.Opaque, color.Transparent,0.5*unitX}})
+	png.Encode(file, Plan9PalettedImage{Depiction{Shrunk{Square(unitY), .10}, image.Rect(-40, -40, 40, 40), color.Opaque, color.Transparent, 0.5 * unitX}})
 }
 
 func TestImageBox(t *testing.T) {
@@ -55,8 +55,8 @@ func TestImageBitCoin(t *testing.T) {
 	}
 	defer file.Close()
 	b := NewFacettedBrush(10*unitX, Filling(unitY), 1)
-//	b.Joiner=nil
-//	b.Nib=LineNib{b.Nib.(Facetted).Width,b.Nib.(Facetted).In}
+	//	b.Joiner=nil
+	//	b.Nib=LineNib{b.Nib.(Facetted).Width,b.Nib.(Facetted).In}
 	png.Encode(file, Plan9PalettedImage{NewCentredBelowDepiction(p.Draw(b), 600, 600, color.Opaque, color.Transparent)})
 }
 

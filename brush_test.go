@@ -1,4 +1,4 @@
-package patterns
+package pattern
 
 func ExampleBrushStraight() {
 	b := NewBrush(LineNib{2 * unitX, unitY})

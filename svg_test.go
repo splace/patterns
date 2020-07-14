@@ -1,4 +1,4 @@
-package patterns
+package pattern
 
 import "fmt"
 import "testing"
@@ -309,50 +309,50 @@ func ExampleSVGpathScanSmoothCubic() {
 func ExampleSVGpathScanMulti() {
 	bitcoin := `M66-8c19-9 30-26 28-54-4-38-37-51-78-54l0-53h-32l0 51c-8 0-17 0-26 0L-42-169l-32 0 0 53c-7 0-14 0-20 0v0l-44 0 0 34c0 0 24 0 23 0 13 0 17 8 18 14l0 60v84c-1 4-3 11-12 11 0 0-23 0-23 0l-6 38h42c8 0 15 0 23 0l0 53 32 0 0-53c9 0 17 0 26 0l0 53h32l0-53c54-3 92-17 97-67C116 18 97-1 66-8zM-41-80c18 0 75-6 75 32 0 36-57 32-75 32V-80zM-41 87l0-71c22 0 90-6 90 35C49 92-20 87-41 87z`
 	/*	bitcoin:=
-	`M 117 167
-	c 19 -9 30 -26 28 -54
-	c -4 -38 -37 -51 -78 -54
-	l 0 -53
-	h -32
-	l 0 51
-	c -8 0 -17 0 -26 0
-	L 9 6
-	l -32 0
-	l 0 53
-	c -7 0 -14 0 -20 0
-	v 0
-	l -44 0
-	l 0 34
-	c 0 0 24 0 23 0
-	c 13 0 17 8 18 14
-	l 0 60
-	v 84
-	c -1 4 -3 11 -12 11
-	c 0 0 -23 0 -23 0
-	l -6 38
-	h 42
-	c 8 0 15 0 23 0
-	l 0 53
-	l 32 0
-	l 0 -53
-	c 9 0 17 0 26 0
-	l 0 53
-	h 32
-	l 0 -53
-	c 54 -3 92 -17 97 -67
-	C 167 193 148 174 117 167
-	z
-	M 10 95
-	c 18 0 75 -6 75 32
-	c 0 36 -57 32 -75 32
-	V 95
-	z
-	M 10 262
-	l 0 -71
-	c 22 0 90 -6 90 35
-	C 100 267 31 262 10 262
-	z
-	`
+		`M 117 167
+		c 19 -9 30 -26 28 -54
+		c -4 -38 -37 -51 -78 -54
+		l 0 -53
+		h -32
+		l 0 51
+		c -8 0 -17 0 -26 0
+		L 9 6
+		l -32 0
+		l 0 53
+		c -7 0 -14 0 -20 0
+		v 0
+		l -44 0
+		l 0 34
+		c 0 0 24 0 23 0
+		c 13 0 17 8 18 14
+		l 0 60
+		v 84
+		c -1 4 -3 11 -12 11
+		c 0 0 -23 0 -23 0
+		l -6 38
+		h 42
+		c 8 0 15 0 23 0
+		l 0 53
+		l 32 0
+		l 0 -53
+		c 9 0 17 0 26 0
+		l 0 53
+		h 32
+		l 0 -53
+		c 54 -3 92 -17 97 -67
+		C 167 193 148 174 117 167
+		z
+		M 10 95
+		c 18 0 75 -6 75 32
+		c 0 36 -57 32 -75 32
+		V 95
+		z
+		M 10 262
+		l 0 -71
+		c 22 0 90 -6 90 35
+		C 100 267 31 262 10 262
+		z
+		`
 	*/
 	p := Path{}
 	_, err := fmt.Sscan(bitcoin, &p)
@@ -384,8 +384,6 @@ func ExampleSVGpathScanMulti() {
 	*/
 }
 
-
-
 func ExampleSVGPathMarker() {
 	p := Path{
 		MoveTo{-5 * unitX, -5 * unitX},
@@ -393,8 +391,8 @@ func ExampleSVGPathMarker() {
 		LineTo{5 * unitX, 5 * unitX},
 	}
 	b := NewBrush(Facetted{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
-	b.StartMarker= Shrunk{Square(unitY), .33}
-	b.EndMarker= Shrunk{Disc(unitY), .33}
+	b.StartMarker = Shrunk{Square(unitY), .33}
+	b.EndMarker = Shrunk{Disc(unitY), .33}
 	PrintGraph(p.Draw(b), -10*unitX, 10*unitX, -10*unitX, 10*unitX, unitX)
 	/* Output:
 	Graph
@@ -422,8 +420,6 @@ func ExampleSVGPathMarker() {
 	*/
 }
 
-
-
 func ExampleSVGPathMarkerGaps() {
 	p := Path{
 		MoveTo{0 * unitX, -5 * unitX},
@@ -438,8 +434,8 @@ func ExampleSVGPathMarkerGaps() {
 		MoveTo{0 * unitX, -5 * unitX},
 	}
 	b := NewBrush(Facetted{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
-	b.StartMarker= Shrunk{Square(unitY), .33}
-	b.EndMarker= Shrunk{Disc(unitY), .33}
+	b.StartMarker = Shrunk{Square(unitY), .33}
+	b.EndMarker = Shrunk{Disc(unitY), .33}
 	PrintGraph(p.Draw(b), -20*unitX, 20*unitX, -10*unitX, 10*unitX, unitX)
 	/* Output:
 	Graph

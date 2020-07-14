@@ -1,10 +1,10 @@
-package patterns
+package pattern
 
 import (
 	"image"
-	"image/draw"
 	"image/color"
 	"image/color/palette"
+	"image/draw"
 )
 
 // a Depictor is an image.Image, missing a colormodel, it is thus more general.
@@ -14,41 +14,41 @@ type Depictor interface {
 	At(x, y int) color.Color
 }
 
-// simple visual Depiction of a Pattern, implements Depictor
+// simple visual Depiction of a Unlimited, implements Depictor
 type Depiction struct {
-	Pattern
-	size           image.Rectangle
-	in, out        color.Color
+	Unlimited
+	size       image.Rectangle
+	in, out    color.Color
 	xsperpixel x
 }
 
-// makes a Depiction of a LimitedPattern, scaled to dxX by dxY pixels and sets the colours for above and below the value.
-func NewDepiction(s LimitedPattern, dxX, dxY int, in, out color.Color) Depiction {
-	return NewCentredDepiction(s,dxX,dxY,in,out)
+// makes a Depiction of a Limited, scaled to dxX by dxY pixels and sets the colours for above and below the value.
+func NewDepiction(s Limited, dxX, dxY int, in, out color.Color) Depiction {
+	return NewCentredDepiction(s, dxX, dxY, in, out)
 }
 
-// makes a Depiction of a LimitedPattern, scaled to dxX by dxY pixels and sets the colours for above and below the value.
+// makes a Depiction of a Limited, scaled to dxX by dxY pixels and sets the colours for above and below the value.
 // zero centred, width fitted
-func NewCentredDepiction(s LimitedPattern, dxX, dxY int, in, out color.Color) Depiction {
-	return Depiction{s, image.Rect(-dxX/2, -dxY/2, dxX/2, dxY/2), in, out, unitX/x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4 + 1))}
+func NewCentredDepiction(s Limited, dxX, dxY int, in, out color.Color) Depiction {
+	return Depiction{s, image.Rect(-dxX/2, -dxY/2, dxX/2, dxY/2), in, out, unitX / x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4+1))}
 }
 
-// makes a Depiction of a LimitedPattern, scaled to dxX by dxY pixels and sets the colours for above and below the value.
+// makes a Depiction of a Limited, scaled to dxX by dxY pixels and sets the colours for above and below the value.
 // zero top left corner, width fitted
-func NewFlowDepiction(s LimitedPattern, dxX, dxY int, in, out color.Color) Depiction {
-	return Depiction{s, image.Rect(0, 0, dxX, dxY), in, out, unitX/x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4 + 1))}
+func NewFlowDepiction(s Limited, dxX, dxY int, in, out color.Color) Depiction {
+	return Depiction{s, image.Rect(0, 0, dxX, dxY), in, out, unitX / x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4+1))}
 }
 
-// makes a Depiction of a LimitedPattern, scaled to dxX by dxY pixels and sets the colours for above and below the value.
+// makes a Depiction of a Limited, scaled to dxX by dxY pixels and sets the colours for above and below the value.
 // zero top left corner, width fitted
-func NewCentredBelowDepiction(s LimitedPattern, dxX, dxY int, in, out color.Color) Depiction {
-	return Depiction{s, image.Rect(-dxX/2, 0, dxX/2, dxY), in, out, unitX/x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4 + 1))}
+func NewCentredBelowDepiction(s Limited, dxX, dxY int, in, out color.Color) Depiction {
+	return Depiction{s, image.Rect(-dxX/2, 0, dxX/2, dxY), in, out, unitX / x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4+1))}
 }
 
-// makes a Depiction of a LimitedPattern, scaled to dxX by dxY pixels and sets the colours for above and below the value.
+// makes a Depiction of a Limited, scaled to dxX by dxY pixels and sets the colours for above and below the value.
 // zero top left corner, width fitted
-func NewCentredRightDepiction(s LimitedPattern, dxX, dxY int, in, out color.Color) Depiction {
-	return Depiction{s, image.Rect(0, -dxY/2, dxX, dxY/2), in, out, unitX/x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4 + 1))}
+func NewCentredRightDepiction(s Limited, dxX, dxY int, in, out color.Color) Depiction {
+	return Depiction{s, image.Rect(0, -dxY/2, dxX, dxY/2), in, out, unitX / x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4+1))}
 }
 
 func (i Depiction) Bounds() image.Rectangle {
@@ -108,9 +108,8 @@ func (i OpaqueTransparentPalettedImage) ColorModel() color.Model {
 	return color.Palette([]color.Color{color.Opaque, color.Transparent})
 }
 
-
 // composable simplifies draw.Draw for incremental composition of images
-type Drawable struct{
+type Drawable struct {
 	draw.Image
 }
 
@@ -136,4 +135,4 @@ func (i Drawable) drawOverAt(isrc image.Image, pt image.Point) {
 
 func (i Drawable) drawOverOffset(isrc image.Image, pt image.Point) {
 	draw.Draw(i, i.Bounds(), isrc, isrc.Bounds().Min.Add(pt), draw.Over)
-} 
+}
