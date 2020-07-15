@@ -71,7 +71,7 @@ func ExampleSVGShapesDoublePath() {
 
 func ExampleSVGShapesChamferedRectanglePathGraph() {
 	p := ChamferedRectangle(20*unitX, 15*unitX, 4*unitX)
-	b := NewBrush(Facetted{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
+	b := NewBrush(FacettedNib{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
 	PrintGraph(p.Draw(b), -25*unitX, 25*unitX, -20*unitX, 20*unitX, unitX)
 	/* Output:
 	Graph
@@ -121,7 +121,7 @@ func ExampleSVGShapesChamferedRectanglePathGraph() {
 
 func ExampleSVGShapesBallCorneredRectanglePathGraph() {
 	p := BallCorneredRectangle(20*unitX, 15*unitX, 8*unitX)
-	b := NewBrush(Facetted{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
+	b := NewBrush(FacettedNib{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
 	PrintGraph(p.Draw(b), -35*unitX, 35*unitX, -30*unitX, 30*unitX, unitX)
 	/* Output:
 	Graph
@@ -174,7 +174,7 @@ func ExampleSVGShapesArcCorneredTrapezoidPathGraph() {
 	p1 := ArcCorneredTrapezoid(30*unitX, 5*unitX, 25*unitX, 8*unitX, 4*unitX, 0, 45*unitX, true, true)
 	p2 := ArcCorneredTrapezoid(35*unitX, 5*unitX, 30*unitX, 8*unitX, 4*unitX, 0, 45*unitX, true, false)
 	p := Path{p1, p2}
-	b := NewBrush(Facetted{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
+	b := NewBrush(FacettedNib{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
 	PrintGraph(p.Draw(b), -40*unitX, 40*unitX, -30*unitX, 30*unitX, unitX)
 	/* Output:
 	Graph
@@ -225,7 +225,7 @@ func ExampleSVGShapesArcCorneredTrapezoidPathGraph() {
 func ExampleSVGShapesSmoothCorneredTrapezoidPathGraph() {
 	//	p := ArcCorneredTrapezoid(30*unitX,5*unitX,25*unitX,8*unitX,4*unitX,0,45*unitX,false,true)
 	p := SmoothCorneredTrapezoid(30*unitX, 5*unitX, 25*unitX, 8*unitX)
-	b := NewBrush(Facetted{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
+	b := NewBrush(FacettedNib{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
 	PrintGraph(p.Draw(b), -40*unitX, 40*unitX, -30*unitX, 30*unitX, unitX)
 	/* Output:
 	Graph

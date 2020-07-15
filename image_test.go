@@ -37,7 +37,7 @@ func TestImageLines(t *testing.T) {
 		panic(err)
 	}
 	defer file.Close()
-	p := Pen{Nib: Facetted{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 3}}
+	p := Pen{Nib: FacettedNib{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 3}}
 
 	png.Encode(file, Plan9PalettedImage{NewDepiction(p.Straight(-100*unitX, 100*unitX, 100*unitX, -100*unitX), 400, 400, color.Opaque, color.Transparent)})
 }

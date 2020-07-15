@@ -8,25 +8,25 @@ type LineNib struct {
 	In    y
 }
 
-func (p LineNib) Straight(x1, y1, x2, y2 x) Limited {
+func (n LineNib) Straight(x1, y1, x2, y2 x) Limited {
 	if x1 == x2 && y1 == y2 {
 		return nil
 	}
 	ndx, dy := float64(x1-x2), float64(y2-y1)
 	// TODO internally using Reduced results in a smaller MaxX.
-	return Translated{NewRotated(Reduced{Square(Filling(p.In)), float32(unitX * 2 / math.Hypot(ndx, dy)), float32(unitX * 2 / float64(p.Width))}, math.Atan2(dy, ndx)), (x1 + x2) >> 1, (y1 + y2) >> 1}
+	return Translated{NewRotated(Reduced{Square(Filling(n.In)), float32(unitX * 2 / math.Hypot(ndx, dy)), float32(unitX * 2 / float64(n.Width))}, math.Atan2(dy, ndx)), (x1 + x2) >> 1, (y1 + y2) >> 1}
 }
 
-func (l LineNib) Curved(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) Limited {
-	return l.Straight(sx, sy, ex, ey)
+func (n LineNib) Curved(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) Limited {
+	return n.Straight(sx, sy, ex, ey)
 }
 
-func (l LineNib) SimpleCurved(sx, sy, c1x, c1y, ex, ey x) Limited {
-	return l.Straight(sx, sy, ex, ey)
+func (n LineNib) SimpleCurved(sx, sy, c1x, c1y, ex, ey x) Limited {
+	return n.Straight(sx, sy, ex, ey)
 }
 
-func (l LineNib) Conic(sx, sy, rx, ry x, a float64, large, sweep bool, ex, ey x) Limited {
-	return l.Straight(sx, sy, ex, ey)
+func (n LineNib) Conic(sx, sy, rx, ry x, a float64, large, sweep bool, ex, ey x) Limited {
+	return n.Straight(sx, sy, ex, ey)
 }
 
 func (l LineNib) Box(x, y x) Limited {

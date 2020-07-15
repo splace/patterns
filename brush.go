@@ -16,7 +16,7 @@ func NewBrush(n Nib) *Brush {
 }
 
 func NewFacettedBrush(width x, f filler, facets uint8) *Brush {
-	return &Brush{PenPath: PenPath{Pen: Pen{Nib: Facetted{LineNib: LineNib{width, f.fill()}, CurveDivision: facets}, Joiner: Shrunk{Disc(Filling(f.fill())), 2 * unitX / float32(width)}}}}
+	return &Brush{PenPath: PenPath{Pen: Pen{Nib: FacettedNib{LineNib: LineNib{width, f.fill()}, CurveDivision: facets}, Joiner: Shrunk{Disc(Filling(f.fill())), 2 * unitX / float32(width)}}}}
 }
 
 type Segment []x

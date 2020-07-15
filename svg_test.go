@@ -12,7 +12,7 @@ func ExampleSVGpath() {
 
 func ExampleSVGDrawPath() {
 	p := Path{MoveTo{-5 * unitX, -5 * unitX}, LineTo{5 * unitX, 5 * unitX}}
-	b := NewBrush(Facetted{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
+	b := NewBrush(FacettedNib{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
 	PrintGraph(p.Draw(b), -10*unitX, 10*unitX, -10*unitX, 10*unitX, unitX)
 	/* Output:
 	Graph
@@ -122,7 +122,7 @@ func ExampleSVGpathScanMissingCommands() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	b := NewBrush(Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 2})
+	b := NewBrush(FacettedNib{LineNib: LineNib{unitX, unitY}, CurveDivision: 2})
 	Output(Limiter{p.Draw(b), 10 * unitX}, unitX)
 	/* Output:
 	Graph
@@ -158,7 +158,7 @@ func ExampleSVGpathScanCubicOverlap() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	b := NewBrush(Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 2})
+	b := NewBrush(FacettedNib{LineNib: LineNib{unitX, unitY}, CurveDivision: 2})
 	Output(Limiter{p.Draw(b), 20 * unitX}, unitX)
 	/* Output:
 	Graph
@@ -215,7 +215,7 @@ func ExampleSVGpathScanSmoothQuadratic() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	b := NewBrush(Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 2})
+	b := NewBrush(FacettedNib{LineNib: LineNib{unitX, unitY}, CurveDivision: 2})
 	Output(Limiter{p.Draw(b), 50 * unitX}, unitX)
 	/* Output:
 	Graph
@@ -253,7 +253,7 @@ func ExampleSVGpathScanSmoothCubic() {
 	if err != nil {
 		fmt.Println(err)
 	}
-	b := NewBrush(Facetted{LineNib: LineNib{unitX, unitY}, CurveDivision: 3})
+	b := NewBrush(FacettedNib{LineNib: LineNib{unitX, unitY}, CurveDivision: 3})
 
 	Output(Reduced{Limiter{p.Draw(b), 16 * unitX}, 1, 0.75}, unitX)
 	/* Output:
@@ -360,7 +360,7 @@ func ExampleSVGpathScanMulti() {
 		fmt.Println(err)
 	}
 	fmt.Printf("%#v\n", p)
-	b := NewBrush(Facetted{LineNib: LineNib{16 * unitX, unitY}, CurveDivision: 2})
+	b := NewBrush(FacettedNib{LineNib: LineNib{16 * unitX, unitY}, CurveDivision: 2})
 	Output(Limiter{UnlimitedReduced{p.Draw(b), 2.3, 4.4}, 60 * unitX}, unitX)
 	/* Output:
 	Graph
@@ -390,7 +390,7 @@ func ExampleSVGPathMarker() {
 		LineTo{5 * unitX, 5 * unitX},
 		LineTo{5 * unitX, 5 * unitX},
 	}
-	b := NewBrush(Facetted{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
+	b := NewBrush(FacettedNib{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
 	b.StartMarker = Shrunk{Square(unitY), .33}
 	b.EndMarker = Shrunk{Disc(unitY), .33}
 	PrintGraph(p.Draw(b), -10*unitX, 10*unitX, -10*unitX, 10*unitX, unitX)
@@ -433,7 +433,7 @@ func ExampleSVGPathMarkerGaps() {
 		MoveTo{0 * unitX, -5 * unitX},
 		MoveTo{0 * unitX, -5 * unitX},
 	}
-	b := NewBrush(Facetted{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
+	b := NewBrush(FacettedNib{LineNib: LineNib{2 * unitX, unitY}, CurveDivision: 2})
 	b.StartMarker = Shrunk{Square(unitY), .33}
 	b.EndMarker = Shrunk{Disc(unitY), .33}
 	PrintGraph(p.Draw(b), -20*unitX, 20*unitX, -10*unitX, 10*unitX, unitX)
