@@ -27,28 +27,35 @@ func NewDepiction(s Limited, dxX, dxY int, in, out color.Color) Depiction {
 	return NewCentredDepiction(s, dxX, dxY, in, out)
 }
 
+func xspp(dx,dy int,max x) x{
+	if dx>dy {
+		return 2 * max / x(dy)
+	}		
+	return 2 * max / x(dx)
+}
+
 // makes a Depiction of a Limited, scaled to dxX by dxY pixels and sets the colours for above and below the value.
 // zero centred, width fitted
 func NewCentredDepiction(s Limited, dxX, dxY int, in, out color.Color) Depiction {
-	return Depiction{s, image.Rect(-dxX/2, -dxY/2, dxX/2, dxY/2), in, out, unitX / x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4+1))}
+	return Depiction{s, image.Rect(-dxX/2, -dxY/2, dxX/2, dxY/2), in, out, xspp(dxX,dxY,s.MaxX()) }
 }
 
 // makes a Depiction of a Limited, scaled to dxX by dxY pixels and sets the colours for above and below the value.
 // zero top left corner, width fitted
 func NewFlowDepiction(s Limited, dxX, dxY int, in, out color.Color) Depiction {
-	return Depiction{s, image.Rect(0, 0, dxX, dxY), in, out, unitX / x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4+1))}
+	return Depiction{s, image.Rect(0, 0, dxX, dxY), in, out, xspp(dxX,dxY,s.MaxX())}
 }
 
 // makes a Depiction of a Limited, scaled to dxX by dxY pixels and sets the colours for above and below the value.
 // zero top left corner, width fitted
 func NewCentredBelowDepiction(s Limited, dxX, dxY int, in, out color.Color) Depiction {
-	return Depiction{s, image.Rect(-dxX/2, 0, dxX/2, dxY), in, out, unitX / x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4+1))}
+	return Depiction{s, image.Rect(-dxX/2, 0, dxX/2, dxY), in, out,xspp(dxX,dxY,s.MaxX())}
 }
 
 // makes a Depiction of a Limited, scaled to dxX by dxY pixels and sets the colours for above and below the value.
 // zero top left corner, width fitted
 func NewCentredRightDepiction(s Limited, dxX, dxY int, in, out color.Color) Depiction {
-	return Depiction{s, image.Rect(0, -dxY/2, dxX, dxY/2), in, out, unitX / x(int(int64(dxX)*int64(unitX)/int64(s.MaxX())/4+1))}
+	return Depiction{s, image.Rect(0, -dxY/2, dxX, dxY/2), in, out,xspp(dxX,dxY,s.MaxX())}
 }
 
 func (i Depiction) Bounds() image.Rectangle {

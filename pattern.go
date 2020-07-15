@@ -7,6 +7,11 @@ type Unlimited interface {
 	at(x, x) y
 }
 
+type Limited interface {
+	Unlimited
+	MaxX() x
+}
+
 // the x represents a value from -infinity to +infinity, but is actually limited by its type.
 type x int32
 
@@ -65,12 +70,17 @@ func compose(y1, y2 y) y {
 	return y1 || y2
 }
 
-type Limited interface {
-	Unlimited
-	MaxX() x
+type filler interface {
+	fill() y
 }
 
-// copy a Limited, recursively, leaving out Limited that are entirely outside a parents limits.
+type Filling y
+
+func (f Filling) fill() y {
+	return y(f)
+}
+
+// copy a Limited leaving out Limited's that are entirely outside a parents Composite's MaxX().
 func Optimise(p Limited) Limited {
 
 	return nil

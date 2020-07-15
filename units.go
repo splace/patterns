@@ -1,15 +1,5 @@
 package pattern
 
-type filler interface {
-	fill() y
-}
-
-type Filling y
-
-func (f Filling) fill() y {
-	return y(f)
-}
-
 // a Unlimited with constant value
 type Constant Filling
 

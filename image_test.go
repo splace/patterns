@@ -81,8 +81,8 @@ func TestImageRings(t *testing.T) {
 	defer file.Close()
 	b := NewFacettedBrush(2*unitX, Filling(unitY), 4)
 	b1 := NewFacettedBrush(2*unitX, Filling(unitY), 3)
-	c := Composite{UnlimitedShrunk{p.Draw(b), 0.2}, UnlimitedShrunk{p.Draw(b1), 0.5}}
-	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c, 50 * unitX}, 1600, 1600, color.Opaque, color.Transparent)})
+	c := Composite{Shrunk{p.Draw(b), 0.2}, Shrunk{p.Draw(b1), 0.5}}
+	png.Encode(file, Plan9PalettedImage{NewDepiction(c, 1600, 1600, color.Opaque, color.Transparent)})
 }
 
 func TestImageRoundedRectangle(t *testing.T) {
@@ -94,8 +94,7 @@ func TestImageRoundedRectangle(t *testing.T) {
 	p := RoundedRectangle(20*unitX, 15*unitX, 5*unitX)
 	fmt.Println(p)
 	b := NewFacettedBrush(unitX, Filling(unitY), 2)
-	c := UnlimitedShrunk{p.Draw(b), 0.3}
-	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c, 50 * unitX}, 2500, 1600, color.Opaque, color.Transparent)})
+	png.Encode(file, Plan9PalettedImage{NewDepiction(Shrunk{p.Draw(b), 0.3}, 2500, 1600, color.Opaque, color.Transparent)})
 }
 
 func TestImageSmoothCorneredTrapezoid(t *testing.T) {
@@ -109,8 +108,7 @@ func TestImageSmoothCorneredTrapezoid(t *testing.T) {
 		SmoothCorneredTrapezoid(30*unitX, 1.5*unitX, 25*unitX, 12*unitX),
 	}
 	b := NewFacettedBrush(unitX, Filling(unitY), 2)
-	c := UnlimitedShrunk{p.Draw(b), 0.5}
-	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c, 50 * unitX}, 2500, 1600, color.Opaque, color.Transparent)})
+	png.Encode(file, Plan9PalettedImage{NewDepiction(Shrunk{p.Draw(b), 0.5}, 2500, 1600, color.Opaque, color.Transparent)})
 }
 
 func TestImageBallCorneredRectangle(t *testing.T) {
@@ -122,8 +120,7 @@ func TestImageBallCorneredRectangle(t *testing.T) {
 	p := BallCorneredRectangle(25*unitX, 20*unitX, 8*unitX)
 	fmt.Println(p)
 	b := NewFacettedBrush(unitX, Filling(unitY), 3)
-	c := UnlimitedShrunk{p.Draw(b), 0.5}
-	png.Encode(file, Plan9PalettedImage{NewDepiction(Limiter{c, 50 * unitX}, 2500, 1600, color.Opaque, color.Transparent)})
+	png.Encode(file, Plan9PalettedImage{NewDepiction(Shrunk{p.Draw(b), 0.5}, 2500, 1600, color.Opaque, color.Transparent)})
 }
 
 func TestImageArcCorneredTrapezoid(t *testing.T) {
@@ -138,5 +135,5 @@ func TestImageArcCorneredTrapezoid(t *testing.T) {
 	}
 	b := NewFacettedBrush(2*unitX, Filling(unitY), 3)
 	//c:=UnlimitedShrunk{p.Draw(b),0.5}
-	png.Encode(file, OpaqueTransparentPalettedImage{NewDepiction(Limiter{p.Draw(b), 30 * unitX}, 5000, 3200, color.Opaque, color.Transparent)})
+	png.Encode(file, OpaqueTransparentPalettedImage{NewDepiction(p.Draw(b), 5000, 3200, color.Opaque, color.Transparent)})
 }
