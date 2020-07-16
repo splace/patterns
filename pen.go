@@ -17,7 +17,11 @@ func (p *Pen) ComposeJoiner(l Limited) Limited {
 	if l == nil {
 		return Translated{p.Joiner, p.x, p.y}
 	}
-	return Limiter{Composite{l, Translated{p.Joiner, p.x, p.y}}, l.MaxX() + p.Joiner.MaxX()}
+	return Limiter{Unlimited(Composite{l, Translated{p.Joiner, p.x, p.y}}), l.MaxX()}
+//	return Limiter{Composite{l, Translated{p.Joiner, p.x, p.y}}, l.MaxX() + p.Joiner.MaxX()}
+//	return Composite{l, Translated{p.Joiner, p.x, p.y}}
+//	c:=Composite{l, Translated{p.Joiner, p.x, p.y}}
+//	return Limiter{Unlimited(c),c.MaxX()}
 }
 
 func (p *Pen) MoveTo(x, y x) {

@@ -78,6 +78,27 @@ func ExampleModifiersScaled() {
 	*/
 }
 
+func ExampleHybridsFitted() {
+	p := NewFitted( Square( Filling(unitY)) , 10, 2)
+	Output(p, unitX)
+	/* Output:
+	Graph
+	       -6	-------------
+	       -5	-------------
+	       -4	-------------
+	       -3	-------------
+	       -2	-------------
+	       -1	-XXXXXXXXXXX-
+	        0	-XXXXXXXXXXX-
+	        1	-XXXXXXXXXXX-
+	        2	-------------
+	        3	-------------
+	        4	-------------
+	        5	-------------
+	        6	-------------
+	*/
+}
+
 func ExampleModifiersRotated() {
 	Output(Limiter{Rotated{Shrunk{Square(unitY), .5}, .707, .707}, 3 * unitX}, unitX*.5)
 	/* Output:

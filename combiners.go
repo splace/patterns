@@ -36,3 +36,17 @@ func (c Composite) MaxX() (max x) {
 	}
 	return
 }
+
+type CachedMaxX struct{
+	Limited
+	max x
+}
+
+func (f CachedMaxX) MaxX() (max x) {
+	return f.max
+}
+
+func NewCachedMaxX(l Limited) Limited{
+	return CachedMaxX{l,l.MaxX()}
+}
+

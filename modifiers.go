@@ -92,6 +92,10 @@ func (p Reduced) MaxX() x {
 	return x(float32(p.Limited.MaxX()) / p.Y)
 }
 
+func NewFitted(p Limited, h, w float32) Limited {
+	return Reduced{p, 2 / h, 2 / w}
+}
+
 // a Unlimited Scaled
 type UnlimitedReduced struct {
 	Unlimited

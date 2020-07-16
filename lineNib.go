@@ -14,7 +14,7 @@ func (n LineNib) Straight(x1, y1, x2, y2 x) Limited {
 	}
 	ndx, dy := float64(x1-x2), float64(y2-y1)
 	// TODO internally using Reduced results in a smaller MaxX.
-	return Translated{NewRotated(Reduced{Square(Filling(n.In)), float32(unitX * 2 / math.Hypot(ndx, dy)), float32(unitX * 2 / float64(n.Width))}, math.Atan2(dy, ndx)), (x1 + x2) >> 1, (y1 + y2) >> 1}
+	return Translated{NewRotated(NewFitted(Square(Filling(n.In)), float32(math.Hypot(ndx, dy))/unitX, float32(n.Width)/unitX), math.Atan2(dy, ndx)), (x1 + x2) >> 1, (y1 + y2) >> 1}
 }
 
 func (n LineNib) Curved(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) Limited {

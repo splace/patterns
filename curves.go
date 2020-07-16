@@ -9,8 +9,8 @@ const dividerMax = math.MaxUint8
 
 // Curve from two independent axis functions.
 func (d Divide) Curve(xfn, yfn func(Divide) x) <-chan [2]x {
-	ch := make(chan [2]x, d)
-	step := dividerMax / d
+	ch := make(chan [2]x,d-1)
+	step := dividerMax / d+1
 	go func() {
 		for i := Divide(1); i < d; i++ {
 			si := step * i
@@ -36,7 +36,7 @@ func (d Divide) QuinticBezier(sx, sy, c1x, c1y, c2x, c2y, c3x, c3y, ex, ey x) <-
 }
 
 func linearDivision(f x) func(Divide) x {
-	return func(t Divide) x { return f * x(t) / dividerMax }
+	return func(t Divide) x { return f * x(t) / (dividerMax+1) }
 }
 
 func doubleDivision(s, c, e x) func(Divide) x {

@@ -1,23 +1,18 @@
 package pattern
 
+import "math"
+
 type DashedNib struct {
-	Width x
-	In    y
-	Repeat,Solid x 
+	FacettedNib
+	Along, Repeat,Solid x
 }
 
 func (n DashedNib) Straight(x1, y1, x2, y2 x) Limited {
-	return LineNib{}.Straight(x1, y1, x2, y2)
-}
-
-func (n DashedNib) Curved(sx, sy, c1x, c1y, c2x, c2y, ex, ey x) Limited {
-	return n.Straight(sx, sy, ex, ey)
-}
-
-func (n DashedNib) SimpleCurved(sx, sy, c1x, c1y, ex, ey x) Limited {
-	return n.Straight(sx, sy, ex, ey)
-}
-
-func (n DashedNib) Conic(sx, sy, rx, ry x, a float64, large, sweep bool, ex, ey x) Limited {
-	return n.Straight(sx, sy, ex, ey)
+	if x1 == x2 && y1 == y2 {
+		return nil
+	}
+	ndx, dy := float64(x1-x2), float64(y2-y1)
+	l:=float32(math.Hypot(ndx, dy))/unitX
+	// TODO internally using Reduced results in a smaller MaxX.
+	return Translated{NewRotated(NewFitted(Square(Filling(n.In)), l, float32(n.Width)/unitX), math.Atan2(dy, ndx)), (x1 + x2) >> 1, (y1 + y2) >> 1}
 }
