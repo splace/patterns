@@ -104,8 +104,8 @@ func TestImageSmoothCorneredTrapezoid(t *testing.T) {
 	}
 	defer file.Close()
 	p := Path{
-		SmoothCorneredTrapezoid(25*unitX, 1*unitX, 20*unitX, 8*unitX),
-		SmoothCorneredTrapezoid(30*unitX, 1.5*unitX, 25*unitX, 12*unitX),
+		SmoothCorneredTrapezoid(25*unitX, 4*unitX, 20*unitX, 8*unitX),
+		SmoothCorneredTrapezoid(30*unitX, 6*unitX, 25*unitX, 12*unitX),
 	}
 	b := NewFacettedBrush(unitX, Filling(unitY), 2)
 	png.Encode(file, Plan9PalettedImage{NewDepiction(Shrunk{p.Draw(b), 0.5}, 2500, 1600, color.Opaque, color.Transparent)})
