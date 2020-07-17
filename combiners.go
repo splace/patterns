@@ -37,16 +37,8 @@ func (c Composite) MaxX() (max x) {
 	return
 }
 
-type CachedMaxX struct{
-	Limited
-	max x
-}
+type UnlimitedComposite Composite
 
-func (f CachedMaxX) MaxX() (max x) {
-	return f.max
+func (c UnlimitedComposite) at(px, py x) (total y) {
+	return Composite(c).at(px,py)
 }
-
-func NewCachedMaxX(l Limited) Limited{
-	return CachedMaxX{l,l.MaxX()}
-}
-

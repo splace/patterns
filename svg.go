@@ -16,11 +16,15 @@ func (p Path) Draw(b *Brush) Limited {
 	if b.StartMarker == nil && b.EndMarker == nil {
 		for _, s := range p {
 			if d := s.Draw(b); d != nil {
-				if dc,is:=d.(Composite);is{
-					c = append(c, dc...)
-				}else{
-					c = append(c, d)
-				}
+//			if du,is:=d.(Limiter);is{
+//				if duc,is:=du.Unlimited.(Composite);is && len(duc)<4{
+//					c = append(c, duc...)
+//				}else{
+//					c = append(c, d)
+//				}
+//			}else{
+				c = append(c, d)
+//			}
 			}
 		}
 		return Limiter{Unlimited(c), c.MaxX()}
@@ -36,11 +40,15 @@ func (p Path) Draw(b *Brush) Limited {
 				sm := Translated{b.StartMarker, sx, sy}
 				c = append(c, sm)
 			}
-			if dc,is:=d.(Composite);is{
-				c = append(c, dc...)
-			}else{
+//			if du,is:=d.(Limiter);is{
+//				if duc,is:=du.Unlimited.(Composite);is && len(duc)<4{
+//					c = append(c, duc...)
+//				}else{
+//					c = append(c, d)
+//				}
+//			}else{
 				c = append(c, d)
-			}
+//			}
 			ex, ey = b.PenPath.Pen.x, b.PenPath.Pen.y
 		}
 	}

@@ -2,7 +2,7 @@ package pattern
 
 import "math"
 
-// Divides method return channels of Divide.(uint8) number of points along various curves (not including ends)
+// Divides method return channels of Divide number of points along various curves (not including ends)
 type Divide uint8
 
 const dividerMax = math.MaxUint8

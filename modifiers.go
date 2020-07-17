@@ -216,3 +216,35 @@ type Limiter struct {
 func (p Limiter) MaxX() x {
 	return p.Max
 }
+
+// replaces Limiter{Unlimited(c),c.MaxX()} to enable simpler sniffing
+type CachedMaxX struct{
+	Limited
+	max x
+}
+
+func (f CachedMaxX) MaxX() (max x) {
+	return f.max
+}
+
+func NewCachedMaxX(l Limited) Limited{
+	return CachedMaxX{l,l.MaxX()}
+}
+
+
+
+// replaces Limiter{Unlimited(c),c.MaxX()} to enable simpler sniffing
+type CachedMaxXComposite struct{
+	Composite
+	max x
+}
+
+func (f CachedMaxXComposite) MaxX() (max x) {
+	return f.max
+}
+
+func NewCachedMaxXComposite(c Composite) Limited{
+	return CachedMaxXComposite{c,c.MaxX()}
+}
+
+
