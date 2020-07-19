@@ -7,12 +7,37 @@ import (
 	"image/draw"
 )
 
-// a Depictor is an image.Image, missing a colormodel, it is thus more general.
+// a Image is an image.Image, missing a colormodel, so more general.
 // embedded in one of the helper wrappers gets you an image.Image.
 type Depictor interface {
 	Bounds() image.Rectangle
 	At(x, y int) color.Color
 }
+
+
+
+// simple visual Depiction of a Unlimited, implements Depictor
+type LimitedDepiction struct {
+	Limited
+	xsperpixel x
+}
+
+func (d LimitedDepiction) Bounds() image.Rectangle {
+	max:=int(d.Limited.MaxX()/d.xsperpixel)
+	return image.Rectangle{image.Pt(-max,-max),image.Pt(max,max)}
+}
+
+func (d LimitedDepiction) At(xp, yp int) color.Color {
+	return d.at(x(xp)*d.xsperpixel, x(yp)*d.xsperpixel)
+}
+
+// makes a Depiction of a Limited, scaled to dxX by dxY pixels and sets the colours for above and below the value.
+// zero centred, width fitted
+func NewLimitedDepiction(s Limited, dxX, dxY int) LimitedDepiction {
+	return LimitedDepiction{s, xspp(dxX,dxY,s.MaxX()) }
+}
+
+
 
 // simple visual Depiction of a Unlimited, implements Depictor
 type Depiction struct {
@@ -25,6 +50,17 @@ type Depiction struct {
 // makes a Depiction of a Limited, scaled to dxX by dxY pixels and sets the colours for above and below the value.
 func NewDepiction(s Limited, dxX, dxY int, in, out color.Color) Depiction {
 	return NewCentredDepiction(s, dxX, dxY, in, out)
+}
+
+func (d Depiction) Bounds() image.Rectangle {
+	return d.size
+}
+
+func (d Depiction) At(xp, yp int) color.Color {
+	if d.at(x(xp)*d.xsperpixel, x(yp)*d.xsperpixel) == unitY {
+		return d.in
+	}
+	return d.out
 }
 
 func xspp(dx,dy int,max x) x{
@@ -58,15 +94,29 @@ func NewCentredRightDepiction(s Limited, dxX, dxY int, in, out color.Color) Depi
 	return Depiction{s, image.Rect(0, -dxY/2, dxX, dxY/2), in, out,xspp(dxX,dxY,s.MaxX())}
 }
 
-func (i Depiction) Bounds() image.Rectangle {
-	return i.size
+
+type CachedImage struct{
+	image.Image
+	c color.Color
+	x,y int
 }
 
-func (i Depiction) At(xp, yp int) color.Color {
-	if i.at(x(xp)*i.xsperpixel, x(yp)*i.xsperpixel) == unitY {
-		return i.in
+func (ci CachedImage) At(x, y int) color.Color {
+	if ci.c==nil || x!=ci.x || y!=ci.y {
+		ci.x,ci.y=x,y
+		ci.c=ci.Image.At(x,y)
 	}
-	return i.out
+	return ci.c
+}
+
+
+type OffsetImage struct {
+	image.Image
+	dx,dy int 
+}
+
+func (oi OffsetImage) At(x, y int) color.Color {
+	return oi.Image.At(x-oi.dx,y-oi.dy)
 }
 
 // RGBA depiction wrapper
@@ -106,6 +156,16 @@ func (i BlackAndWhitePalettedImage) ColorModel() color.Model {
 	return color.Palette([]color.Color{color.Black, color.White})
 }
 
+
+// black/white paletted, depiction wrapper.
+type PalettedImage struct {
+	Depictor
+}
+
+func (i PalettedImage) ColorModel() color.Model {
+	return color.Palette([]color.Color{zeroY, unitY})
+}
+
 // black/white paletted, depiction wrapper.
 type OpaqueTransparentPalettedImage struct {
 	Depictor
@@ -115,7 +175,7 @@ func (i OpaqueTransparentPalettedImage) ColorModel() color.Model {
 	return color.Palette([]color.Color{color.Opaque, color.Transparent})
 }
 
-// composable simplifies draw.Draw for incremental composition of images
+// Drawable simplifies draw.Draw for incremental composition of images
 type Drawable struct {
 	draw.Image
 }

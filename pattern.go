@@ -1,6 +1,7 @@
 package pattern
 
 import "fmt"
+import "image/color"
 
 // satisfying the Unlimited interface means a type represents a 2D pattern, where a y property varies with two x parameters.
 type Unlimited interface {
@@ -53,6 +54,7 @@ func (p *x) Scan(state fmt.ScanState, v rune) (err error) {
 type y bool
 
 const unitY y = true
+const zeroY y = false
 
 // string representation of a y
 func (v y) String() string {
@@ -65,6 +67,29 @@ func (v y) String() string {
 func (v y) isOpaque() bool {
 	return bool(v)
 }
+
+
+
+var YModel color.Model = color.ModelFunc(yModel)
+
+func yModel(c color.Color) color.Color {
+	if _, ok := c.(y); ok {
+		return c
+	}
+	_, _, _, a := c.RGBA()
+	if a==0{
+		return zeroY
+	}
+	return unitY
+}
+
+func (v y) RGBA() (uint32, uint32, uint32, uint32) {
+	if v{
+		return color.Opaque.RGBA()
+	}
+	return color.Transparent.RGBA()
+}
+
 
 func compose(y1, y2 y) y {
 	return y1 || y2

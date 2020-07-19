@@ -57,7 +57,7 @@ func TestImageBitCoin(t *testing.T) {
 	b := NewFacettedBrush(10*unitX, Filling(unitY), 1)
 	//	b.Joiner=nil
 	//	b.Nib=LineNib{b.Nib.(Facetted).Width,b.Nib.(Facetted).In}
-	png.Encode(file, Plan9PalettedImage{NewCentredBelowDepiction(p.Draw(b), 600, 600, color.Opaque, color.Transparent)})
+	png.Encode(file, OpaqueTransparentPalettedImage{NewCentredBelowDepiction(p.Draw(b), 600, 600, color.Black, color.Transparent)})
 }
 
 func TestImageRings(t *testing.T) {
