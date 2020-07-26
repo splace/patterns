@@ -2,9 +2,9 @@ package pattern
 
 import "math"
 
-type Modifier interface {
-	modify(x, y x) (x, x)
-}
+//type Modifier interface {
+//	modify(x, y x) (x, x)
+//}
 
 // a Limited translated
 type Translated struct {
@@ -25,7 +25,7 @@ func (p Translated) MaxX() x {
 }
 
 // a Unlimited translated
-type UnlimitedTranslated struct {
+type UnlimitedTranslated struct{
 	Unlimited
 	X, Y x
 }
@@ -97,18 +97,20 @@ func NewFitted(p Limited, h, w float32) Limited {
 }
 
 // a Unlimited Scaled
-type UnlimitedReduced struct {
+type UnlimitedReduced struct{
 	Unlimited
 	X, Y float32
 }
-
-func (p UnlimitedReduced) at(px, py x) y {
-	return p.Unlimited.at(p.modify(px, py))
+	
+func (p UnlimitedReduced) at(x, y x) y {
+	return p.Unlimited.at(p.modify(x, y))
 }
+
 
 func (p UnlimitedReduced) modify(px, py x) (x, x) {
 	return x(float32(px) * p.X), x(float32(py) * p.Y)
 }
+
 
 // a Limited Zoomed
 type Shrunk struct {
@@ -134,13 +136,15 @@ type UnlimitedShrunk struct {
 	Factor float32
 }
 
-func (p UnlimitedShrunk) at(px, py x) y {
-	return p.Unlimited.at(p.modify(px, py))
+func (p UnlimitedShrunk) at(x, y x) y {
+	return p.Unlimited.at(p.modify(x, y))
 }
 
 func (p UnlimitedShrunk) modify(px, py x) (x, x) {
 	return x(float32(px) * p.Factor), x(float32(py) * p.Factor)
 }
+
+
 
 // a Limited Rotated
 type Rotated struct {
@@ -162,7 +166,7 @@ func (p Rotated) modify(px, py x) (x, x) {
 }
 
 func (p Rotated) MaxX() x {
-	return p.Limited.MaxX() * x(math.Abs(p.sinA)+math.Abs(p.cosA))
+	return x(float64(p.Limited.MaxX()) * (math.Abs(p.sinA)+math.Abs(p.cosA)))
 }
 
 // a Unlimited Rotated
@@ -171,17 +175,12 @@ type UnlimitedRotated struct {
 	sinA, cosA float64
 }
 
-func (p UnlimitedRotated) at(px, py x) y {
-	return p.Unlimited.at(p.modify(px, py))
+func (p UnlimitedRotated) at(x, y x) y {
+	return p.Unlimited.at(p.modify(x, y))
 }
 
 func (p UnlimitedRotated) modify(px, py x) (x, x) {
 	return x(float64(px)*p.cosA - float64(py)*p.sinA), x(float64(px)*p.sinA + float64(py)*p.cosA)
-}
-
-func NewUnlimitedRotated(p Unlimited, a float64) Unlimited {
-	s, c := math.Sincos(a)
-	return UnlimitedRotated{p, s, c}
 }
 
 // a Limited reversed
@@ -189,11 +188,15 @@ type Inverted struct {
 	Limited
 }
 
-func (p Inverted) at(px, py x) (v y) {
-	if p.Limited.at(px, py) == unitY {
-		return
+func (p Inverted) at(x, y x) (v y) {
+	if p.Limited.at(x, y) == unitY {
+		return zeroY
 	}
 	return unitY
+}
+
+func (p Inverted) modify(px, py x) (x, x) {
+	return px,py
 }
 
 // a Unlimited reversed
@@ -201,50 +204,44 @@ type UnlimitedInverted struct {
 	Unlimited
 }
 
-func (p UnlimitedInverted) at(px, py x) (v y) {
-	if p.Unlimited.at(px, py) == unitY {
-		return
+func (p UnlimitedInverted) at(x, y x) y {
+	if p.Unlimited.at(x, y) == unitY {
+		return zeroY
 	}
 	return unitY
 }
 
-type Limiter struct {
-	Unlimited
-	Max x
+func (p UnlimitedInverted) modify(px, py x) (x, x) {
+	return px,py
 }
 
-func (p Limiter) MaxX() x {
-	return p.Max
-}
+
+//// replaces Limiter{Unlimited(c),c.MaxX()} to enable simpler sniffing
+//type CachedMaxX struct{
+//	Limited
+//	max x
+//}
+
+//func (f CachedMaxX) MaxX() (max x) {
+//	return f.max
+//}
+
+//func NewCachedMaxX(l Limited) Limited{
+//	return CachedMaxX{l,l.MaxX()}
+//}
 
 // replaces Limiter{Unlimited(c),c.MaxX()} to enable simpler sniffing
-type CachedMaxX struct{
-	Limited
-	max x
-}
+//type CachedMaxXComposite struct{
+//	Composite
+//	max x
+//}
 
-func (f CachedMaxX) MaxX() (max x) {
-	return f.max
-}
+//func (f CachedMaxXComposite) MaxX() (max x) {
+//	return f.max
+//}
 
-func NewCachedMaxX(l Limited) Limited{
-	return CachedMaxX{l,l.MaxX()}
-}
-
-
-
-// replaces Limiter{Unlimited(c),c.MaxX()} to enable simpler sniffing
-type CachedMaxXComposite struct{
-	Composite
-	max x
-}
-
-func (f CachedMaxXComposite) MaxX() (max x) {
-	return f.max
-}
-
-func NewCachedMaxXComposite(c Composite) Limited{
-	return CachedMaxXComposite{c,c.MaxX()}
-}
+//func NewCachedMaxXComposite(c Composite) Limited{
+//	return CachedMaxXComposite{c,c.MaxX()}
+//}
 
 

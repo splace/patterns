@@ -22,12 +22,15 @@ func (p Path) Draw(b *Brush) Limited {
 //				}else{
 //					c = append(c, d)
 //				}
-//			}else{
-				c = append(c, d)
-//			}
+//			}else
+				if cd,is:=d.(Composite);is{
+					c = append(c,cd...)   // XXX leave to end and check if this is good or bad?
+				}else{
+					c = append(c, d)
+				}
 			}
 		}
-		return Limiter{Unlimited(c), c.MaxX()}
+		return c //Limiter{Unlimited(c), c.MaxX()}
 	}
 	// same as above but with markers before first non-nil Draw and/or after last non-nil Draw
 	var sx, sy, ex, ey x
@@ -37,8 +40,13 @@ func (p Path) Draw(b *Brush) Limited {
 		}
 		if d := s.Draw(b); d != nil {
 			if len(c) == 0 && b.StartMarker != nil {
-				sm := Translated{b.StartMarker, sx, sy}
-				c = append(c, sm)
+				c = append(c, Translated{b.StartMarker, sx, sy})
+			}
+			// XXX assume sub-composite is locialised to flatten and then centre to regain the division. 
+			if cd,is:=d.(Composite);is{
+				c = append(c,cd...)   // XXX leave to end and check if this is good or bad?
+			}else{
+				c = append(c, d)
 			}
 //			if du,is:=d.(Limiter);is{
 //				if duc,is:=du.Unlimited.(Composite);is && len(duc)<4{
@@ -47,14 +55,13 @@ func (p Path) Draw(b *Brush) Limited {
 //					c = append(c, d)
 //				}
 //			}else{
-				c = append(c, d)
+//				c = append(c, d)
 //			}
 			ex, ey = b.PenPath.Pen.x, b.PenPath.Pen.y
 		}
 	}
 	if b.EndMarker != nil {
-		em := Translated{b.EndMarker, ex, ey}
-		c = append(c, em)
+		c = append(c, Translated{b.EndMarker, ex, ey})
 	}
-	return Limiter{Unlimited(c), c.MaxX()}
+	return c //Limiter{Unlimited(c), c.MaxX()}
 }

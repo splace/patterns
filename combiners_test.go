@@ -1,32 +1,17 @@
 package pattern
 
 import (
-//"fmt"
+"fmt"
 //"io/ioutil"
 //"strings"
 //"testing"
 )
 
-func ExampleComposite() {
-	Output(NewFrame(5, 2, Filling(unitY)), unitX)
+
+func ExampleCombinersCentred() {
+	fmt.Printf("%#v\n",Recentre(Composite{Translated{Disc(unitY), 10*unitX,10*unitX},Translated{Disc(unitY), 12*unitX,12*unitX}}))
 	/* Output:
-	Graph
-	       -8	-----------------
-	       -7	-----------------
-	       -6	--XXXXXXXXXXXX---
-	       -5	--XXXXXXXXXXXX---
-	       -4	--XX--------XX---
-	       -3	--XX--------XX---
-	       -2	--XX--------XX---
-	       -1	--XX--------XX---
-	        0	--XX--------XX---
-	        1	--XX--------XX---
-	        2	--XX--------XX---
-	        3	--XX--------XX---
-	        4	--XXXXXXXXXXXX---
-	        5	--XXXXXXXXXXXX---
-	        6	-----------------
-	        7	-----------------
-	        8	-----------------
+	pattern.Limiter{Unlimited:pattern.UnlimitedTranslated{Unlimited:pattern.Limiter{Unlimited:pattern.Translated{Limited:pattern.Composite{pattern.Translated{Limited:true, X:10000, Y:10000}, pattern.Translated{Limited:true, X:12000, Y:12000}}, X:-11000, Y:-11000}, Max:2000}, X:11000, Y:11000}, Max:13000}
 	*/
 }
+

@@ -78,7 +78,7 @@ func ExampleModifiersScaled() {
 	*/
 }
 
-func ExampleHybridsFitted() {
+func ExampleModifiersFitted() {
 	p := NewFitted( Square( Filling(unitY)) , 10, 2)
 	Output(p, unitX)
 	/* Output:

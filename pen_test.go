@@ -10,26 +10,34 @@ func ExamplePenLineZeroLength() {
 	// <nil>
 }
 
-func ExamplePenLine() {
-	p := Pen{Nib: LineNib{unitX, unitY}}
-	Output(p.Straight(0, 0, 5*unitX, 5*unitX), unitX)
+func ExamplePenLineMax() {
+	p := Pen{Nib: LineNib{10*unitX, unitY}}
+	l := p.Straight(-5*unitX, -5*unitX, 5*unitX, 5*unitX)
+	Output(l, unitX)
 	/* Output:
-	Graph
-       -7	---------------
-       -6	---------------
-       -5	---------------
-       -4	---------------
-       -3	---------------
-       -2	---------------
-       -1	---------------
-        0	---------------
-        0	--------X------
-        1	---------X-----
-        2	----------X----
-        3	-----------X---
-        4	------------X--
-        5	---------------
-        6	---------------
+Graph
+      -10	----------------------
+       -9	----------------------
+       -8	----------------------
+       -7	---------XX-----------
+       -6	--------XXXX----------
+       -5	-------XXXXXX---------
+       -4	------XXXXXXXX--------
+       -3	-----XXXXXXXXXX-------
+       -2	----XXXXXXXXXXXX------
+       -1	---XXXXXXXXXXXXXX-----
+        0	---XXXXXXXXXXXXXXX----
+        0	----XXXXXXXXXXXXXXX---
+        1	-----XXXXXXXXXXXXXXX--
+        2	------XXXXXXXXXXXXXX--
+        3	-------XXXXXXXXXXXX---
+        4	--------XXXXXXXXXX----
+        5	---------XXXXXXXX-----
+        6	----------XXXXXX------
+        7	-----------XXXX-------
+        8	------------XX--------
+        9	----------------------
+       10	----------------------
 	*/
 }
 

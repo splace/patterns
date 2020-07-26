@@ -13,6 +13,15 @@ type Limited interface {
 	MaxX() x
 }
 
+type Limiter struct {
+	Unlimited
+	Max x
+}
+
+func (p Limiter) MaxX() x {
+	return p.Max
+}
+
 // the x represents a value from -infinity to +infinity, but is actually limited by its type.
 type x int32
 

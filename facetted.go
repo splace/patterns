@@ -25,6 +25,7 @@ func (n FacettedNib) SimpleCurved(sx, sy, c1x, c1y, ex, ey x) Limited {
 }
 
 func (n FacettedNib) QuadraticBezier(sx, sy, cx, cy, ex, ey x) Limited {
+	// XXX add switch for low CurveDivision bypassing recentre
 	return n.polygon(sx, sy, ex, ey, Divide(1<<n.CurveDivision).QuadraticBezier(sx, sy, cx, cy, ex, ey))
 }
 
@@ -43,13 +44,14 @@ func (n FacettedNib) Conic(sx, sy, rx, ry x, a float64, large, sweep bool, ex, e
 func (n FacettedNib) polygon(sx, sy, ex, ey x, pts <-chan [2]x) Limited {
 	var c Composite
 	joiner := Shrunk{Disc(Filling(n.In)), 2 * unitX / float32(n.Width)}
-	l := Limits{sx, sy, sx, sy}
+	//l := Limits{sx, sy, sx, sy}
 	for p := range pts {
 		c = append(c, n.Straight(sx, sy, p[0], p[1]), Translated{&joiner, p[0], p[1]})
 		sx, sy = p[0], p[1]
-		l.Include(p)
+		//l.Include(p)
 	}
 	c = append(c, n.Straight(sx, sy, ex, ey))
-	l.Include([2]x{ex, ey})
-	return Translated{Limiter{UnlimitedTranslated{c, (l.MaxX + l.MinX) >> 1, (l.MaxY + l.MinY) >> 1}, max((l.MaxX-l.MinX)>>1, (l.MaxY-l.MinY)>>1) + n.Width}, -((l.MaxX + l.MinX) >> 1), -((l.MaxY + l.MinY) >> 1)}
+	//l.Include([2]x{ex, ey})
+	//return Translated{Limiter{UnlimitedTranslated{c, (l.MaxX + l.MinX) >> 1, (l.MaxY + l.MinY) >> 1}, max((l.MaxX-l.MinX)>>1, (l.MaxY-l.MinY)>>1) + n.Width}, -((l.MaxX + l.MinX) >> 1), -((l.MaxY + l.MinY) >> 1)}
+	return Recentre(c)
 }

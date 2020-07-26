@@ -3,20 +3,18 @@ package pattern
 import (
 	"image"
 	"image/color"
-	"image/color/palette"
+//	"image/color/palette"
 	"image/draw"
 )
 
-// a Image is an image.Image, missing a colormodel, so more general.
+// a Depictor is an image.Image, missing a colormodel, so more general.
 // embedded in one of the helper wrappers gets you an image.Image.
 type Depictor interface {
 	Bounds() image.Rectangle
 	At(x, y int) color.Color
 }
 
-
-
-// simple visual Depiction of a Unlimited, implements Depictor
+// simple visual Depiction of a Limited, always square because it uses MaxX for bounds, implements Depictor
 type LimitedDepiction struct {
 	Limited
 	xsperpixel x
@@ -36,6 +34,49 @@ func (d LimitedDepiction) At(xp, yp int) color.Color {
 func NewLimitedDepiction(s Limited, dxX, dxY int) LimitedDepiction {
 	return LimitedDepiction{s, xspp(dxX,dxY,s.MaxX()) }
 }
+
+func NewHalfLimitedDepiction(s Limited, dxX, dxY int) LimitedDepiction {
+	return LimitedDepiction{Limiter{s,s.MaxX()/2}, xspp(dxX,dxY,s.MaxX()/2) }
+}
+
+// simple visual Depiction of a Limited using MaxX for bounds, so always square, implements Depictor
+type TrimmedLimitedDepiction struct {
+	LimitedDepiction
+	dx,dy int
+}
+
+func (d TrimmedLimitedDepiction) Bounds() image.Rectangle {
+	db:=d.LimitedDepiction.Bounds()
+	db.Min.X+=d.dx
+	db.Min.Y+=d.dy
+	db.Max.X-=d.dx
+	db.Max.Y-=d.dy
+	return db
+}
+
+//// visual Depiction of a Limited using adjected, trimmed, MaxX for bounds, implements Depictor
+//func NewTrimmedLimitedDepiction(s Limited, dxX, dxY int) TrimmedLimitedDepiction {
+//	return TrimmedLimitedDepiction{s, xspp(dxX,dxY,s.MaxX()) }
+//}
+
+// XXX find samller offset limits by dugging down
+//func Bounds(l Limited) image.Rectangle{
+//	switch c:=l.(type){
+//	case Composite:
+//		return bounds(c)
+//	case UnlimitedComposite:
+//		return bounds(Composite(c))
+//	}
+//	max:=int(d.Limited.MaxX()/d.xsperpixel)
+//	return image.Rectangle{image.Pt(-max,-max),image.Pt(max,max)}
+//}
+
+//func bounds(c Composite) (r image.Rectangle){
+//	for p:=range(c){
+//		r.Add(image.Pt())
+//	}
+//}
+
 
 
 
@@ -119,60 +160,22 @@ func (oi OffsetImage) At(x, y int) color.Color {
 	return oi.Image.At(x-oi.dx,y-oi.dy)
 }
 
-// RGBA depiction wrapper
-type RGBAImage struct {
+// wrapper to add a dummy ColorModel to implement image.Image, used to avoid polution of depictor interface.
+// (ColorModel is completely pointless/meaningless for non-editable images, that is for the interface, image.Image, its includied in! it is useful on draw.Image's so it seems basically to be in the wrong interface!!)
+type Image struct {
 	Depictor
 }
 
-func (i RGBAImage) ColorModel() color.Model { return color.RGBAModel }
+type colormodel struct{}
 
-// gray depiction wrapper.
-type GrayImage struct {
-	Depictor
+func (colormodel) Convert(i color.Color) color.Color{
+	return nil
 }
 
-func (i GrayImage) ColorModel() color.Model { return color.GrayModel }
+var dummy colormodel
 
-// plan9 paletted, depiction wrapper.
-type Plan9PalettedImage struct {
-	Depictor
-}
-
-func (i Plan9PalettedImage) ColorModel() color.Model { return color.Palette(palette.Plan9) }
-
-// WebSafe paletted, depiction wrapper.
-type WebSafePalettedImage struct {
-	Depictor
-}
-
-func (i WebSafePalettedImage) ColorModel() color.Model { return color.Palette(palette.WebSafe) }
-
-// black/white paletted, depiction wrapper.
-type BlackAndWhitePalettedImage struct {
-	Depictor
-}
-
-func (i BlackAndWhitePalettedImage) ColorModel() color.Model {
-	return color.Palette([]color.Color{color.Black, color.White})
-}
-
-
-// black/white paletted, depiction wrapper.
-type PalettedImage struct {
-	Depictor
-}
-
-func (i PalettedImage) ColorModel() color.Model {
-	return color.Palette([]color.Color{zeroY, unitY})
-}
-
-// black/white paletted, depiction wrapper.
-type OpaqueTransparentPalettedImage struct {
-	Depictor
-}
-
-func (i OpaqueTransparentPalettedImage) ColorModel() color.Model {
-	return color.Palette([]color.Color{color.Opaque, color.Transparent})
+func (Image) ColorModel() color.Model { 
+	return dummy
 }
 
 // Drawable simplifies draw.Draw for incremental composition of images

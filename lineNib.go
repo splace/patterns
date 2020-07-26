@@ -33,37 +33,38 @@ func (l LineNib) Box(x, y x) Limited {
 	return Limiter{Composite{l.Straight(-x, y, x, y), l.Straight(x, y, x, -y), l.Straight(x, -y, -x, -y), l.Straight(-x, -y, -x, y)}, max(x+l.Width, y+l.Width)}
 }
 
-func (l LineNib) Polygon(coords ...[2]x) Limited {
-	c := Composite(make([]Unlimited, len(coords)))
-	m := Limits{coords[0][0], coords[0][1], coords[0][0], coords[0][1]}
+func (l LineNib) Polygon(coords ...[2]x) Composite {
+	c := make(Composite, len(coords))
+	//m := Limits{coords[0][0], coords[0][1], coords[0][0], coords[0][1]}
 	for i := 1; i < len(c); i++ {
 		c[i-1] = l.Straight(coords[i-1][0], coords[i-1][1], coords[i][0], coords[i][1])
-		m.Include([2]x{coords[i][0], coords[i][1]})
+		//m.Include([2]x{coords[i][0], coords[i][1]})
 	}
 	c[len(coords)-1] = l.Straight(coords[len(coords)-1][0], coords[len(coords)-1][1], coords[0][0], coords[0][1])
 	// translate - limit - untranslate
-	return Translated{Limiter{UnlimitedTranslated{c, (m.MaxX + m.MinX) >> 1, (m.MaxY + m.MinY) >> 1}, max((m.MaxX-m.MinX)>>1, (m.MaxY-m.MinY)>>1) + l.Width}, -((m.MaxX + m.MinX) >> 1), -((m.MaxY + m.MinY) >> 1)}
+	//return Translated{Limiter{UnlimitedTranslated{c, (m.MaxX + m.MinX) >> 1, (m.MaxY + m.MinY) >> 1}, max((m.MaxX-m.MinX)>>1, (m.MaxY-m.MinY)>>1) + l.Width}, -((m.MaxX + m.MinX) >> 1), -((m.MaxY + m.MinY) >> 1)}
+	return c
 }
 
-// Limits hold max and min points
-type Limits struct {
-	MinX, MinY, MaxX, MaxY x
-}
+//// Limits hold max and min points
+//type Limits struct {
+//	MinX, MinY, MaxX, MaxY x
+//}
 
-//  expanded Limits to include new points.
-func (d *Limits) Include(p [2]x) {
-	if p[0] < d.MinX {
-		d.MinX = p[0]
-	} else {
-		if p[0] > d.MaxX {
-			d.MaxX = p[0]
-		}
-	}
-	if p[1] < d.MinY {
-		d.MinY = p[1]
-	} else {
-		if p[1] > d.MaxY {
-			d.MaxY = p[1]
-		}
-	}
-}
+////  expanded Limits to include new points.
+//func (d *Limits) Include(p [2]x) {
+//	if p[0] < d.MinX {
+//		d.MinX = p[0]
+//	} else {
+//		if p[0] > d.MaxX {
+//			d.MaxX = p[0]
+//		}
+//	}
+//	if p[1] < d.MinY {
+//		d.MinY = p[1]
+//	} else {
+//		if p[1] > d.MaxY {
+//			d.MaxY = p[1]
+//		}
+//	}
+//}

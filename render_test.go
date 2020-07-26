@@ -20,7 +20,7 @@ func ExampleRenderSquare() {
 	defer file.Close()
 	
 	i:=NewImageY(image.Rect(-40, -40, 40, 40))
-	s:=Plan9PalettedImage{Depiction{Shrunk{Square(unitY), .10}, i.Bounds(), color.Opaque, color.Transparent, 0.5 * unitX}}
+	s:=Image{Depiction{Shrunk{Square(unitY), .10}, i.Bounds(), color.Opaque, color.Transparent, 0.5 * unitX}}
 	
 	draw.Draw(i,s.Bounds(), s, s.Bounds().Min, draw.Over)
 	
@@ -50,7 +50,7 @@ func TestRenderBitCoin(t *testing.T) {
 	
 	pat:=NewLimitedDepiction(p.Draw(b), 600, 600)
 //	i:=NewImageY(pat.Bounds(),color.Opaque,color.Transparent)
-	s:=OpaqueTransparentPalettedImage{pat}
+	s:=Image{pat}
 	
 //	draw.Draw(i,s.Bounds(), s, s.Bounds().Min, draw.Over)
 //	draw.Draw(i,s.Bounds(), s, image.ZP, draw.Over)
